@@ -6,14 +6,14 @@
 #    By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 19:17:18 by sdell-er          #+#    #+#              #
-#    Updated: 2024/07/15 12:48:23 by sdell-er         ###   ########.fr        #
+#    Updated: 2024/08/01 15:21:53 by sdell-er         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 SRC = 
 OBJ = $(SRC:.c=.o)
-FLAGS = -g -Wall -Wextra -Werror -pthread
+FLAGS = -g -Wall -Wextra -Werror -lreadline
 CC = cc
 
 all: $(NAME)
