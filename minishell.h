@@ -6,7 +6,7 @@
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 15:20:23 by sdell-er          #+#    #+#             */
-/*   Updated: 2024/08/07 09:31:09 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/09 16:55:36 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <signal.h>
+# include <fcntl.h>
 # include <readline/readline.h>
 # include "my_lib/Libft/libft.h"
 # include "my_lib/ft_printf/ft_printf.h"
@@ -36,6 +37,7 @@ typedef struct s_input // arriva all'executer
 {
 	t_type			type;
 	char			*str;
+	int				fd;	// questo lo crea l'executer
 	struct s_input	*next;
 }	t_input;
 
@@ -46,5 +48,7 @@ typedef struct s_cmd // creata dall'executer
 	int		fd_in;	// dup2(fd_in, STDIN_FILENO)
 	int		fd_out;	// dup2(fd_out, STDOUT_FILENO)
 }	t_cmd;	// execve(path, argv, env)
+
+int	g_exit_status;
 
 #endif
