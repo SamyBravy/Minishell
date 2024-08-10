@@ -6,7 +6,7 @@
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 09:10:44 by sdell-er          #+#    #+#             */
-/*   Updated: 2024/08/09 17:57:29 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:27:18 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*unique_name(void)
 	char		*tmp;
 
 	tmp = ft_itoa(n);
-	str = ft_strjoin('.', tmp);
+	str = ft_strjoin(".", tmp);
 	free(tmp);
 	n++;
 	return (str);

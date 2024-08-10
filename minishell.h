@@ -6,7 +6,7 @@
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 15:20:23 by sdell-er          #+#    #+#             */
-/*   Updated: 2024/08/09 16:55:36 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:28:59 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,6 @@ typedef struct s_cmd // creata dall'executer
 	int		fd_out;	// dup2(fd_out, STDOUT_FILENO)
 }	t_cmd;	// execve(path, argv, env)
 
-int	g_exit_status;
+void	executer(t_input *input);
 
 #endif

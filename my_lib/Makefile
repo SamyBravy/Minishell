@@ -6,13 +6,13 @@
 #    By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/17 15:44:24 by sdell-er          #+#    #+#              #
-#    Updated: 2024/08/02 13:57:29 by sdell-er         ###   ########.fr        #
+#    Updated: 2024/08/10 20:00:13 by sdell-er         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libmy_lib.a
 CC = cc
-CC_FLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 
 SRCS = ./Libft/ft_isascii.c ./Libft/ft_memcpy.c ./Libft/ft_putstr_fd.c ./Libft/ft_strlcat.c ./Libft/ft_strrchr.c \
 	./Libft/ft_atoi.c ./Libft/ft_isdigit.c ./Libft/ft_memmove.c ./Libft/ft_split.c ./Libft/ft_strlcpy.c \
@@ -26,15 +26,17 @@ SRCS = ./Libft/ft_isascii.c ./Libft/ft_memcpy.c ./Libft/ft_putstr_fd.c ./Libft/f
 	./ft_printf/ft_printf.c ./ft_printf/ft_putchar.c ./ft_printf/ft_putstr.c ./ft_printf/ft_putnbr.c ./ft_printf/ft_putexa.c \
 	./get_next_line/get_next_line_bonus.c ./get_next_line/get_next_line_utils_bonus.c
 
+OBJ = $(SRCS:.c=.o)
+
 all: $(NAME)
 
-$(NAME): $(SRC)
-	@ar rcs $(NAME) $(SRC)
-	@ranlib $(NAME)
+$(NAME): $(OBJ)
+	@ar rcs $(NAME) $(OBJ)
 	@echo "\e[0;93m[$(NAME)] compiled!\e[0m"
 
 clean:
-	@rm -f $(SRC)
+	@rm -f $(OBJ)
+	@echo "\e[0;91m[$(NAME)] cleaned!\e[0m"
 
 fclean: clean
 	@rm -f $(NAME)
