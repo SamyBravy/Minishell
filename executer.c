@@ -6,7 +6,7 @@
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 09:10:44 by sdell-er          #+#    #+#             */
-/*   Updated: 2024/08/10 19:27:18 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/11 18:36:03 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,7 @@ char	*unique_name(void)
 void	read_heredoc(int fd, char *eof)
 {
 	char	*line;
-	int		i;
 
-	i = 1;
 	while (1)
 	{
 		line = readline("> ");
@@ -39,14 +37,15 @@ void	read_heredoc(int fd, char *eof)
 			if (line)
 				free(line);
 			else
-				ft_printf("minicecco: warning: here-document at line %d \
-					delimited by end-of-file (wanted `%s')\n", i, eof);
+			{
+				ft_printf("minicecco: warning: here-document ");
+				ft_printf("delimited by end-of-file (wanted `%s')\n", eof);
+			}
 			break ;
 		}
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
+		ft_putstr_fd(line, fd);
+		ft_putchar_fd('\n', fd);
 		free(line);
-		i++;
 	}
 }
 
@@ -85,7 +84,7 @@ void	open_block_files(t_input *input, t_cmd *cmd)
 			cmd->fd_in = input->fd;
 			if (input->fd == -1)
 			{
-				ft_printf("minishell: %s: No such file or directory\n",
+				ft_printf("minicecco: %s: No such file or directory\n",
 					input->str);
 				return ;
 			}
@@ -115,7 +114,7 @@ void	remove_head(t_input **input)
 
 void	close_fd(t_input *input)
 {
-	while (input)
+	while (input && input->type != PIPE)
 	{
 		if (input->type == INPUT || input->type == HEREDOC
 			|| input->type == TRUNC || input->type == APPEND)
@@ -128,18 +127,18 @@ void	close_fd(t_input *input)
 	}
 }
 
-void	clean_block(t_input *input)
+void	clean_block(t_input **input)
 {
-	close_fd(input);
-	while (input && input->type != PIPE)
+	close_fd(*input);
+	while (*input && (*input)->type != PIPE)
 	{
-		if (input->type == HEREDOC)
-			unlink(input->str);
-		free(input->str);
-		remove_head(&input);
+		if ((*input)->type == HEREDOC)
+			unlink((*input)->str);
+		free((*input)->str);
+		remove_head(input);
 	}
-	if (input && input->type == PIPE)
-		remove_head(&input);
+	if (*input && (*input)->type == PIPE)
+		remove_head(input);
 }
 
 int	only_one_cmd(t_input *input)
@@ -159,14 +158,13 @@ void	executer(t_input *input)
 	t_cmd	cmd;
 
 	create_heredocs(input);
+	cmd.fd_in = STDIN_FILENO;
 	not_first_cmd = -1;
 	while (input)
 	{
 		not_first_cmd++;
-		cmd.fd_in = STDIN_FILENO;
-		cmd.fd_out = STDOUT_FILENO;
 		open_block_files(input, &cmd);
 		
-		clean_block(input);
+		clean_block(&input);
 	}
 }

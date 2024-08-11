@@ -6,7 +6,7 @@
 #    By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/17 15:44:24 by sdell-er          #+#    #+#              #
-#    Updated: 2024/08/10 20:00:13 by sdell-er         ###   ########.fr        #
+#    Updated: 2024/08/11 11:44:40 by sdell-er         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,9 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@ar rcs $(NAME) $(OBJ)
 	@echo "\e[0;93m[$(NAME)] compiled!\e[0m"
+
+.c.o:
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@rm -f $(OBJ)
