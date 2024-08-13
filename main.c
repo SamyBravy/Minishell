@@ -18,15 +18,9 @@ int	main(int argc, char **argv, char **env)
 
 	t_input *input = malloc(sizeof(t_input));
 	input->type = CMD;
-	input->str = ft_strdup("cast");
+	input->str = ft_strdup("cat");
 	input->next = NULL;
 	input->fd = -1;
-
-	t_input *input1 = malloc(sizeof(t_input));
-	input1->type = INPUT;
-	input1->str = ft_strdup("input.txt");
-	input1->next = NULL;
-	input1->fd = -1;
 
 	t_input *input2 = malloc(sizeof(t_input));
 	input2->type = PIPE;
@@ -65,41 +59,19 @@ int	main(int argc, char **argv, char **env)
 	input7->fd = -1;
 
 	t_input *input8 = malloc(sizeof(t_input));
-	input8->type = CMD;
-	input8->str = ft_strdup("wc -l");
+	input8->type = HEREDOC;
+	input8->str = ft_strdup("s");
 	input8->next = NULL;
 	input8->fd = -1;
 
-	t_input *input9 = malloc(sizeof(t_input));
-	input9->type = HEREDOC;
-	input9->str = ft_strdup("END");
-	input9->next = NULL;
-	input9->fd = -1;
-
-	t_input *input10 = malloc(sizeof(t_input));
-	input10->type = PIPE;
-	input10->str = NULL;
-	input10->next = NULL;
-	input10->fd = -1;
-
-	t_input *input11 = malloc(sizeof(t_input));
-	input11->type = CMD;
-	input11->str = ft_strdup("./test_funzioni/a.out");
-	input11->next = NULL;
-	input11->fd = -1;
-
 	// Creazione della lista collegata
-	input->next = input1;
-	input1->next = input2;
+	input->next = input2;
 	input2->next = input3;
 	input3->next = input4;
 	input4->next = input5;
 	input5->next = input6;
 	input6->next = input7;
 	input7->next = input8;
-	input8->next = input9;
-	input9->next = input10;
-	input10->next = input11;
 
 	// Creazione e scrittura su file di input
 	FILE *file = fopen("input.txt", "w");

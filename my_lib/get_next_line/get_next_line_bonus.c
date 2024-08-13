@@ -118,11 +118,17 @@ char	*get_next_line(int fd)
 	static char		*store[4096];
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= 4096)
+	{
+		if (fd < 0 && store[-fd])
+		{
+			free(store[-fd]);
+			store[-fd] = NULL;
+		}
 		return (NULL);
+	}
 	buffer = malloc(BUFFER_SIZE + 1);
-	if (!buffer)
-		return (NULL);
-	if (!get_current_line(fd, store + fd, &buffer, BUFFER_SIZE))
+	if (!buffer
+		|| !get_current_line(fd, store + fd, &buffer, BUFFER_SIZE))
 		return (NULL);
 	free(buffer);
 	if (!set_current_line(store + fd, &buffer))
