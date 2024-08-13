@@ -64,6 +64,7 @@ typedef struct s_cmd // creata dall'executer
 	int		fd_out;	// dup2(fd_out, STDOUT_FILENO)
 }	t_cmd;	// execve(path, argv, env)
 
-void	executer(t_input *input, char ***env, int *exit_status);
+void	executer(t_input *input, char **env, int *exit_status);
+void	clean_block(t_input **input, int unlink_heredoc);
 
 #endif

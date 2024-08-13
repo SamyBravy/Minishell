@@ -19,7 +19,7 @@ char	*unique_name(void)
 	char		*tmp;
 
 	tmp = ft_itoa(n);
-	str = ft_strjoin(".", tmp);
+	str = ft_strjoin(".tmp/.", tmp);
 	free(tmp);
 	n++;
 	return (str);
@@ -127,12 +127,12 @@ void	close_block_fd(t_input *input)
 	}
 }
 
-void	clean_block(t_input **input)
+void	clean_block(t_input **input, int unlink_heredoc)
 {
 	close_block_fd(*input);
 	while (*input && (*input)->type != PIPE)
 	{
-		if ((*input)->type == HEREDOC)
+		if ((*input)->type == HEREDOC && unlink_heredoc)
 			unlink((*input)->str);
 		free((*input)->str);
 		remove_head(input);
@@ -170,19 +170,19 @@ t_builtin	which_builtin(t_input *input)
 	cmd = get_block_cmd(input);
 	if (!cmd)
 		return (NONE);
-	if (!ft_strncmp(cmd, "echo", 5))
+	if (!ft_strncmp(cmd, "echo", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		return (ECHO);
-	if (!ft_strncmp(cmd, "cd", 3))
+	if (!ft_strncmp(cmd, "cd", 2) && (cmd[2] == ' ' || cmd[2] == '\0'))
 		return (CD);
-	if (!ft_strncmp(cmd, "pwd", 4))
+	if (!ft_strncmp(cmd, "pwd", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		return (PWD);
-	if (!ft_strncmp(cmd, "export", 7))
+	if (!ft_strncmp(cmd, "export", 6) && (cmd[6] == ' ' || cmd[6] == '\0'))
 		return (EXPORT);
-	if (!ft_strncmp(cmd, "unset", 6))
+	if (!ft_strncmp(cmd, "unset", 5) && (cmd[5] == ' ' || cmd[5] == '\0'))
 		return (UNSET);
-	if (!ft_strncmp(cmd, "env", 4))
+	if (!ft_strncmp(cmd, "env", 3) && (cmd[3] == ' ' || cmd[3] == '\0'))
 		return (ENV);
-	if (!ft_strncmp(cmd, "exit", 5))
+	if (!ft_strncmp(cmd, "exit", 4) && (cmd[4] == ' ' || cmd[4] == '\0'))
 		return (EXIT);
 	return (INTERNAL);
 }
@@ -238,11 +238,11 @@ int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 	cmd->path = ft_substr(str_cmd, 0, len);
 	if (!strchr(cmd->path, '/'))
 	{
-		realloc_with_path(&cmd->path);
+		cmd->path = realloc_with_path(&cmd->path);
 		if (!cmd->path)
 		{
 			ft_putstr_fd("minicecco: ", 2);
-			ft_putstr_fd(str_cmd, 2);
+			write(2, str_cmd, len);
 			ft_putstr_fd(": command not found\n", 2);
 			cmd->argv = NULL;
 			return (-1);
@@ -256,7 +256,7 @@ int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 	return (0);
 }
 
-int	exec_builtin(t_input **input, t_cmd cmd, char ***env)
+int	exec_builtin(t_input **input, t_cmd cmd, char **env)
 {
 	t_builtin	builtin;
 	char		**argv;
@@ -266,13 +266,10 @@ int	exec_builtin(t_input **input, t_cmd cmd, char ***env)
 		return (1);
 	argv = ft_split(get_block_cmd(*input), ' ');
 	builtin = which_builtin(*input);
-	(void) cmd;
-	(void) env;
-	(void) builtin;
 	exit_status = 0;
-	//if (builtin == ECHO)
-	//	exit_status = builtin_echo(argv, ft_strnstr(get_block_cmd(*input),	// controllare errori sulla lunghezza nel caso in cui la stringa è più corta di echo -n
-	//				"echo -n ", ft_strlen(get_block_cmd(*input))));	// se c'è echo -n, la stringa da stampare inizia dopo echo -n
+	// if (builtin == ECHO)
+	// 	exit_status = builtin_echo(argv, ft_strnstr(get_block_cmd(*input),	// controllare errori sulla lunghezza nel caso in cui la stringa è più corta di echo -n
+	// 				"echo -n ", ft_strlen(get_block_cmd(*input))));	// se c'è echo -n, la stringa da stampare inizia dopo echo -n
 	// else if (builtin == CD)
 	// 	exit_status = builtin_cd(argv);
 	// else if (builtin == PWD)
@@ -285,17 +282,20 @@ int	exec_builtin(t_input **input, t_cmd cmd, char ***env)
 	// 	exit_status = builtin_env(argv, env);
 	// else if (builtin == EXIT)
 	// 	exit_status = builtin_exit(&argv, input);	// farà il free di argv e di input
+	(void) cmd;
+	(void) env;
+	(void) builtin;
 	return (ft_free_mat(argv), exit_status);
 }
 
 void	free_and_exit(t_input **input, int exit_status)
 {
 	while (*input)
-		clean_block(input);
+		clean_block(input, 0);
 	exit(exit_status);
 }
 
-void	exec_cmd(t_input **input, t_cmd cmd, char ***env)
+void	exec_cmd(t_input **input, t_cmd cmd, char **env)
 {
 	if (which_builtin(*input) != INTERNAL)
 		free_and_exit(input, exec_builtin(input, cmd, env));
@@ -303,7 +303,7 @@ void	exec_cmd(t_input **input, t_cmd cmd, char ***env)
 		free_and_exit(input, 1);
 	if (parse_internal_cmd(get_block_cmd(*input), &cmd) == -1)
 		free_and_exit(input, 127);
-	if (execve(cmd.path, cmd.argv, *env) == -1)
+	if (execve(cmd.path, cmd.argv, env) == -1)
 	{
 		ft_putstr_fd("minicecco: ", 2);
 		ft_putstr_fd(cmd.path, 2);
@@ -313,7 +313,7 @@ void	exec_cmd(t_input **input, t_cmd cmd, char ***env)
 		free(cmd.path);	// non so se va davvero fatto
 		ft_free_mat(cmd.argv); // non so se va davvero fatto
 		while (*input)
-			clean_block(input);
+			clean_block(input, 0);
 		if (errno == ENOENT)	// Comando non trovato
 			exit(127);
 		if (errno == EACCES || errno == ENOEXEC || errno == EISDIR	// Permesso negato, Formato file non valido, È una directory
@@ -324,7 +324,7 @@ void	exec_cmd(t_input **input, t_cmd cmd, char ***env)
 	}
 }
 
-void	executer(t_input *input, char ***env, int *exit_status)
+void	executer(t_input *input, char **env, int *exit_status)
 {
 	int		i;
 	int		pid;
@@ -361,7 +361,7 @@ void	executer(t_input *input, char ***env, int *exit_status)
 			close(pipefd[1]);
 			i++;
 		}
-		clean_block(&input);
+		clean_block(&input, 1);
 	}
 	if (i--)
 		waitpid(pid, exit_status, 0);

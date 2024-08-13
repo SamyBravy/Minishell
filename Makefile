@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-# valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp  ./minishell
+# valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp --trace-children=yes ./minishell
 NAME = minishell
 MY_LIB = ./my_lib
 SRC = main.c executer.c
