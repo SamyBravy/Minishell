@@ -32,7 +32,7 @@ void	handle_sig_execve(int sig)
 	}
 	else if (sig == SIGQUIT)
 	{
-		write(2, "Quit (core dumped)\n", 20);
+		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
 		g_signal = SIGQUIT;
 	}
 }

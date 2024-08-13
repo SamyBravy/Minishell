@@ -66,9 +66,9 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 		cmd->path = realloc_with_path(cmd->path);
 		if (!cmd->path)
 		{
-			ft_putstr_fd("minicecco: ", 2);
+			ft_putstr_fd("minicecco: ", STDERR_FILENO);
 			write(2, str_cmd, len);
-			ft_putstr_fd(": command not found\n", 2);
+			ft_putstr_fd(": command not found\n", STDERR_FILENO);
 			cmd->argv = NULL;
 			return (-1);
 		}
@@ -120,7 +120,7 @@ void	exec_cmd(t_input **input, t_cmd *cmd)
 		free_and_exit(input, 127);
 	if (execve(cmd->path, cmd->argv, cmd->env) == -1)	// forse prima va fatto il free di input
 	{
-		ft_putstr_fd("minicecco: ", 2);
+		ft_putstr_fd("minicecco: ", STDERR_FILENO);
 		perror(cmd->path);
 		free(cmd->path);	// non so se va davvero fatto
 		ft_free_mat(cmd->argv); // non so se va davvero fatto

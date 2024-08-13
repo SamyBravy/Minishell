@@ -22,7 +22,7 @@ void	open_block_files(t_input *input, t_cmd *cmd)
 			cmd->fd_in = input->fd;
 			if (input->fd == -1)
 			{
-				ft_putstr_fd("minicecco: ", 2);
+				ft_putstr_fd("minicecco: ", STDERR_FILENO);
 				perror(input->str);
 				return ;
 			}
