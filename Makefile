@@ -13,8 +13,12 @@
 # valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp --trace-children=yes ./minishell
 NAME = minishell
 MY_LIB = ./my_lib
-SRC = main.c executer/executer.c executer/init_and_clean.c executer/handle_signals.c \
-		executer/get_cmd_info.c executer/ft_heredocs.c executer/execute_command.c
+SRC = 	main.c \
+		\
+		executer/executer.c executer/init_and_clean.c executer/handle_signals.c \
+		executer/get_cmd_info.c executer/ft_heredocs.c executer/execute_command.c \
+		\
+		builtins/exit_builtin.c
 FLAGS = -g -Wall -Wextra -Werror -lreadline
 CC = cc
 

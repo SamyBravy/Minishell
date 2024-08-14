@@ -18,7 +18,7 @@ int	main(int argc, char **argv, char **env)
 
 	t_input *input = malloc(sizeof(t_input));
 	input->type = CMD;
-	input->str = ft_strdup("cat");
+	input->str = ft_strdup("cajt");
 	input->next = NULL;
 	input->fd = -1;
 
@@ -59,8 +59,8 @@ int	main(int argc, char **argv, char **env)
 	input7->fd = -1;
 
 	t_input *input8 = malloc(sizeof(t_input));
-	input8->type = HEREDOC;
-	input8->str = ft_strdup("s");
+	input8->type = CMD;
+	input8->str = ft_strdup("exit -257 s");
 	input8->next = NULL;
 	input8->fd = -1;
 
@@ -80,7 +80,8 @@ int	main(int argc, char **argv, char **env)
 
 	// Esecuzione del comando e gestione dello stato di uscita
 	int exit_status = 0;
-	executer(input, env, &exit_status);
+	executer(&input, env, &exit_status);
+	printf("Exit status: %d\n", exit_status);
 
 	// Pulizia dei file temporanei
 	unlink("input.txt");

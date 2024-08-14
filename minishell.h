@@ -30,8 +30,8 @@
 
 typedef enum e_builtin
 {
-	INTERNAL,	// 0, non è un builtin
-	NONE,	// non ci sono comandi in quel blocco
+	INTERNAL,
+	NONE,
 	ECHO,
 	CD,
 	PWD,
@@ -44,22 +44,22 @@ typedef enum e_builtin
 typedef enum e_type
 {
 	CMD,
-	TRUNC,	// >
-	APPEND,	// >>
-	INPUT,	// <
-	HEREDOC,	// <<
-	PIPE,	// |
+	TRUNC,
+	APPEND,
+	INPUT,
+	HEREDOC,
+	PIPE,
 }	t_type;
 
-typedef struct s_input // arriva all'executer
+typedef struct s_input
 {
 	t_type			type;
 	char			*str;
-	int				fd;	// questo lo crea l'executer
+	int				fd;
 	struct s_input	*next;
 }	t_input;
 
-typedef struct s_cmd // creata dall'executer
+typedef struct s_cmd
 {
 	char	*path;
 	char	**argv;
@@ -70,12 +70,14 @@ typedef struct s_cmd // creata dall'executer
 
 int	g_signal;
 
+/* executer */
 void		executer(t_input **input, char **env, int *exit_status);
 void		clean_block(t_input **input, int unlink_heredoc);
 
 void		create_heredocs(t_input *input);
 
 void		exec_cmd(t_input **input, t_cmd *cmd);
+void		ft_free_mat(char **mat);
 int			exec_builtin(t_input **input, t_cmd *cmd);
 
 void		open_block_files(t_input *input, t_cmd *cmd);
@@ -88,5 +90,8 @@ int			only_one_cmd(t_input *input);
 
 void		handle_sig_heredoc(int sig);
 void		handle_sig_execve(int sig);
+
+/* builtins */
+int			exit_builtin(char **argv, t_input **input);
 
 #endif

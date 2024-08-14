@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-static void	ft_free_mat(char **mat)
+void	ft_free_mat(char **mat)
 {
 	int	i;
 
@@ -93,20 +93,19 @@ int	exec_builtin(t_input **input, t_cmd *cmd)
 	builtin = which_builtin(*input);
 	exit_status = 0;
 	/*if (builtin == ECHO)
-		exit_status = builtin_echo(argv, argv[1] && !ft_strcmp(argv[1], "-n"));
+		exit_status = echo_builtin(argv, argv[1] && !ft_strcmp(argv[1], "-n"));
 	else if (builtin == CD)
-		exit_status = builtin_cd(argv);
+		exit_status = cd_builtin(argv);
 	else if (builtin == PWD)
-		exit_status = builtin_pwd(argv);
+		exit_status = pwd_builtin(argv);
 	else if (builtin == EXPORT)
-		exit_status = builtin_export(argv, env);
+		exit_status = export_builtin(argv, env);
 	else if (builtin == UNSET)
-		exit_status = builtin_unset(argv, env);
+		exit_status = unset_builtin(argv, env);
 	else if (builtin == ENV)
-		exit_status = builtin_env(argv, env);
-	else if (builtin == EXIT)
-		exit_status = builtin_exit(argv, input);*/
-	(void) builtin;
+		exit_status = env_builtin(argv, env); */
+	/*else*/if (builtin == EXIT)
+		exit_status = exit_builtin(argv, input);
 	return (ft_free_mat(argv), exit_status);
 }
 
