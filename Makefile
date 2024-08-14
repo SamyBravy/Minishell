@@ -10,15 +10,19 @@
 #                                                                              #
 # **************************************************************************** #
 
+# "" e '' quando non sono attaccati a qualcosa sono sostituiti da \x1E (se sono attaccati solo tra loro si sostituisce tutto con \x1E)
+# tutti gli fd della struttura sono initializzati a -1
+# l'unica roba allocata che ci sarà quando viene chiamato l'executer sarà la lista passata all'executer
+# si alloca una stringa per ogni nodo della lista, tranne nel caso in cui type è PIPE, in quel caso str = NULL
 # valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp --trace-children=yes ./minishell
 NAME = minishell
 MY_LIB = ./my_lib
 SRC = 	main.c \
 		\
-		executer/executer.c executer/init_and_clean.c executer/handle_signals.c \
+		executer/executer.c executer/clean.c executer/handle_signals.c \
 		executer/get_cmd_info.c executer/ft_heredocs.c executer/execute_command.c \
 		\
-		builtins/exit_builtin.c
+		builtins/exit_builtin.c builtins/echo_builtin.c
 FLAGS = -g -Wall -Wextra -Werror -lreadline
 CC = cc
 

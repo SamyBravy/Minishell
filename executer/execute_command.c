@@ -12,18 +12,6 @@
 
 #include "../minishell.h"
 
-void	ft_free_mat(char **mat)
-{
-	int	i;
-
-	if (!mat)
-		return ;
-	i = 0;
-	while (mat[i])
-		free(mat[i++]);
-	free(mat);
-}
-
 static char	*realloc_with_path(char *path)
 {
 	char	*cmd_name;
@@ -72,16 +60,12 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 			cmd->argv = NULL;
 			return (-1);
 		}
-		cmd->argv = ft_split(str_cmd, ' ');
-		free(cmd->argv[0]);
-		cmd->argv[0] = ft_strdup(cmd->path);
 	}
-	else
-		cmd->argv = ft_split(str_cmd, ' ');
+	cmd->argv = ft_split(str_cmd, ' ');
 	return (0);
 }
 
-int	exec_builtin(t_input **input, t_cmd *cmd)
+int	exec_builtin(t_input **input, t_cmd *cmd, int forked)
 {
 	t_builtin	builtin;
 	char		**argv;
@@ -92,9 +76,9 @@ int	exec_builtin(t_input **input, t_cmd *cmd)
 	argv = ft_split(get_block_cmd(*input), ' ');
 	builtin = which_builtin(*input);
 	exit_status = 0;
-	/*if (builtin == ECHO)
-		exit_status = echo_builtin(argv, argv[1] && !ft_strcmp(argv[1], "-n"));
-	else if (builtin == CD)
+	if (builtin == ECHO)
+		exit_status = echo_builtin(argv);
+	/*else if (builtin == CD)
 		exit_status = cd_builtin(argv);
 	else if (builtin == PWD)
 		exit_status = pwd_builtin(argv);
@@ -104,19 +88,33 @@ int	exec_builtin(t_input **input, t_cmd *cmd)
 		exit_status = unset_builtin(argv, env);
 	else if (builtin == ENV)
 		exit_status = env_builtin(argv, env); */
-	/*else*/if (builtin == EXIT)
-		exit_status = exit_builtin(argv, input);
+	else if (builtin == EXIT)
+		exit_status = exit_builtin(argv, input, forked);
 	return (ft_free_mat(argv), exit_status);
+}
+
+static void	insert_null_char(char **argv)
+{
+	int	i;
+
+	i = 1;
+	while (argv[i])
+	{
+		if (argv[i][0] == '\x1E')
+			argv[i][0] = '\0';
+		i++;
+	}
 }
 
 void	exec_cmd(t_input **input, t_cmd *cmd)
 {
 	if (which_builtin(*input) != INTERNAL)
-		free_and_exit(input, exec_builtin(input, cmd));
+		free_and_exit(input, exec_builtin(input, cmd, 1));
 	if (cmd->fd_in == -1)
 		free_and_exit(input, 1);
 	if (parse_internal_cmd(get_block_cmd(*input), cmd) == -1)
 		free_and_exit(input, 127);
+	insert_null_char(cmd->argv);
 	if (execve(cmd->path, cmd->argv, cmd->env) == -1)
 	{
 		ft_putstr_fd("minicecco: ", STDERR_FILENO);

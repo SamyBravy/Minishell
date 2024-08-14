@@ -72,15 +72,13 @@ int	g_signal;
 
 /* executer */
 void		executer(t_input **input, char **env, int *exit_status);
-void		clean_block(t_input **input, int unlink_heredoc);
 
 void		create_heredocs(t_input *input);
 
 void		exec_cmd(t_input **input, t_cmd *cmd);
-void		ft_free_mat(char **mat);
-int			exec_builtin(t_input **input, t_cmd *cmd);
+int			exec_builtin(t_input **input, t_cmd *cmd, int forked);
 
-void		open_block_files(t_input *input, t_cmd *cmd);
+void		ft_free_mat(char **mat);
 void		clean_block(t_input **input, int unlink_heredoc);
 void		free_and_exit(t_input **input, int exit_status);
 
@@ -92,6 +90,8 @@ void		handle_sig_heredoc(int sig);
 void		handle_sig_execve(int sig);
 
 /* builtins */
-int			exit_builtin(char **argv, t_input **input);
+int			exit_builtin(char **argv, t_input **input, int forked);
+
+int			echo_builtin(char **argv);
 
 #endif

@@ -12,6 +12,35 @@
 
 #include "../minishell.h"
 
+static void	open_block_files(t_input *input, t_cmd *cmd)
+{
+	while (input && input->type != PIPE)
+	{
+		if (input->type == INPUT || input->type == HEREDOC)
+		{
+			input->fd = open(input->str, O_RDONLY);
+			cmd->fd_in = input->fd;
+			if (input->fd == -1)
+			{
+				ft_putstr_fd("minicecco: ", STDERR_FILENO);
+				perror(input->str);
+				return ;
+			}
+		}
+		else if (input->type == TRUNC || input->type == APPEND)
+		{
+			if (input->type == TRUNC)
+				input->fd = open(input->str,
+						O_CREAT | O_TRUNC | O_WRONLY, 0644);
+			else
+				input->fd = open(input->str,
+						O_CREAT | O_APPEND | O_WRONLY, 0644);
+			cmd->fd_out = input->fd;
+		}
+		input = input->next;
+	}
+}
+
 void	init_signals_and_heredocs(t_input **input, int *exit_status)
 {
 	g_signal = 0;
@@ -47,12 +76,6 @@ void	set_exit_status(int i, int pid, int *exit_status)
 		waitpid(-1, NULL, 0);
 }
 
-void	close_pipe(int pipefd[2])
-{
-	close(pipefd[0]);
-	close(pipefd[1]);
-}
-
 void	create_pipe_and_fork(t_input **input, t_cmd *cmd,
 	int original_stdin, int *pid)
 {
@@ -66,21 +89,21 @@ void	create_pipe_and_fork(t_input **input, t_cmd *cmd,
 	if (!only_one_cmd(*input) && cmd->fd_out == STDOUT_FILENO)
 		cmd->fd_out = pipefd[1];
 	*pid = fork();
-	if (*pid == -1)
-	{
+	if (*pid == -1 || *pid == 0)
 		close(original_stdin);
+	if (*pid == -1)
 		free_and_exit(input, 1);
-	}
 	if (*pid == 0)
 	{
 		dup2(cmd->fd_in, STDIN_FILENO);
 		dup2(cmd->fd_out, STDOUT_FILENO);
-		close_pipe(pipefd);
-		close(original_stdin);
+		close(pipefd[0]);
+		close(pipefd[1]);
 		exec_cmd(input, cmd);
 	}
 	dup2(pipefd[0], STDIN_FILENO);
-	close_pipe(pipefd);
+	close(pipefd[0]);
+	close(pipefd[1]);
 }
 
 void	executer(t_input **input, char **env, int *exit_status)
@@ -100,7 +123,7 @@ void	executer(t_input **input, char **env, int *exit_status)
 		cmd.fd_out = STDOUT_FILENO;
 		open_block_files(*input, &cmd);
 		if (!i && only_one_cmd(*input) && which_builtin(*input) != INTERNAL)
-			*exit_status = exec_builtin(input, &cmd);
+			*exit_status = exec_builtin(input, &cmd, 0);
 		else if (i++ || TRUE)
 			create_pipe_and_fork(input, &cmd, original_stdin, &pid);
 		clean_block(input, 1);

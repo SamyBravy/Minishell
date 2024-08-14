@@ -12,33 +12,16 @@
 
 #include "../minishell.h"
 
-void	open_block_files(t_input *input, t_cmd *cmd)
+void	ft_free_mat(char **mat)
 {
-	while (input && input->type != PIPE)
-	{
-		if (input->type == INPUT || input->type == HEREDOC)
-		{
-			input->fd = open(input->str, O_RDONLY);
-			cmd->fd_in = input->fd;
-			if (input->fd == -1)
-			{
-				ft_putstr_fd("minicecco: ", STDERR_FILENO);
-				perror(input->str);
-				return ;
-			}
-		}
-		else if (input->type == TRUNC || input->type == APPEND)
-		{
-			if (input->type == TRUNC)
-				input->fd = open(input->str,
-						O_CREAT | O_TRUNC | O_WRONLY, 0644);
-			else
-				input->fd = open(input->str,
-						O_CREAT | O_APPEND | O_WRONLY, 0644);
-			cmd->fd_out = input->fd;
-		}
-		input = input->next;
-	}
+	int	i;
+
+	if (!mat)
+		return ;
+	i = 0;
+	while (mat[i])
+		free(mat[i++]);
+	free(mat);
 }
 
 static void	remove_head(t_input **input)

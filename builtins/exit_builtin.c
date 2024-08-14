@@ -63,11 +63,12 @@ static long long int	ft_long_long_atoi(const char *nptr)
 	return (res * i);
 }
 
-int	exit_builtin(char **argv, t_input **input)
+int	exit_builtin(char **argv, t_input **input, int forked)
 {
 	long long int	exit_status;
 
-	ft_putstr_fd("exit\n", STDERR_FILENO);
+	if (!forked)
+		ft_putstr_fd("exit\n", STDERR_FILENO);
 	if (!argv[1])
 		exit_status = 0;
 	else if (!is_number(argv[1]))
@@ -78,8 +79,7 @@ int	exit_builtin(char **argv, t_input **input)
 		exit_status = 2;
 	}
 	else if (argv[2])
-		return (ft_putstr_fd("minicecco: exit: too many arguments\n",
-				STDERR_FILENO), 1);
+		return (ft_putstr_fd("minicecco: exit: too many arguments\n", 2), 1);
 	else
 	{
 		exit_status = ft_long_long_atoi(argv[1]);
