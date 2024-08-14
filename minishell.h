@@ -70,7 +70,7 @@ typedef struct s_cmd // creata dall'executer
 
 int	g_signal;
 
-void		executer(t_input *input, char **env, int *exit_status);
+void		executer(t_input **input, char **env, int *exit_status);
 void		clean_block(t_input **input, int unlink_heredoc);
 
 void		create_heredocs(t_input *input);

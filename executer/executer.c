@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	init_signals_and_heredocs(t_input **input, int *exit_status)
 {
@@ -39,12 +39,12 @@ void	set_exit_status(int i, int pid, int *exit_status)
 		else
 			*exit_status = 0;
 	}
-	while (i-- > 0)
-		waitpid(-1, NULL, 0);
 	if (g_signal == SIGINT)
 		*exit_status = 130;
 	else if (g_signal == SIGQUIT)
 		*exit_status = 131;
+	while (i-- > 0)
+		waitpid(-1, NULL, 0);
 }
 
 void	close_pipe(int pipefd[2])
@@ -76,34 +76,34 @@ void	create_pipe_and_fork(t_input **input, t_cmd *cmd,
 		dup2(cmd->fd_in, STDIN_FILENO);
 		dup2(cmd->fd_out, STDOUT_FILENO);
 		close_pipe(pipefd);
-		close(original_stdin);	// forse va fatto solo se non ha successo l'execve
+		close(original_stdin);
 		exec_cmd(input, cmd);
 	}
 	dup2(pipefd[0], STDIN_FILENO);
 	close_pipe(pipefd);
 }
 
-void	executer(t_input *input, char **env, int *exit_status)
+void	executer(t_input **input, char **env, int *exit_status)
 {
 	int		i;
 	int		pid;
 	int		original_stdin;
 	t_cmd	cmd;
 
-	init_signals_and_heredocs(&input, exit_status);
+	init_signals_and_heredocs(input, exit_status);
 	original_stdin = dup(STDIN_FILENO);
 	cmd.env = env;
 	i = 0;
-	while (input)
+	while (*input)
 	{
 		cmd.fd_in = STDIN_FILENO;
 		cmd.fd_out = STDOUT_FILENO;
-		open_block_files(input, &cmd);
-		if (!i && only_one_cmd(input) && which_builtin(input) != INTERNAL)
-			*exit_status = exec_builtin(&input, &cmd);
+		open_block_files(*input, &cmd);
+		if (!i && only_one_cmd(*input) && which_builtin(*input) != INTERNAL)
+			*exit_status = exec_builtin(input, &cmd);
 		else if (i++ || TRUE)
-			create_pipe_and_fork(&input, &cmd, original_stdin, &pid);
-		clean_block(&input, 1);
+			create_pipe_and_fork(input, &cmd, original_stdin, &pid);
+		clean_block(input, 1);
 	}
 	set_exit_status(i, pid, exit_status);
 	dup2(original_stdin, STDIN_FILENO);

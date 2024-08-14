@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 static void	ft_free_mat(char **mat)
 {
@@ -92,20 +92,20 @@ int	exec_builtin(t_input **input, t_cmd *cmd)
 	argv = ft_split(get_block_cmd(*input), ' ');
 	builtin = which_builtin(*input);
 	exit_status = 0;
-	// if (builtin == ECHO)
-	// 	exit_status = builtin_echo(argv, argv[1] && !ft_strcmp(argv[1], "-n"));	// se c'è echo -n, la stringa da stampare inizia dopo echo -n
-	// else if (builtin == CD)
-	// 	exit_status = builtin_cd(argv);
-	// else if (builtin == PWD)
-	// 	exit_status = builtin_pwd(argv);
-	// else if (builtin == EXPORT)
-	// 	exit_status = builtin_export(argv, env);
-	// else if (builtin == UNSET)
-	// 	exit_status = builtin_unset(argv, env);
-	// else if (builtin == ENV)
-	// 	exit_status = builtin_env(argv, env);
-	// else if (builtin == EXIT)
-	// 	exit_status = builtin_exit(argv, input);	// farà il free di argv e di input
+	/*if (builtin == ECHO)
+		exit_status = builtin_echo(argv, argv[1] && !ft_strcmp(argv[1], "-n"));
+	else if (builtin == CD)
+		exit_status = builtin_cd(argv);
+	else if (builtin == PWD)
+		exit_status = builtin_pwd(argv);
+	else if (builtin == EXPORT)
+		exit_status = builtin_export(argv, env);
+	else if (builtin == UNSET)
+		exit_status = builtin_unset(argv, env);
+	else if (builtin == ENV)
+		exit_status = builtin_env(argv, env);
+	else if (builtin == EXIT)
+		exit_status = builtin_exit(argv, input);*/
 	(void) builtin;
 	return (ft_free_mat(argv), exit_status);
 }
@@ -118,19 +118,19 @@ void	exec_cmd(t_input **input, t_cmd *cmd)
 		free_and_exit(input, 1);
 	if (parse_internal_cmd(get_block_cmd(*input), cmd) == -1)
 		free_and_exit(input, 127);
-	if (execve(cmd->path, cmd->argv, cmd->env) == -1)	// forse prima va fatto il free di input
+	if (execve(cmd->path, cmd->argv, cmd->env) == -1)
 	{
 		ft_putstr_fd("minicecco: ", STDERR_FILENO);
 		perror(cmd->path);
-		free(cmd->path);	// non so se va davvero fatto
-		ft_free_mat(cmd->argv); // non so se va davvero fatto
-		while (*input)	// non so se va davvero fatto
+		free(cmd->path);
+		ft_free_mat(cmd->argv);
+		while (*input)
 			clean_block(input, 0);
-		if (errno == ENOENT)	// Comando non trovato
+		if (errno == ENOENT)
 			exit(127);
-		if (errno == EACCES || errno == ENOEXEC || errno == EISDIR	// Permesso negato, Formato file non valido, È una directory
-			|| errno == ELOOP || errno == ENOTDIR || errno == EPERM	// Troppi link simbolici, Non è una directory, Operazione non permessa
-			|| errno == EROFS || errno == ETXTBSY)	// File system di sola lettura, File di testo occupato
+		if (errno == EACCES || errno == ENOEXEC || errno == EISDIR
+			|| errno == ELOOP || errno == ENOTDIR || errno == EPERM
+			|| errno == EROFS || errno == ETXTBSY)
 			exit(126);
 		exit(1);
 	}
