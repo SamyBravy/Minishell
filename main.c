@@ -16,9 +16,24 @@ int	main(int argc, char **argv, char **env)
 {
 	t_input *input = malloc(sizeof(t_input));
 	input->type = CMD;
-	input->str = ft_strdup("echo -nnnnn -n ciao");
+	input->str = ft_strdup("pwd casdfjsf dsfjdsf");
 	input->next = NULL;
 	input->fd = -1;
+
+	t_input *input2 = malloc(sizeof(t_input));
+	input2->type = PIPE;
+	input2->str = NULL;
+	input2->next = NULL;
+	input2->fd = -1;
+
+	t_input *input3 = malloc(sizeof(t_input));
+	input3->type = CMD;
+	input3->str = ft_strdup("cat -e");
+	input3->next = NULL;
+	input3->fd = -1;
+
+	input->next = input2;
+	input2->next = input3;
 
 	// Creazione e scrittura su file di input
 	FILE *file = fopen("input.txt", "w");

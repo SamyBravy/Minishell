@@ -79,10 +79,10 @@ int	exec_builtin(t_input **input, t_cmd *cmd, int forked)
 	if (builtin == ECHO)
 		exit_status = echo_builtin(argv);
 	/*else if (builtin == CD)
-		exit_status = cd_builtin(argv);
+		exit_status = cd_builtin(argv);*/
 	else if (builtin == PWD)
-		exit_status = pwd_builtin(argv);
-	else if (builtin == EXPORT)
+		exit_status = pwd_builtin();
+	/*else if (builtin == EXPORT)
 		exit_status = export_builtin(argv, env);
 	else if (builtin == UNSET)
 		exit_status = unset_builtin(argv, env);

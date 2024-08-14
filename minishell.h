@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <signal.h>
+# include <limits.h>
 # include <fcntl.h>
 # include <errno.h>
 # include <sys/wait.h>
@@ -93,5 +94,7 @@ void		handle_sig_execve(int sig);
 int			exit_builtin(char **argv, t_input **input, int forked);
 
 int			echo_builtin(char **argv);
+
+int			pwd_builtin(void);
 
 #endif
