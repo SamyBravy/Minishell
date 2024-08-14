@@ -22,7 +22,8 @@ SRC = 	main.c \
 		executer/executer.c executer/clean.c executer/handle_signals.c \
 		executer/get_cmd_info.c executer/ft_heredocs.c executer/execute_command.c \
 		\
-		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c
+		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c \
+		builtins/env_builtin.c
 FLAGS = -g -Wall -Wextra -Werror -lreadline
 CC = cc
 

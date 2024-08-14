@@ -16,7 +16,7 @@ int	main(int argc, char **argv, char **env)
 {
 	t_input *input = malloc(sizeof(t_input));
 	input->type = CMD;
-	input->str = ft_strdup("pwd casdfjsf dsfjdsf");
+	input->str = ft_strdup("echo ciao");
 	input->next = NULL;
 	input->fd = -1;
 
@@ -27,8 +27,8 @@ int	main(int argc, char **argv, char **env)
 	input2->fd = -1;
 
 	t_input *input3 = malloc(sizeof(t_input));
-	input3->type = CMD;
-	input3->str = ft_strdup("cat -e");
+	input3->type = HEREDOC;
+	input3->str = ft_strdup("ou");
 	input3->next = NULL;
 	input3->fd = -1;
 
@@ -51,6 +51,5 @@ int	main(int argc, char **argv, char **env)
 
 	(void) argc;
 	(void) argv;
-	(void) env;
 	return (0);
 }

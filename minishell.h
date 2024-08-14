@@ -97,4 +97,6 @@ int			echo_builtin(char **argv);
 
 int			pwd_builtin(void);
 
+int			env_builtin(char **env);
+
 #endif

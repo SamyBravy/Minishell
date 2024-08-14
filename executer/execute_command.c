@@ -83,11 +83,11 @@ int	exec_builtin(t_input **input, t_cmd *cmd, int forked)
 	else if (builtin == PWD)
 		exit_status = pwd_builtin();
 	/*else if (builtin == EXPORT)
-		exit_status = export_builtin(argv, env);
+		exit_status = export_builtin(argv, cmd->env);
 	else if (builtin == UNSET)
-		exit_status = unset_builtin(argv, env);
+		exit_status = unset_builtin(argv, cmd->env);*/
 	else if (builtin == ENV)
-		exit_status = env_builtin(argv, env); */
+		exit_status = env_builtin(cmd->env);
 	else if (builtin == EXIT)
 		exit_status = exit_builtin(argv, input, forked);
 	return (ft_free_mat(argv), exit_status);
