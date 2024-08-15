@@ -62,8 +62,13 @@ void	clean_block(t_input **input, int unlink_heredoc)
 		remove_head(input);
 }
 
-void	free_and_exit(t_input **input, int exit_status)
+void	clean_and_exit(t_input **input, int exit_status, int *pipefd)
 {
+	if (pipefd)
+	{
+		close(pipefd[0]);
+		close(pipefd[1]);
+	}
 	while (*input)
 		clean_block(input, 0);
 	exit(exit_status);

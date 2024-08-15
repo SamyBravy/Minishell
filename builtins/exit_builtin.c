@@ -63,11 +63,11 @@ static long long int	ft_long_long_atoi(const char *nptr)
 	return (res * i);
 }
 
-int	exit_builtin(char **argv, t_input **input, int forked)
+int	exit_builtin(char **argv, t_input **input, int *pipefd)
 {
 	long long int	exit_status;
 
-	if (!forked)
+	if (!pipefd)
 		ft_putstr_fd("exit\n", STDERR_FILENO);
 	if (!argv[1])
 		exit_status = 0;
@@ -88,6 +88,6 @@ int	exit_builtin(char **argv, t_input **input, int forked)
 		exit_status %= 256;
 	}
 	ft_free_mat(argv);
-	free_and_exit(input, exit_status);
+	clean_and_exit(input, exit_status, pipefd);
 	return (0);
 }

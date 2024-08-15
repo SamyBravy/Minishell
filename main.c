@@ -25,10 +25,10 @@ int	main(int argc, char **argv, char **env)
 	input2->str = NULL;
 	input2->next = NULL;
 	input2->fd = -1;
-
+	
 	t_input *input3 = malloc(sizeof(t_input));
-	input3->type = HEREDOC;
-	input3->str = ft_strdup("ou");
+	input3->type = INPUT;
+	input3->str = ft_strdup("input.txt");
 	input3->next = NULL;
 	input3->fd = -1;
 

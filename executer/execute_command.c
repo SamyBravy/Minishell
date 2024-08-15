@@ -65,7 +65,7 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 	return (0);
 }
 
-int	exec_builtin(t_input **input, t_cmd *cmd, int forked)
+int	exec_builtin(t_input **input, t_cmd *cmd, int *pipefd)
 {
 	t_builtin	builtin;
 	char		**argv;
@@ -88,8 +88,8 @@ int	exec_builtin(t_input **input, t_cmd *cmd, int forked)
 		exit_status = unset_builtin(argv, cmd->env);*/
 	else if (builtin == ENV)
 		exit_status = env_builtin(cmd->env);
-	else if (builtin == EXIT)
-		exit_status = exit_builtin(argv, input, forked);
+	if (builtin == EXIT)
+		exit_status = exit_builtin(argv, input, pipefd);
 	return (ft_free_mat(argv), exit_status);
 }
 
@@ -106,17 +106,19 @@ static void	insert_null_char(char **argv)
 	}
 }
 
-void	exec_cmd(t_input **input, t_cmd *cmd)
+void	exec_cmd(t_input **input, t_cmd *cmd, int *pipefd)
 {
 	if (which_builtin(*input) != INTERNAL)
-		free_and_exit(input, exec_builtin(input, cmd, 1));
+		clean_and_exit(input, exec_builtin(input, cmd, pipefd), pipefd);
 	if (cmd->fd_in == -1)
-		free_and_exit(input, 1);
+		clean_and_exit(input, 1, pipefd);
 	if (parse_internal_cmd(get_block_cmd(*input), cmd) == -1)
-		free_and_exit(input, 127);
+		clean_and_exit(input, 127, pipefd);
 	insert_null_char(cmd->argv);
 	if (execve(cmd->path, cmd->argv, cmd->env) == -1)
 	{
+		close(pipefd[0]);
+		close(pipefd[1]);
 		ft_putstr_fd("minicecco: ", STDERR_FILENO);
 		perror(cmd->path);
 		free(cmd->path);

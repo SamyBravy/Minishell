@@ -84,22 +84,22 @@ void	create_pipe_and_fork(t_input **input, t_cmd *cmd,
 	if (pipe(pipefd) == -1)
 	{
 		close(original_stdin);
-		free_and_exit(input, 1);
+		clean_and_exit(input, 1, NULL);
 	}
 	if (!only_one_cmd(*input) && cmd->fd_out == STDOUT_FILENO)
 		cmd->fd_out = pipefd[1];
 	*pid = fork();
-	if (*pid == -1 || *pid == 0)
-		close(original_stdin);
 	if (*pid == -1)
-		free_and_exit(input, 1);
+	{
+		close(original_stdin);
+		clean_and_exit(input, 1, pipefd);
+	}
 	if (*pid == 0)
 	{
+		close(original_stdin);
 		dup2(cmd->fd_in, STDIN_FILENO);
 		dup2(cmd->fd_out, STDOUT_FILENO);
-		close(pipefd[0]);
-		close(pipefd[1]);
-		exec_cmd(input, cmd);
+		exec_cmd(input, cmd, pipefd);
 	}
 	dup2(pipefd[0], STDIN_FILENO);
 	close(pipefd[0]);
@@ -123,7 +123,7 @@ void	executer(t_input **input, char **env, int *exit_status)
 		cmd.fd_out = STDOUT_FILENO;
 		open_block_files(*input, &cmd);
 		if (!i && only_one_cmd(*input) && which_builtin(*input) != INTERNAL)
-			*exit_status = exec_builtin(input, &cmd, 0);
+			*exit_status = exec_builtin(input, &cmd, NULL);
 		else if (i++ || TRUE)
 			create_pipe_and_fork(input, &cmd, original_stdin, &pid);
 		clean_block(input, 1);
