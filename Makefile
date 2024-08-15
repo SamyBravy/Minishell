@@ -24,7 +24,7 @@ SRC = 	main.c \
 		\
 		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c \
 		builtins/env_builtin.c
-FLAGS = -g -Wall -Wextra -Werror -lreadline
+FLAGS = -g -lreadline
 CC = cc
 
 all: $(NAME)

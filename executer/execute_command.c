@@ -65,7 +65,7 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 	return (0);
 }
 
-int	exec_builtin(t_input **input, t_cmd *cmd, int *pipefd)
+int	exec_builtin(t_input **input, t_cmd *cmd, int *pipefd, int *original_stdin)
 {
 	t_builtin	builtin;
 	char		**argv;
@@ -89,7 +89,7 @@ int	exec_builtin(t_input **input, t_cmd *cmd, int *pipefd)
 	else if (builtin == ENV)
 		exit_status = env_builtin(cmd->env);
 	if (builtin == EXIT)
-		exit_status = exit_builtin(argv, input, pipefd);
+		exit_status = exit_builtin(argv, input, pipefd, original_stdin);
 	return (ft_free_mat(argv), exit_status);
 }
 
@@ -108,29 +108,29 @@ static void	insert_null_char(char **argv)
 
 void	exec_cmd(t_input **input, t_cmd *cmd, int *pipefd)
 {
+	int	exit_status;
+
 	if (which_builtin(*input) != INTERNAL)
-		clean_and_exit(input, exec_builtin(input, cmd, pipefd), pipefd);
+		clean_and_exit(input, exec_builtin(input, cmd, pipefd, NULL), pipefd);
 	if (cmd->fd_in == -1)
 		clean_and_exit(input, 1, pipefd);
 	if (parse_internal_cmd(get_block_cmd(*input), cmd) == -1)
 		clean_and_exit(input, 127, pipefd);
 	insert_null_char(cmd->argv);
+	close_pipe(pipefd);
 	if (execve(cmd->path, cmd->argv, cmd->env) == -1)
 	{
-		close(pipefd[0]);
-		close(pipefd[1]);
 		ft_putstr_fd("minicecco: ", STDERR_FILENO);
 		perror(cmd->path);
 		free(cmd->path);
 		ft_free_mat(cmd->argv);
-		while (*input)
-			clean_block(input, 0);
+		exit_status = 1;
 		if (errno == ENOENT)
-			exit(127);
-		if (errno == EACCES || errno == ENOEXEC || errno == EISDIR
+			exit_status = 127;
+		else if (errno == EACCES || errno == ENOEXEC || errno == EISDIR
 			|| errno == ELOOP || errno == ENOTDIR || errno == EPERM
 			|| errno == EROFS || errno == ETXTBSY)
-			exit(126);
-		exit(1);
+			exit_status = 126;
+		clean_and_exit(input, exit_status, pipefd);
 	}
 }

@@ -25,7 +25,7 @@ int	main(int argc, char **argv, char **env)
 	input2->str = NULL;
 	input2->next = NULL;
 	input2->fd = -1;
-	
+
 	t_input *input3 = malloc(sizeof(t_input));
 	input3->type = INPUT;
 	input3->str = ft_strdup("input.txt");
@@ -35,17 +35,18 @@ int	main(int argc, char **argv, char **env)
 	input->next = input2;
 	input2->next = input3;
 
-	// Creazione e scrittura su file di input
 	FILE *file = fopen("input.txt", "w");
 	fprintf(file, "This is a test input\n file.\n");
 	fclose(file);
 
-	// Esecuzione del comando e gestione dello stato di uscita
 	int exit_status = 0;
+	//int tmp = dup(STDIN_FILENO); // questo va fatto nel parsing
+	//dup2(tmp, STDIN_FILENO); // questo va fatto nel parsing
+	//close(tmp); // questo va fatto nel parsing
 	executer(&input, env, &exit_status);
+	//close(STDIN_FILENO); // questo va fatto nel parsing
 	printf("Exit status: %d\n", exit_status);
 
-	// Pulizia dei file temporanei
 	unlink("input.txt");
 	unlink("output.txt");
 

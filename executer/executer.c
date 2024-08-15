@@ -102,8 +102,7 @@ void	create_pipe_and_fork(t_input **input, t_cmd *cmd,
 		exec_cmd(input, cmd, pipefd);
 	}
 	dup2(pipefd[0], STDIN_FILENO);
-	close(pipefd[0]);
-	close(pipefd[1]);
+	close_pipe(pipefd);
 }
 
 void	executer(t_input **input, char **env, int *exit_status)
@@ -115,6 +114,7 @@ void	executer(t_input **input, char **env, int *exit_status)
 
 	init_signals_and_heredocs(input, exit_status);
 	original_stdin = dup(STDIN_FILENO);
+	//close(STDIN_FILENO);	// non penso sia davvero necessario ma in caso si faccia, nel parsing bisogna mettere la roba che c'è nel main
 	cmd.env = env;
 	i = 0;
 	while (*input)
@@ -123,7 +123,7 @@ void	executer(t_input **input, char **env, int *exit_status)
 		cmd.fd_out = STDOUT_FILENO;
 		open_block_files(*input, &cmd);
 		if (!i && only_one_cmd(*input) && which_builtin(*input) != INTERNAL)
-			*exit_status = exec_builtin(input, &cmd, NULL);
+			*exit_status = exec_builtin(input, &cmd, NULL, &original_stdin);
 		else if (i++ || TRUE)
 			create_pipe_and_fork(input, &cmd, original_stdin, &pid);
 		clean_block(input, 1);

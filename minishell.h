@@ -77,8 +77,10 @@ void		executer(t_input **input, char **env, int *exit_status);
 void		create_heredocs(t_input *input);
 
 void		exec_cmd(t_input **input, t_cmd *cmd, int *pipefd);
-int			exec_builtin(t_input **input, t_cmd *cmd, int *pipefd);
+int			exec_builtin(t_input **input, t_cmd *cmd,
+				int *pipefd, int *original_stdin);
 
+void		close_pipe(int *pipefd);
 void		ft_free_mat(char **mat);
 void		clean_block(t_input **input, int unlink_heredoc);
 void		clean_and_exit(t_input **input, int exit_status, int *pipefd);
@@ -91,7 +93,8 @@ void		handle_sig_heredoc(int sig);
 void		handle_sig_execve(int sig);
 
 /* builtins */
-int			exit_builtin(char **argv, t_input **input, int *pipefd);
+int			exit_builtin(char **argv, t_input **input,
+				int *pipefd, int *original_stdin);
 
 int			echo_builtin(char **argv);
 

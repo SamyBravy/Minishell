@@ -47,6 +47,8 @@ static long long int	ft_long_long_atoi(const char *nptr)
 	int				n;
 	long long int	res;
 
+	if (!nptr)
+		return (0);
 	n = 0;
 	i = 1;
 	res = 0;
@@ -63,12 +65,13 @@ static long long int	ft_long_long_atoi(const char *nptr)
 	return (res * i);
 }
 
-int	exit_builtin(char **argv, t_input **input, int *pipefd)
+int	exit_builtin(char **argv, t_input **input, int *pipefd, int *original_stdin)
 {
 	long long int	exit_status;
 
 	if (!pipefd)
 		ft_putstr_fd("exit\n", STDERR_FILENO);
+	exit_status = ft_long_long_atoi(argv[1]);
 	if (!argv[1])
 		exit_status = 0;
 	else if (!is_number(argv[1]))
@@ -81,13 +84,12 @@ int	exit_builtin(char **argv, t_input **input, int *pipefd)
 	else if (argv[2])
 		return (ft_putstr_fd("minicecco: exit: too many arguments\n", 2), 1);
 	else
-	{
-		exit_status = ft_long_long_atoi(argv[1]);
 		if (exit_status < 0)
 			exit_status = 256 - ((-exit_status) % 256);
-		exit_status %= 256;
-	}
+	exit_status %= 256;
 	ft_free_mat(argv);
+	if (original_stdin)
+		close(*original_stdin);
 	clean_and_exit(input, exit_status, pipefd);
 	return (0);
 }

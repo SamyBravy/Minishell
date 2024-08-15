@@ -12,6 +12,16 @@
 
 #include "../minishell.h"
 
+void	close_pipe(int *pipefd)
+{
+	if (pipefd[0] != -1)
+		close(pipefd[0]);
+	if (pipefd[1] != -1)
+		close(pipefd[1]);
+	pipefd[0] = -1;
+	pipefd[1] = -1;
+}
+
 void	ft_free_mat(char **mat)
 {
 	int	i;
@@ -22,15 +32,6 @@ void	ft_free_mat(char **mat)
 	while (mat[i])
 		free(mat[i++]);
 	free(mat);
-}
-
-static void	remove_head(t_input **input)
-{
-	t_input	*tmp;
-
-	tmp = *input;
-	*input = (*input)->next;
-	free(tmp);
 }
 
 static void	close_block_fd(t_input *input)
@@ -50,26 +51,35 @@ static void	close_block_fd(t_input *input)
 
 void	clean_block(t_input **input, int unlink_heredoc)
 {
+	t_input	*tmp;
+
 	close_block_fd(*input);
 	while (*input && (*input)->type != PIPE)
 	{
 		if ((*input)->type == HEREDOC && unlink_heredoc)
 			unlink((*input)->str);
 		free((*input)->str);
-		remove_head(input);
+		tmp = *input;
+		*input = (*input)->next;
+		free(tmp);
 	}
 	if (*input && (*input)->type == PIPE)
-		remove_head(input);
+	{
+		tmp = *input;
+		*input = (*input)->next;
+		free(tmp);
+	}
 }
 
 void	clean_and_exit(t_input **input, int exit_status, int *pipefd)
 {
+	while (*input)
+		clean_block(input, pipefd == NULL);
 	if (pipefd)
 	{
-		close(pipefd[0]);
-		close(pipefd[1]);
+		close_pipe(pipefd);
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
 	}
-	while (*input)
-		clean_block(input, 0);
 	exit(exit_status);
 }
