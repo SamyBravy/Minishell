@@ -12,33 +12,65 @@
 
 #include "../minishell.h"
 
-static int	is_number(char *str)
+static int	only_spaces(char *str)
 {
 	int	i;
 
 	i = -1;
 	while (str[++i])
+		if (str[i] != ' ')
+			return (0);
+	return (1);
+}
+
+int	out_of_bounds(char *str)
+{
+	int	res;
+
+	str = ft_strtrim(str, " ");
+	res = 0;
+	if ((int)ft_strlen(str) > (19 + (str[0] != '-' || str[0] != '+')))
+		res = 1;
+	else if (ft_strlen(str) == 20 && str[0] == '+')
 	{
-		if (!ft_isdigit(str[i])
+		if (ft_strcmp(str, "+9223372036854775807") > 0)
+			res = 1;
+	}
+	else if (ft_strlen(str) == 20 && str[0] == '-')
+	{
+		if (ft_strcmp(str, "-9223372036854775808") > 0)
+			res = 1;
+	}
+	else if (ft_strlen(str) == 19)
+		if (ft_strcmp(str, "9223372036854775807") > 0)
+			res = 1;
+	free(str);
+	return (res);
+}
+
+static int	is_number(char *str)
+{
+	int		i;
+
+	while (str[0] == ' ')
+		str++;
+	i = -1;
+	while (str[++i])
+	{
+		if (!ft_isdigit(str[i]) && str[i] != ' '
 			&& !((str[i] == '-' || str[i] == '+') && i == 0))
 			return (0);
+		if (str[i] == ' ')
+		{
+			if (!only_spaces(str + i))
+				return (0);
+			else
+				break ;
+		}
 	}
 	if (i == 1 && (str[0] == '-' || str[0] == '+'))
 		return (0);
-	if (str[0] == '+')
-	{
-		if (ft_strcmp(str, "+9223372036854775807") > 0)
-			return (0);
-	}
-	else if (str[0] == '-')
-	{
-		if (ft_strcmp(str, "-9223372036854775808") > 0)
-			return (0);
-	}
-	else
-		if (ft_strcmp(str, "9223372036854775807") > 0)
-			return (0);
-	return (1);
+	return (!out_of_bounds(str));
 }
 
 static long long int	ft_long_long_atoi(const char *nptr)

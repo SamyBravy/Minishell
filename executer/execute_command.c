@@ -61,7 +61,7 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 			return (-1);
 		}
 	}
-	cmd->argv = ft_split(str_cmd, ' ');
+	cmd->argv = ft_split(str_cmd, '\x1D');
 	return (0);
 }
 
@@ -74,7 +74,7 @@ int	exec_builtin(t_input **input, t_cmd *cmd,
 
 	if (cmd->fd_in == -1)
 		return (1);
-	argv = ft_split(get_block_cmd(*input), ' ');
+	argv = ft_split(get_block_cmd(*input), '\x1D');
 	builtin = which_builtin(*input);
 	exit_status = 0;
 	if (builtin == ECHO)
@@ -84,9 +84,9 @@ int	exec_builtin(t_input **input, t_cmd *cmd,
 	else if (builtin == PWD)
 		exit_status = pwd_builtin();
 	/*else if (builtin == EXPORT)
-		exit_status = export_builtin(argv, env);
+		exit_status = export_builtin(argv, env);*/
 	else if (builtin == UNSET)
-		exit_status = unset_builtin(argv, env);*/
+		exit_status = unset_builtin(argv, env);
 	else if (builtin == ENV)
 		exit_status = env_builtin(env);
 	if (builtin == EXIT)

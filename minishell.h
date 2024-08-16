@@ -104,4 +104,6 @@ int			pwd_builtin(void);
 
 int			env_builtin(t_list **env);
 
+int			unset_builtin(char **argv, t_list **env);
+
 #endif

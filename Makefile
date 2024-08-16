@@ -11,6 +11,7 @@
 # **************************************************************************** #
 
 # "" e '' quando non sono attaccati a qualcosa sono sostituiti da \x1E (se sono attaccati solo tra loro si sostituisce tutto con \x1E)
+# gli argomenti dei comandi saranno separati, invece che da spazi, da \x1D, visto che gli spazi mi servono
 # tutti gli fd della struttura sono initializzati a -1
 # l'unica roba allocata che ci sarà quando viene chiamato l'executer sarà la lista passata all'executer e la lista env
 # si alloca una stringa per ogni nodo della lista, tranne nel caso in cui type è PIPE, in quel caso str = NULL
@@ -24,7 +25,7 @@ SRC = 	main.c \
 		executer/get_cmd_info.c executer/ft_heredocs.c executer/execute_command.c \
 		\
 		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c \
-		builtins/env_builtin.c
+		builtins/env_builtin.c builtins/unset_builtin.c
 FLAGS = -g -Wall -Wextra -Werror -lreadline
 CC = cc
 
