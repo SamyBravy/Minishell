@@ -65,7 +65,8 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 	return (0);
 }
 
-int	exec_builtin(t_input **input, t_cmd *cmd, int *pipefd, int *original_stdin)
+int	exec_builtin(t_input **input, t_cmd *cmd,
+	t_int_list **pipes_stdin_fds, t_list **env)
 {
 	t_builtin	builtin;
 	char		**argv;
@@ -79,17 +80,17 @@ int	exec_builtin(t_input **input, t_cmd *cmd, int *pipefd, int *original_stdin)
 	if (builtin == ECHO)
 		exit_status = echo_builtin(argv);
 	/*else if (builtin == CD)
-		exit_status = cd_builtin(argv);*/
+		exit_status = cd_builtin(argv, env);*/
 	else if (builtin == PWD)
 		exit_status = pwd_builtin();
 	/*else if (builtin == EXPORT)
-		exit_status = export_builtin(argv, cmd->env);
+		exit_status = export_builtin(argv, env);
 	else if (builtin == UNSET)
-		exit_status = unset_builtin(argv, cmd->env);*/
+		exit_status = unset_builtin(argv, env);*/
 	else if (builtin == ENV)
-		exit_status = env_builtin(cmd->env);
+		exit_status = env_builtin(env);
 	if (builtin == EXIT)
-		exit_status = exit_builtin(argv, input, pipefd, original_stdin);
+		exit_status = exit_builtin(argv, input, env, pipes_stdin_fds);
 	return (ft_free_mat(argv), exit_status);
 }
 
@@ -106,31 +107,31 @@ static void	insert_null_char(char **argv)
 	}
 }
 
-void	exec_cmd(t_input **input, t_cmd *cmd, int *pipefd)
+void	exec_cmd(t_input **input, t_cmd *cmd, t_list **env)
 {
 	int	exit_status;
 
 	if (which_builtin(*input) != INTERNAL)
-		clean_and_exit(input, exec_builtin(input, cmd, pipefd, NULL), pipefd);
+		clean_and_exit(input, env, exec_builtin(input, cmd, NULL, env), 1);
 	if (cmd->fd_in == -1)
-		clean_and_exit(input, 1, pipefd);
+		clean_and_exit(input, env, 1, 1);
 	if (parse_internal_cmd(get_block_cmd(*input), cmd) == -1)
-		clean_and_exit(input, 127, pipefd);
+		clean_and_exit(input, env, 127, 1);
 	insert_null_char(cmd->argv);
-	close_pipe(pipefd);
+	cmd->env = ft_lst_to_matrix(*env);
 	if (execve(cmd->path, cmd->argv, cmd->env) == -1)
 	{
 		ft_putstr_fd("minicecco: ", STDERR_FILENO);
 		perror(cmd->path);
 		free(cmd->path);
 		ft_free_mat(cmd->argv);
+		ft_free_mat(cmd->env);
 		exit_status = 1;
-		if (errno == ENOENT)
+		if (errno == 2)
 			exit_status = 127;
-		else if (errno == EACCES || errno == ENOEXEC || errno == EISDIR
-			|| errno == ELOOP || errno == ENOTDIR || errno == EPERM
-			|| errno == EROFS || errno == ETXTBSY)
+		if (errno == 13 || errno == 8 || errno == 21 || errno == 40 || errno
+			== 20 || errno == 1 || errno == 30 || errno == 26 || errno == 16)
 			exit_status = 126;
-		clean_and_exit(input, exit_status, pipefd);
+		clean_and_exit(input, env, exit_status, 1);
 	}
 }

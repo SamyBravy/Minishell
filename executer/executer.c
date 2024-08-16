@@ -41,7 +41,7 @@ static void	open_block_files(t_input *input, t_cmd *cmd)
 	}
 }
 
-void	init_signals_and_heredocs(t_input **input, int *exit_status)
+static void	init_signals_and_heredocs(t_input **input, int *exit_status)
 {
 	g_signal = 0;
 	signal(SIGINT, handle_sig_heredoc);
@@ -58,7 +58,7 @@ void	init_signals_and_heredocs(t_input **input, int *exit_status)
 	signal(SIGQUIT, handle_sig_execve);
 }
 
-void	set_exit_status(int i, int pid, int *exit_status)
+static void	set_exit_status(int i, int pid, int *exit_status)
 {
 	if (i--)
 	{
@@ -76,46 +76,46 @@ void	set_exit_status(int i, int pid, int *exit_status)
 		waitpid(-1, NULL, 0);
 }
 
-void	create_pipe_and_fork(t_input **input, t_cmd *cmd,
-	int original_stdin, int *pid)
+static int	create_pipe_and_fork(t_input **input, t_cmd *cmd, t_list **env,
+	t_int_list **pipes_stdin_fds)
 {
+	int	pid;
 	int	pipefd[2];
 
 	if (pipe(pipefd) == -1)
-	{
-		close(original_stdin);
-		clean_and_exit(input, 1, NULL);
-	}
+		exit_error(input, env, pipes_stdin_fds);
+	ft_lstadd_back_int(pipes_stdin_fds, pipefd[0]);
 	if (!only_one_cmd(*input) && cmd->fd_out == STDOUT_FILENO)
 		cmd->fd_out = pipefd[1];
-	*pid = fork();
-	if (*pid == -1)
+	pid = fork();
+	if (pid == -1)
 	{
-		close(original_stdin);
-		clean_and_exit(input, 1, pipefd);
+		close(pipefd[1]);
+		exit_error(input, env, pipes_stdin_fds);
 	}
-	if (*pid == 0)
+	if (pid == 0)
 	{
-		close(original_stdin);
 		dup2(cmd->fd_in, STDIN_FILENO);
 		dup2(cmd->fd_out, STDOUT_FILENO);
-		exec_cmd(input, cmd, pipefd);
+		close(pipefd[1]);
+		clean_int_list(pipes_stdin_fds);
+		exec_cmd(input, cmd, env);
 	}
 	dup2(pipefd[0], STDIN_FILENO);
-	close_pipe(pipefd);
+	close(pipefd[1]);
+	return (pid);
 }
 
-void	executer(t_input **input, char **env, int *exit_status)
+void	executer(t_input **input, t_list **env, int *exit_status)
 {
-	int		i;
-	int		pid;
-	int		original_stdin;
-	t_cmd	cmd;
+	int			i;
+	int			pid;
+	t_int_list	*pipes_stdin_fds;
+	t_cmd		cmd;
 
 	init_signals_and_heredocs(input, exit_status);
-	original_stdin = dup(STDIN_FILENO);
+	pipes_stdin_fds = ft_new_intlst(dup(STDIN_FILENO));
 	//close(STDIN_FILENO);	// non penso sia davvero necessario ma in caso si faccia, nel parsing bisogna mettere la roba che c'è nel main
-	cmd.env = env;
 	i = 0;
 	while (*input)
 	{
@@ -123,12 +123,12 @@ void	executer(t_input **input, char **env, int *exit_status)
 		cmd.fd_out = STDOUT_FILENO;
 		open_block_files(*input, &cmd);
 		if (!i && only_one_cmd(*input) && which_builtin(*input) != INTERNAL)
-			*exit_status = exec_builtin(input, &cmd, NULL, &original_stdin);
+			*exit_status = exec_builtin(input, &cmd, &pipes_stdin_fds, env);
 		else if (i++ || TRUE)
-			create_pipe_and_fork(input, &cmd, original_stdin, &pid);
+			pid = create_pipe_and_fork(input, &cmd, env, &pipes_stdin_fds);
 		clean_block(input, 1);
 	}
 	set_exit_status(i, pid, exit_status);
-	dup2(original_stdin, STDIN_FILENO);
-	close(original_stdin);
+	dup2(pipes_stdin_fds->content, STDIN_FILENO);
+	clean_int_list(&pipes_stdin_fds);
 }

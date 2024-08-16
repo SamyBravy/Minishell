@@ -1,19 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_builtin.c                                      :+:      :+:    :+:   */
+/*   ft_new_intlst.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/14 17:35:05 by marvin            #+#    #+#             */
-/*   Updated: 2024/08/14 17:35:05 by marvin           ###   ########.fr       */
+/*   Created: 2024/08/15 11:33:06 by sdell-er          #+#    #+#             */
+/*   Updated: 2024/08/15 11:32:06 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-int	env_builtin(t_list **env)
+t_int_list	*ft_new_intlst(int value)
 {
-	(void) env;
-	return (0);
+	t_int_list	*new;
+
+	new = (t_int_list *)malloc(sizeof(t_int_list));
+	if (!new)
+		return (NULL);
+	new->content = value;
+	new->next = NULL;
+	return (new);
 }

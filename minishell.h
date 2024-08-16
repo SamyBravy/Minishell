@@ -72,18 +72,20 @@ typedef struct s_cmd
 int	g_signal;
 
 /* executer */
-void		executer(t_input **input, char **env, int *exit_status);
+void		executer(t_input **input, t_list **env, int *exit_status);
 
 void		create_heredocs(t_input *input);
 
-void		exec_cmd(t_input **input, t_cmd *cmd, int *pipefd);
+void		exec_cmd(t_input **input, t_cmd *cmd, t_list **env);
 int			exec_builtin(t_input **input, t_cmd *cmd,
-				int *pipefd, int *original_stdin);
+				t_int_list **pipes_stdin_fds, t_list **env);
 
-void		close_pipe(int *pipefd);
-void		ft_free_mat(char **mat);
+void		exit_error(t_input **input, t_list **env,
+				t_int_list **pipes_stdin_fds);
+void		clean_int_list(t_int_list **lst);
 void		clean_block(t_input **input, int unlink_heredoc);
-void		clean_and_exit(t_input **input, int exit_status, int *pipefd);
+void		clean_and_exit(t_input **input, t_list **env, int exit_status,
+				int forked);
 
 t_builtin	which_builtin(t_input *input);
 char		*get_block_cmd(t_input *input);
@@ -93,13 +95,13 @@ void		handle_sig_heredoc(int sig);
 void		handle_sig_execve(int sig);
 
 /* builtins */
-int			exit_builtin(char **argv, t_input **input,
-				int *pipefd, int *original_stdin);
+int			exit_builtin(char **argv, t_input **input, t_list **env,
+				t_int_list **pipes_stdin_fds);
 
 int			echo_builtin(char **argv);
 
 int			pwd_builtin(void);
 
-int			env_builtin(char **env);
+int			env_builtin(t_list **env);
 
 #endif

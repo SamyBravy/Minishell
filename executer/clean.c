@@ -12,26 +12,23 @@
 
 #include "../minishell.h"
 
-void	close_pipe(int *pipefd)
+void	exit_error(t_input **input, t_list **env, t_int_list **pipes_stdin_fds)
 {
-	if (pipefd[0] != -1)
-		close(pipefd[0]);
-	if (pipefd[1] != -1)
-		close(pipefd[1]);
-	pipefd[0] = -1;
-	pipefd[1] = -1;
+	clean_int_list(pipes_stdin_fds);
+	clean_and_exit(input, env, 1, 0);
 }
 
-void	ft_free_mat(char **mat)
+void	clean_int_list(t_int_list **lst)
 {
-	int	i;
+	t_int_list	*tmp;
 
-	if (!mat)
-		return ;
-	i = 0;
-	while (mat[i])
-		free(mat[i++]);
-	free(mat);
+	while (*lst)
+	{
+		close((*lst)->content);
+		tmp = *lst;
+		*lst = (*lst)->next;
+		free(tmp);
+	}
 }
 
 static void	close_block_fd(t_input *input)
@@ -71,15 +68,16 @@ void	clean_block(t_input **input, int unlink_heredoc)
 	}
 }
 
-void	clean_and_exit(t_input **input, int exit_status, int *pipefd)
+void	clean_and_exit(t_input **input, t_list **env, int exit_status,
+	int forked)
 {
 	while (*input)
-		clean_block(input, pipefd == NULL);
-	if (pipefd)
+		clean_block(input, !forked);
+	if (forked)
 	{
-		close_pipe(pipefd);
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);
 	}
+	ft_lstclear(env, free);
 	exit(exit_status);
 }

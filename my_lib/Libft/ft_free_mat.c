@@ -1,19 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_builtin.c                                      :+:      :+:    :+:   */
+/*   ft_free_mat.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/14 17:35:05 by marvin            #+#    #+#             */
-/*   Updated: 2024/08/14 17:35:05 by marvin           ###   ########.fr       */
+/*   Created: 2024/08/15 11:33:06 by sdell-er          #+#    #+#             */
+/*   Updated: 2024/08/15 11:32:06 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "libft.h"
 
-int	env_builtin(t_list **env)
+void	ft_free_mat(char **mat)
 {
-	(void) env;
-	return (0);
+	int	i;
+
+	if (!mat)
+		return ;
+	i = 0;
+	while (mat[i])
+		free(mat[i++]);
+	free(mat);
 }

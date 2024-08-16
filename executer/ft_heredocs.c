@@ -29,12 +29,15 @@ static void	read_heredoc(int fd, char *eof)
 {
 	char	*line;
 
+	if (eof[0] == '\x1E')
+		eof[0] = '\0';
 	while (1)
 	{
 		ft_putstr_fd("> ", STDOUT_FILENO);
 		line = get_next_line(STDIN_FILENO);
 		if (g_signal == SIGINT || !line
-			|| !ft_strncmp(line, eof, ft_strlen(eof)))
+			|| (!ft_strncmp(line, eof, ft_strlen(eof))
+				&& line[ft_strlen(eof)] == '\n'))
 		{
 			if (line)
 				free(line);
@@ -60,7 +63,6 @@ void	create_heredocs(t_input *input)
 		if (input->type == HEREDOC)
 		{
 			eof = input->str;
-			input->fd = -1;
 			while (input->fd == -1)
 			{
 				input->str = unique_name();

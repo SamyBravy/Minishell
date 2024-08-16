@@ -15,8 +15,8 @@
 int	main(int argc, char **argv, char **env)
 {
 	t_input *input = malloc(sizeof(t_input));
-	input->type = CMD;
-	input->str = ft_strdup("echo ciao");
+	input->type = INPUT;
+	input->str = ft_strdup("ciao");
 	input->next = NULL;
 	input->fd = -1;
 
@@ -27,8 +27,8 @@ int	main(int argc, char **argv, char **env)
 	input2->fd = -1;
 
 	t_input *input3 = malloc(sizeof(t_input));
-	input3->type = INPUT;
-	input3->str = ft_strdup("input.txt");
+	input3->type = CMD;
+	input3->str = ft_strdup("grep e");
 	input3->next = NULL;
 	input3->fd = -1;
 
@@ -43,7 +43,10 @@ int	main(int argc, char **argv, char **env)
 	//int tmp = dup(STDIN_FILENO); // questo va fatto nel parsing
 	//dup2(tmp, STDIN_FILENO); // questo va fatto nel parsing
 	//close(tmp); // questo va fatto nel parsing
-	executer(&input, env, &exit_status);
+	t_list *lst_env = ft_matrix_to_lst(env);
+	executer(&input, &lst_env, &exit_status);
+	ft_lstclear(&lst_env, free);
+	
 	//close(STDIN_FILENO); // questo va fatto nel parsing
 	printf("Exit status: %d\n", exit_status);
 
