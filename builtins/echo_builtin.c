@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int	number_of_flags(char **argv)
+static int	number_of_flags(char **argv)
 {
 	int	i;
 	int	j;

@@ -23,7 +23,7 @@ static int	only_spaces(char *str)
 	return (1);
 }
 
-int	out_of_bounds(char *str)
+static int	out_of_bounds(char *str)
 {
 	int	res;
 

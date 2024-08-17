@@ -95,6 +95,7 @@ t_list		*ft_lstnew(void *content);
 t_list		*ft_lstlast(t_list *lst);
 t_list		*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 t_list		*ft_matrix_to_lst(char **matrix);
+t_list		*ft_lstclone(t_list *lst);
 
 t_int_list	*ft_new_intlst(int value);
 

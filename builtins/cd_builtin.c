@@ -1,36 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unset_builtin.c                                    :+:      :+:    :+:   */
+/*   cd_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/16 19:12:08 by marvin            #+#    #+#             */
-/*   Updated: 2024/08/16 19:12:08 by marvin           ###   ########.fr       */
+/*   Created: 2024/08/17 17:23:01 by marvin            #+#    #+#             */
+/*   Updated: 2024/08/17 17:23:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	unset_builtin(char **argv, t_list **env)
+int	cd_builtin(char **argv, t_list **env)
 {
-	int	i;
-	int	exit_status;
-
-	exit_status = 0;
-	i = 1;
-	while (argv[i])
-	{
-		if (!is_valid_identifier(argv[i]))
-		{
-			ft_putstr_fd("minicecco: unset: `", STDERR_FILENO);
-			ft_putstr_fd(argv[i], STDERR_FILENO);
-			ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-			exit_status = 1;
-		}
-		else
-			lst_remove_key(env, argv[i]);
-		i++;
-	}
-	return (exit_status);
+	(void) env;
+	(void) argv;
+	return (0);
 }

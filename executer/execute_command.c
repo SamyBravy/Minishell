@@ -12,16 +12,16 @@
 
 #include "../minishell.h"
 
-static char	*realloc_with_path(char *path)
+static char	*realloc_with_path(char *path, t_list *env)
 {
 	char	*cmd_name;
 	char	**possible_paths;
 	char	*tmp;
 	int		i;
 
-	if (!getenv("PATH"))
+	if (!ft_getenv("PATH", env))
 		return (free(path), NULL);
-	possible_paths = ft_split(getenv("PATH"), ':');
+	possible_paths = ft_split(ft_getenv("PATH", env), ':');
 	cmd_name = path;
 	i = -1;
 	while (possible_paths[++i])
@@ -41,7 +41,7 @@ static char	*realloc_with_path(char *path)
 	return (free(cmd_name), NULL);
 }
 
-static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
+static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd, t_list *env)
 {
 	int		len;
 
@@ -51,7 +51,7 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 	cmd->path = ft_substr(str_cmd, 0, len);
 	if (!strchr(cmd->path, '/'))
 	{
-		cmd->path = realloc_with_path(cmd->path);
+		cmd->path = realloc_with_path(cmd->path, env);
 		if (!cmd->path)
 		{
 			ft_putstr_fd("minicecco: ", STDERR_FILENO);
@@ -79,12 +79,12 @@ int	exec_builtin(t_input **input, t_cmd *cmd,
 	exit_status = 0;
 	if (builtin == ECHO)
 		exit_status = echo_builtin(argv);
-	/*else if (builtin == CD)
-		exit_status = cd_builtin(argv, env);*/
+	else if (builtin == CD)
+		exit_status = cd_builtin(argv, env);
 	else if (builtin == PWD)
 		exit_status = pwd_builtin();
-	/*else if (builtin == EXPORT)
-		exit_status = export_builtin(argv, env);*/
+	else if (builtin == EXPORT)
+		exit_status = export_builtin(argv, env);
 	else if (builtin == UNSET)
 		exit_status = unset_builtin(argv, env);
 	else if (builtin == ENV)
@@ -115,7 +115,7 @@ void	exec_cmd(t_input **input, t_cmd *cmd, t_list **env)
 		clean_and_exit(input, env, exec_builtin(input, cmd, NULL, env), 1);
 	if (cmd->fd_in == -1)
 		clean_and_exit(input, env, 1, 1);
-	if (parse_internal_cmd(get_block_cmd(*input), cmd) == -1)
+	if (parse_internal_cmd(get_block_cmd(*input), cmd, *env) == -1)
 		clean_and_exit(input, env, 127, 1);
 	insert_null_char(cmd->argv);
 	cmd->env = ft_lst_to_matrix(*env);
