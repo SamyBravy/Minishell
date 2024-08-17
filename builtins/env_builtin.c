@@ -12,8 +12,13 @@
 
 #include "../minishell.h"
 
-int	env_builtin(t_list **env)
+int	env_builtin(t_list *env)
 {
-	(void) env;
+	while (env)
+	{
+		if (ft_strchr(env->content, '='))
+			ft_printf("%s\n", (char *)env->content);
+		env = env->next;
+	}
 	return (0);
 }

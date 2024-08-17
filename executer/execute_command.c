@@ -46,8 +46,8 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd)
 	int		len;
 
 	len = ft_strlen(str_cmd);
-	if (strchr(str_cmd, ' '))
-		len = ft_strchr(str_cmd, ' ') - str_cmd;
+	if (strchr(str_cmd, '\x1D'))
+		len = ft_strchr(str_cmd, '\x1D') - str_cmd;
 	cmd->path = ft_substr(str_cmd, 0, len);
 	if (!strchr(cmd->path, '/'))
 	{
@@ -88,7 +88,7 @@ int	exec_builtin(t_input **input, t_cmd *cmd,
 	else if (builtin == UNSET)
 		exit_status = unset_builtin(argv, env);
 	else if (builtin == ENV)
-		exit_status = env_builtin(env);
+		exit_status = env_builtin(*env);
 	if (builtin == EXIT)
 		exit_status = exit_builtin(argv, input, env, pipes_stdin_fds);
 	return (ft_free_mat(argv), exit_status);
