@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-/* La funzione alloca i content nella nuova lista */
+/* La funzione alloca i content nella nuova lista, forse dà memory leaks */
 t_list	*ft_lstclone(t_list *lst)
 {
 	t_list	*new_lst;

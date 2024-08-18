@@ -112,8 +112,9 @@ int			cd_builtin(char **argv, t_list **env);
 
 /* env_utils */
 char		*ft_getenv(char *key, t_list *env);
-int			is_valid_identifier(char *str);
 char		*get_key(char *str);
+int			ft_export(char *str, t_list **env);
+int			is_valid_identifier(char *str);
 void		lst_remove_key(t_list **env, char *key);
 
 #endif

@@ -14,22 +14,49 @@
 
 char	*ft_getenv(char *key, t_list *env)
 {
-	char	*identifier;
+	char	*current_key;
 	char	*value;
 
 	while (env)
 	{
-		identifier = get_key(env->content);
-		if (!ft_strcmp(identifier, key))
+		current_key = get_key(env->content);
+		if (!ft_strcmp(current_key, key))
 		{
-			value = ft_strchr(env->content, '=') + 1;
-			free(identifier);
+			if (ft_strchr(env->content, '=') == NULL)
+				value = ft_strchr(env->content, '\0');
+			else
+				value = ft_strchr(env->content, '=') + 1;
+			free(current_key);
 			return (value);
 		}
-		free(identifier);
+		free(current_key);
 		env = env->next;
 	}
 	return (NULL);
+}
+
+int	ft_export(char *str, t_list **env)
+{
+	char	*key;
+
+	key = get_key(str);
+	if (is_valid_identifier(key) && !(key[0] == '_' && key[1] == '\0'))
+	{
+		if (ft_strchr(str, '=') != NULL)
+			lst_remove_key(env, key);
+		if (ft_getenv(key, *env) == NULL)
+			ft_lstadd_back(env, ft_lstnew(ft_strdup(str)));
+	}
+	else if (!(key[0] == '_' && key[1] == '\0'))
+	{
+		ft_putstr_fd("minicecco: export: `", STDERR_FILENO);
+		ft_putstr_fd(key, STDERR_FILENO);
+		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+		free(key);
+		return (1);
+	}
+	free(key);
+	return (0);
 }
 
 void	lst_remove_key(t_list **env, char *key)

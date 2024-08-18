@@ -16,43 +16,36 @@ int	main(int argc, char **argv, char **env)
 {
 	t_input *input = malloc(sizeof(t_input));
 	input->type = CMD;
-	input->str = ft_strjoin("unset\x1D", "PWD");
+	input->str = ft_strdup("cd\x1D..");
 	input->next = NULL;
 	input->fd = -1;
 
-	t_input *input2 = malloc(sizeof(t_input));
-	input2->type = PIPE;
-	input2->str = NULL;
-	input2->next = NULL;
-	input2->fd = -1;
 
-	t_input *input3 = malloc(sizeof(t_input));
-	input3->type = CMD;
-	input3->str = ft_strdup("env");	
-	input3->next = NULL;
-	input3->fd = -1;
-
-	input->next = input2;
-	input2->next = input3;
-
-
-	FILE *file = fopen("input.txt", "w");
-	fprintf(file, "This is a test input\n file.\n");
-	fclose(file);
+	//FILE *file = fopen("input.txt", "w");
+	//fprintf(file, "This is a test input\n file.\n");
+	//fclose(file);
 
 	int exit_status = 0;
 	//int tmp = dup(STDIN_FILENO); // questo va fatto nel parsing
 	//dup2(tmp, STDIN_FILENO); // questo va fatto nel parsing
 	//close(tmp); // questo va fatto nel parsing
 	t_list *lst_env = ft_matrix_to_lst(env);
+	if (ft_getenv("OLDPWD", lst_env) == NULL)
+		ft_export("OLDPWD", &lst_env);
 	executer(&input, &lst_env, &exit_status);
+	ft_printf("PWD: %s\n", ft_getenv("PWD", lst_env));
+	ft_printf("OLDPWD: %s\n", ft_getenv("OLDPWD", lst_env));
 	ft_lstclear(&lst_env, free);
+
+	char cwd[PATH_MAX];
+	getcwd(cwd, sizeof(cwd));
+	printf("Current working dir: %s\n", cwd);
 	
 	//close(STDIN_FILENO); // questo va fatto nel parsing
 	printf("Exit status: %d\n", exit_status);
 
-	unlink("input.txt");
-	unlink("output.txt");
+	//unlink("input.txt");
+	//unlink("output.txt");
 
 	(void) argc;
 	(void) argv;
