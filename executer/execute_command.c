@@ -54,7 +54,6 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd, t_list *env)
 		cmd->path = realloc_with_path(cmd->path, env);
 		if (!cmd->path)
 		{
-			ft_putstr_fd("minicecco: ", STDERR_FILENO);
 			write(2, str_cmd, len);
 			ft_putstr_fd(": command not found\n", STDERR_FILENO);
 			cmd->argv = NULL;
