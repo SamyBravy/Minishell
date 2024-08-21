@@ -56,9 +56,6 @@ int	cd_builtin(char **argv, t_list **env)
 			return (ft_putstr_fd("minicecco: cd: OLDPWD not set\n", 2), 1);
 		new_path = ft_strdup(ft_getenv("OLDPWD", *env));
 	}
-	else if ((argv[1][0] == '~' && (argv[1][1] == '/' || argv[1][1] == '\0'))
-		&& ft_getenv("HOME", *env) != NULL)
-		new_path = ft_strjoin(ft_getenv("HOME", *env), argv[1] + 1);
 	else
 		new_path = ft_strdup(argv[1]);
 	return (change_directory(new_path, argv[1], env));
