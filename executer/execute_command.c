@@ -118,7 +118,7 @@ void	exec_cmd(t_input **input, t_cmd *cmd, t_list **env)
 		clean_and_exit(input, env, 127, 1);
 	insert_null_char(cmd->argv);
 	cmd->env = ft_lst_to_matrix(*env);
-	if (execve(cmd->path, cmd->argv, cmd->env) == -1)
+	if (clean_block(input, 0), execve(cmd->path, cmd->argv, cmd->env) == -1)
 	{
 		ft_putstr_fd("minicecco: ", STDERR_FILENO);
 		perror(cmd->path);

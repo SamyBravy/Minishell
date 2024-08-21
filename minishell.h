@@ -23,7 +23,7 @@
 # include <sys/wait.h>
 # include <sys/ioctl.h>
 # include <readline/readline.h>
-#include <readline/history.h>
+# include <readline/history.h>
 # include "my_lib/Libft/libft.h"
 # include "my_lib/ft_printf/ft_printf.h"
 # include "my_lib/get_next_line/get_next_line_bonus.h"
@@ -87,6 +87,7 @@ void		clean_int_list(t_int_list **lst);
 void		clean_block(t_input **input, int unlink_heredoc);
 void		clean_and_exit(t_input **input, t_list **env, int exit_status,
 				int forked);
+void		close_block_fd(t_input *input);
 
 t_builtin	which_builtin(t_input *input);
 char		*get_block_cmd(t_input *input);

@@ -19,3 +19,146 @@ export | grep CIAO
 unset CIAO
 export | grep CIAO
 exit 98
+/bin/ls
+    
+    
+"     "
+ls > out
+cat < out
+ls >> out
+cat < out
+cat out
+ls >> out
+cat < out
+ls >> out
+cat < out
+cat < oute
+<< here1 cat <<here2 -e
+exit
+ls > out
+exit
+here << cat
+here << cat cat -e
+cat << here
+make re
+cat << here
+exit
+ok
+ls
+rm out
+ls
+echo ciao
+echo ciao | grep a
+exit -2
+ok
+echo cuai
+echo aucis | cat
+echo aucis | grep 
+echo aucis | grep  e
+exit | cat
+ls
+cd ..
+ls
+exit
+ls | cat
+cat << here
+cat << here
+exit
+cat << here
+cat << here -e << here2
+cat << here
+cat << here -e << here2
+cat << here << here2
+exit
+ok
+ok
+ok
+cat
+ls
+ok
+make re
+ok
+cat echo ciao
+ok
+ls << here << here2
+exit
+ok
+ok
+cat << here << here2
+exit
+ls >> ciao > ok
+ls
+cat ciao
+cat ok
+rm ciao ok
+env
+export CIAO=2
+env | grep CIAO
+export cac
+env | grep ca
+env | grep cac
+export HOME=)
+env | grep HOM
+export | grep HOM
+export | grep cac
+echo
+echo -n
+echo -n ciao -n
+echo -nnnnnnnn -n ciao -n
+echo -nnnnnnd ok
+echo -nnnnnnd ok ciao nonna
+echo -nnnnnnd ok ciao nonna           bella
+unset PATh
+env | grep PA
+unset PATH
+env | grep PA
+ls
+echo ciao
+export PATH=dir1:dir2
+ls
+kfdn
+ls
+dsbksdgbksdghsd
+cat | car
+exit
+cat | cat | ls
+cat | cat | ls
+ls | cat | cat | cat | grep m | cat | wc -l
+ls | cat | cat | cat | grep m | cat 
+exit ok
+exit 2 2w
+exit d
+exit 21321
+ls filethatdoesntexist | grep bla | more
+cat
+cat
+cat
+.d
+d
+cat
+cat
+pwd
+cd ..
+/bin/ls filethatdoesntexist
+echo $USER
+cd .
+cd ..
+cd Makefile 
+cd E
+exit
+ok
+ls
+exit
+cat << here | wc -l
+norminette
+ok
+/shf
+d/shf
+ls/dj
+ls
+exit
+kwmn
+echo $?
+exit sdkjf
+j
+exit

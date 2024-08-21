@@ -31,7 +31,7 @@ void	clean_int_list(t_int_list **lst)
 	}
 }
 
-static void	close_block_fd(t_input *input)
+void	close_block_fd(t_input *input)
 {
 	while (input && input->type != PIPE)
 	{
@@ -71,7 +71,7 @@ void	clean_block(t_input **input, int unlink_heredoc)
 void	clean_and_exit(t_input **input, t_list **env, int exit_status,
 	int forked)
 {
-	while (*input)
+	while (input && *input)
 		clean_block(input, !forked);
 	if (forked)
 	{

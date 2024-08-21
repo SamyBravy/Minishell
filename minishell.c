@@ -207,7 +207,10 @@ int main(int argc, char **argv, char **env)
     (void)argv;
     read_history(".tmp/.history.txt");
     lst_env = ft_matrix_to_lst(env);
-    while (1)
+    //int tmp = dup(STDIN_FILENO); // per avere tutto perfettamente pulito
+	//dup2(tmp, STDIN_FILENO); // per avere tutto perfettamente pulito
+	//close(tmp); // per avere tutto perfettamente pulito
+    while (TRUE)
     {
         input = readline("minicecco> ");
         while (is_quote_balanced(input) == -1)
@@ -231,6 +234,7 @@ int main(int argc, char **argv, char **env)
         tokens = tokenize(input);
         executer(&tokens, &lst_env, &exit_status);
     }
+    //close(STDIN_FILENO); // per avere tutto perfettamente pulito
 	ft_lstclear(&lst_env, free);
 
     return 0;

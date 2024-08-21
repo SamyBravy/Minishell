@@ -115,7 +115,7 @@ void	executer(t_input **input, t_list **env, int *exit_status)
 
 	init_signals_and_heredocs(input, exit_status);
 	pipes_stdin_fds = ft_new_intlst(dup(STDIN_FILENO));
-	//close(STDIN_FILENO);	// non penso sia davvero necessario ma in caso si faccia, nel parsing bisogna mettere la roba che c'è nel main
+	//close(STDIN_FILENO);	// per avere tutto perfettamente pulito (non funziona se la metto)
 	i = 0;
 	while (*input)
 	{
