@@ -162,3 +162,10 @@ echo $?
 exit sdkjf
 j
 exit
+cd -
+cd ..
+cd -
+export | grep PWD
+exit
+cd -
+exit

@@ -18,7 +18,6 @@
 # si alloca una stringa per ogni nodo della lista, tranne nel caso in cui type è PIPE, in quel caso str = NULL
 # la funzione ft_getenv restituisce una stringa non allocata e funziona come la funzione getenv
 # env sarà contenuta in una lista di tipo t_list, per crearla si userà la funzione ft_matrix_to_lst, quanto terminerà il programma si farà il free della lista con ft_lstclear(&lst_env, free);
-# Cecco solo all'inizio del programma, dopo aver fatto diventare env una lista, dovrebbe fare if (ft_getenv("OLDPWD", lst_env) == NULL) { ft_export("OLDPWD", env); } Ma non penso sia così necessario
 # valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp --trace-children=yes --track-fds=yes ./minishell
 NAME = minishell
 MY_LIB = ./my_lib

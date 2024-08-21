@@ -44,8 +44,6 @@ int	main(int argc, char **argv, char **env)
 	dup2(tmp, STDIN_FILENO); // questo va fatto nel parsing
 	close(tmp); // questo va fatto nel parsing
 	t_list *lst_env = ft_matrix_to_lst(env);
-	if (ft_getenv("OLDPWD", lst_env) == NULL)	// in realtà no
-		ft_export("OLDPWD", &lst_env);
 	executer(&input, &lst_env, &exit_status);
 	ft_lstclear(&lst_env, free);
 	
