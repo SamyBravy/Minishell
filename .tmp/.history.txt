@@ -1,0 +1,21 @@
+ciao
+ok
+exit
+ciao |
+ciao '
+vorrei
+
+'
+git status
+make fclean
+export CIAO
+env | grep CIAO
+export | grep CIAO
+unset CIAO
+export | grep CIAO
+exit
+export CIAO
+export | grep CIAO
+unset CIAO
+export | grep CIAO
+exit 98

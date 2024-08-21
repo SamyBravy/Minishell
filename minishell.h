@@ -23,6 +23,7 @@
 # include <sys/wait.h>
 # include <sys/ioctl.h>
 # include <readline/readline.h>
+#include <readline/history.h>
 # include "my_lib/Libft/libft.h"
 # include "my_lib/ft_printf/ft_printf.h"
 # include "my_lib/get_next_line/get_next_line_bonus.h"

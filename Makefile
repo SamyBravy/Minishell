@@ -22,7 +22,7 @@
 # valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp --trace-children=yes --track-fds=yes ./minishell
 NAME = minishell
 MY_LIB = ./my_lib
-SRC = 	main.c env_utils.c \
+SRC = 	minishell.c env_utils.c \
 		\
 		executer/executer.c executer/clean.c executer/handle_signals.c \
 		executer/get_cmd_info.c executer/ft_heredocs.c executer/execute_command.c \
