@@ -1,0 +1,1 @@
+compilare così: gcc minishell.c -lreadline
