@@ -24,7 +24,7 @@ MY_LIB = ./my_lib
 SRC = 	minishell.c env_utils.c \
 		\
 		executer/executer.c executer/clean.c executer/handle_signals.c \
-		executer/get_cmd_info.c executer/ft_heredocs.c executer/execute_command.c \
+		executer/executer_utils.c executer/ft_heredocs.c executer/execute_command.c \
 		\
 		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c builtins/env_builtin.c \
 		builtins/unset_builtin.c builtins/export_builtin.c builtins/cd_builtin.c

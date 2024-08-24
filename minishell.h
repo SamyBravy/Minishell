@@ -87,10 +87,10 @@ void		clean_int_list(t_int_list **lst);
 void		clean_block(t_input **input, int unlink_heredoc);
 void		clean_and_exit(t_input **input, t_list **env, int exit_status,
 				int forked);
-void		close_block_fd(t_input *input);
 
 t_builtin	which_builtin(t_input *input);
 char		*get_block_cmd(t_input *input);
+int			get_flags(t_type type);
 int			only_one_cmd(t_input *input);
 
 void		handle_sig_heredoc(int sig);

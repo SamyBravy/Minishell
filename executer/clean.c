@@ -31,14 +31,14 @@ void	clean_int_list(t_int_list **lst)
 	}
 }
 
-void	close_block_fd(t_input *input)
+static void	close_block_fd(t_input *input)
 {
 	while (input && input->type != PIPE)
 	{
 		if (input->type == INPUT || input->type == HEREDOC
 			|| input->type == TRUNC || input->type == APPEND)
 		{
-			if (input->fd == -1)
+			if (input->fd < 0)
 				return ;
 			close(input->fd);
 		}

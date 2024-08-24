@@ -15,25 +15,11 @@
 int	main(int argc, char **argv, char **env)
 {
 	t_input *input = malloc(sizeof(t_input));
-	input->type = CMD;
-	input->str = ft_strdup("ls");
+	input->type = INPUT;
+	input->str = ft_strjoin("ok\x1D", "fot");
 	input->next = NULL;
 	input->fd = -1;
 
-	t_input *input2 = malloc(sizeof(t_input));
-	input2->type = HEREDOC;
-	input2->str = ft_strdup("here");
-	input2->next = NULL;
-	input2->fd = -1;
-
-	t_input *input3 = malloc(sizeof(t_input));
-	input3->type = HEREDOC;
-	input3->str = ft_strdup("here2");
-	input3->next = NULL;
-	input3->fd = -1;
-
-	input->next = input2;
-	input2->next = input3;
 
 	//FILE *file = fopen("input.txt", "w");
 	//fprintf(file, "This is a test input\n file.\n");

@@ -63,7 +63,7 @@ void	create_heredocs(t_input *input)
 		if (input->type == HEREDOC)
 		{
 			eof = input->str;
-			while (input->fd == -1)
+			while (input->fd < 0)
 			{
 				input->str = unique_name();
 				input->fd = open(input->str, O_CREAT | O_EXCL | O_WRONLY, 0644);

@@ -169,3 +169,121 @@ export | grep PWD
 exit
 cd -
 exit
+cat | cat | ls
+cat | cat | ls
+cat | cat | ls
+exit
+echo ica
+echo ciao | grep i
+cat | cat | ls
+exit
+cat | cat | ls
+exit
+ok
+cat | cat | ls
+exit
+cat | cat | ls
+exit
+echo ciao | grep c
+ok
+/bin/ls
+< input
+< input | cat
+< input | cae
+grep e | grep e | ls
+cat | cat
+echo ciao | cat | cat
+<< ok cat | cat
+cat | << ok cat | cat > out
+exit
+cat | cd
+ok
+echo ciao | cat e
+echo ciao | cat -e
+cat | cd
+./minishell
+cat | cd
+exit
+exit
+cat | ce
+fhe
+< wjfq
+ <<s
+si '
+ok
+'
+echo si'
+gnor'
+echo '
+signor'
+exit
+echo si'
+gnor
+'
+echo '
+signor'
+exit
+ok
+echo ciao
+echo ciao | cat
+cat | cat | ls
+exit
+cat
+cat | cat | ls
+echo ciao | cat
+make re
+xit
+exit
+echo ciao | cat
+cat | cat | ls
+make re
+cat | cat | ls
+ok
+cat | cat | ls
+exit
+cat | cat | ls
+make re
+cat | cat | ls
+exit
+echo ciao
+/bin/ls
+ls
+cat << here
+ echo ciao | wc -l
+ls
+ped
+pwd
+echo '
+ciao'
+cat << here
+pwd
+cat '
+ok
+'
+cat '
+ok
+'
+exit
+export i=''
+env
+export g=
+env
+exit
+exit
+< 9
+k
+< 9
+< 4
+ s
+< s
+cat < 9
+cat < inpuy
+> ok
+ls
+rm ok
+< ok
+< ij
+< pkù
+mak
+< s
+<ok

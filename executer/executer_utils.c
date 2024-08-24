@@ -23,6 +23,15 @@ int	only_one_cmd(t_input *input)
 	return (1);
 }
 
+int	get_flags(t_type type)
+{
+	if (type == TRUNC)
+		return (O_CREAT | O_WRONLY | O_TRUNC);
+	if (type == APPEND)
+		return (O_CREAT | O_WRONLY | O_APPEND);
+	return (0);
+}
+
 char	*get_block_cmd(t_input *input)
 {
 	while (input && input->type != PIPE)
