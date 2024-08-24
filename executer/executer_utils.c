@@ -29,6 +29,8 @@ int	get_flags(t_type type)
 		return (O_CREAT | O_WRONLY | O_TRUNC);
 	if (type == APPEND)
 		return (O_CREAT | O_WRONLY | O_APPEND);
+	if (type == INPUT || type == HEREDOC)
+		return (O_RDONLY);
 	return (0);
 }
 

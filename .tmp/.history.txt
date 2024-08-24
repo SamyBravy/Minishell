@@ -287,3 +287,12 @@ rm ok
 mak
 < s
 <ok
+< oj
+> ok
+ls
+rm ok
+>> ok
+ls
+rm ok
+ls
+<< ok

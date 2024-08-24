@@ -16,11 +16,14 @@ static void	open_block_files(t_input *input, t_cmd *cmd)
 {
 	while (input && input->type != PIPE)
 	{
-		if (input->type == INPUT || input->type == HEREDOC)
+		if (input->type != CMD)
 		{
 			if (input->fd != -42)
-				input->fd = open(input->str, O_RDONLY);
-			cmd->fd_in = input->fd;
+				input->fd = open(input->str, get_flags(input->type), 0644);
+			if (input->type == TRUNC || input->type == APPEND)
+				cmd->fd_out = input->fd;
+			else
+				cmd->fd_in = input->fd;
 			if (input->fd == -1 || input->fd == -42)
 			{
 				ft_putstr_fd("minicecco: ", STDERR_FILENO);
@@ -31,11 +34,6 @@ static void	open_block_files(t_input *input, t_cmd *cmd)
 					ft_putstr_fd(": ambiguous redirect\n", STDERR_FILENO);
 				return ;
 			}
-		}
-		else if (input->type == TRUNC || input->type == APPEND)
-		{
-			input->fd = open(input->str, get_flags(input->type), 0644);
-			cmd->fd_out = input->fd;
 		}
 		input = input->next;
 	}
