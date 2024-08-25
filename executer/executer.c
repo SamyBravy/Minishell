@@ -12,6 +12,8 @@
 
 #include "../minishell.h"
 
+int	g_signal = 0;
+
 static void	open_block_files(t_input *input, t_cmd *cmd)
 {
 	while (input && input->type != PIPE)
@@ -75,32 +77,31 @@ static void	set_exit_status(int i, int pid, int *exit_status)
 }
 
 static int	create_pipe_and_fork(t_input **input, t_cmd *cmd, t_list **env,
-	t_int_list **pipes_stdin_fds)
+	int original_stdin)
 {
 	int	pid;
 	int	pipefd[2];
 
 	if (pipe(pipefd) == -1)
-		exit_error(input, env, pipes_stdin_fds);
-	ft_lstadd_back_int(pipes_stdin_fds, pipefd[0]);
+		exit_error(input, env, original_stdin);
 	if (!only_one_cmd(*input) && cmd->fd_out == STDOUT_FILENO)
 		cmd->fd_out = pipefd[1];
 	pid = fork();
 	if (pid == -1)
 	{
-		close(pipefd[1]);
-		exit_error(input, env, pipes_stdin_fds);
+		close_pipefd(pipefd);
+		exit_error(input, env, original_stdin);
 	}
 	if (pid == 0)
 	{
 		dup2(cmd->fd_in, STDIN_FILENO);
 		dup2(cmd->fd_out, STDOUT_FILENO);
-		close(pipefd[1]);
-		clean_int_list(pipes_stdin_fds);
+		close_pipefd(pipefd);
+		close(original_stdin);
 		exec_cmd(input, cmd, env);
 	}
 	dup2(pipefd[0], STDIN_FILENO);
-	close(pipefd[1]);
+	close_pipefd(pipefd);
 	return (pid);
 }
 
@@ -108,11 +109,11 @@ void	executer(t_input **input, t_list **env, int *exit_status)
 {
 	int			i;
 	int			pid;
-	t_int_list	*pipes_stdin_fds;
+	int			original_stdin;
 	t_cmd		cmd;
 
 	init_signals_and_heredocs(input, exit_status);
-	pipes_stdin_fds = ft_new_intlst(dup(STDIN_FILENO));
+	original_stdin = dup(STDIN_FILENO);
 	//close(STDIN_FILENO);	// per avere tutto perfettamente pulito (non funziona se la metto)
 	i = 0;
 	while (*input)
@@ -121,12 +122,12 @@ void	executer(t_input **input, t_list **env, int *exit_status)
 		cmd.fd_out = STDOUT_FILENO;
 		open_block_files(*input, &cmd);
 		if (!i && only_one_cmd(*input) && which_builtin(*input) != INTERNAL)
-			*exit_status = exec_builtin(input, &cmd, &pipes_stdin_fds, env);
+			*exit_status = exec_builtin(input, &cmd, &original_stdin, env);
 		else if (i++ || TRUE)
-			pid = create_pipe_and_fork(input, &cmd, env, &pipes_stdin_fds);
+			pid = create_pipe_and_fork(input, &cmd, env, original_stdin);
 		clean_block(input, 1);
 	}
 	set_exit_status(i, pid, exit_status);
-	dup2(pipes_stdin_fds->content, STDIN_FILENO);
-	clean_int_list(&pipes_stdin_fds);
+	dup2(original_stdin, STDIN_FILENO);
+	close(original_stdin);
 }

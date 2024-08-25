@@ -98,11 +98,11 @@ static long long int	ft_long_long_atoi(const char *nptr)
 }
 
 int	exit_builtin(char **argv, t_input **input, t_list **env,
-	t_int_list **pipes_stdin_fds)
+	int *original_stdin)
 {
 	long long int	exit_status;
 
-	if (pipes_stdin_fds != NULL)
+	if (original_stdin != NULL)
 		ft_putstr_fd("exit\n", STDERR_FILENO);
 	exit_status = ft_long_long_atoi(argv[1]);
 	if (!argv[1])
@@ -121,8 +121,8 @@ int	exit_builtin(char **argv, t_input **input, t_list **env,
 			exit_status = 256 - ((-exit_status) % 256);
 	exit_status %= 256;
 	ft_free_mat(argv);
-	if (pipes_stdin_fds != NULL)
-		clean_int_list(pipes_stdin_fds);
-	clean_and_exit(input, env, exit_status, pipes_stdin_fds == NULL);
+	if (original_stdin != NULL)
+		close(*original_stdin);
+	clean_and_exit(input, env, exit_status, original_stdin == NULL);
 	return (0);
 }

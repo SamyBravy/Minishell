@@ -15,8 +15,8 @@
 int	main(int argc, char **argv, char **env)
 {
 	t_input *input = malloc(sizeof(t_input));
-	input->type = INPUT;
-	input->str = ft_strjoin("ok\x1D", "fot");
+	input->type = HEREDOC;
+	input->str = ft_strdup("ok");
 	input->next = NULL;
 	input->fd = -1;
 

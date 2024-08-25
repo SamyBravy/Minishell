@@ -296,3 +296,32 @@ ls
 rm ok
 ls
 << ok
+caio << ds
+export CIAO=08
+env | grep CIA
+unset CIAO
+env | grep CIA
+cd
+ls
+unset HOME
+env | grep HO
+cd
+ls
+cd
+cat | ls
+exit
+echo ciao
+echo ciao | grep ci
+cat | ls
+ciao | ciao
+caio | echo coucou
+exit
+exit
+echo ciao
+echo ciao | cat
+ls | cat
+cat | ls
+cat | cat | ls
+cd
+ls
+exit 86

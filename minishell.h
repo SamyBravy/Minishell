@@ -70,7 +70,7 @@ typedef struct s_cmd
 	int		fd_out;
 }	t_cmd;
 
-int	g_signal;
+extern int	g_signal;
 
 /* executer */
 void		executer(t_input **input, t_list **env, int *exit_status);
@@ -79,11 +79,11 @@ void		create_heredocs(t_input *input);
 
 void		exec_cmd(t_input **input, t_cmd *cmd, t_list **env);
 int			exec_builtin(t_input **input, t_cmd *cmd,
-				t_int_list **pipes_stdin_fds, t_list **env);
+				int *original_stdin, t_list **env);
 
+void		close_pipefd(int *pipefd);
 void		exit_error(t_input **input, t_list **env,
-				t_int_list **pipes_stdin_fds);
-void		clean_int_list(t_int_list **lst);
+				int original_stdin);
 void		clean_block(t_input **input, int unlink_heredoc);
 void		clean_and_exit(t_input **input, t_list **env, int exit_status,
 				int forked);
@@ -98,7 +98,7 @@ void		handle_sig_execve(int sig);
 
 /* builtins */
 int			exit_builtin(char **argv, t_input **input, t_list **env,
-				t_int_list **pipes_stdin_fds);
+				int *original_stdin);
 
 int			echo_builtin(char **argv);
 

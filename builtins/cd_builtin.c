@@ -48,7 +48,9 @@ int	cd_builtin(char **argv, t_list **env)
 		return (ft_putstr_fd("minicecco: cd: too many arguments\n", 2), 1);
 	if (argv[1] == NULL && ft_getenv("HOME", *env) != NULL)
 		new_path = ft_strdup(ft_getenv("HOME", *env));
-	else if ((!argv[1] && !ft_getenv("HOME", *env)) || argv[1][0] == '\x1E')
+	else if (!argv[1] && !ft_getenv("HOME", *env))
+		return (ft_putstr_fd("minicecco: cd: HOME not set\n", 2), 1);
+	else if (argv[1][0] == '\x1E')
 		return (0);
 	else if (!ft_strcmp(argv[1], "-"))
 	{

@@ -65,7 +65,7 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd, t_list *env)
 }
 
 int	exec_builtin(t_input **input, t_cmd *cmd,
-	t_int_list **pipes_stdin_fds, t_list **env)
+	int *original_stdin, t_list **env)
 {
 	t_builtin	builtin;
 	char		**argv;
@@ -89,7 +89,7 @@ int	exec_builtin(t_input **input, t_cmd *cmd,
 	else if (builtin == ENV)
 		exit_status = env_builtin(*env);
 	if (builtin == EXIT)
-		exit_status = exit_builtin(argv, input, env, pipes_stdin_fds);
+		exit_status = exit_builtin(argv, input, env, original_stdin);
 	return (ft_free_mat(argv), exit_status);
 }
 
