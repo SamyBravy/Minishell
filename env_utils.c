@@ -42,6 +42,12 @@ int	ft_export(char *str, t_list **env)
 	key = get_key(str);
 	if (is_valid_identifier(key) && !(key[0] == '_' && key[1] == '\0'))
 	{
+		if (ft_strchr(str, '=') && ft_strchr(str, '+')
+			&& ft_strchr(str, '=') == ft_strchr(str, '+') + 1)
+		{
+			export_append(str, key, env);
+			return (free(key), 0);
+		}
 		if (ft_strchr(str, '=') != NULL)
 			lst_remove_key(env, key);
 		if (ft_getenv(key, *env) == NULL)
@@ -50,10 +56,9 @@ int	ft_export(char *str, t_list **env)
 	else if (!(key[0] == '_' && key[1] == '\0'))
 	{
 		ft_putstr_fd("minicecco: export: `", STDERR_FILENO);
-		ft_putstr_fd(key, STDERR_FILENO);
+		ft_putstr_fd(str, STDERR_FILENO);
 		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-		free(key);
-		return (1);
+		return (free(key), 1);
 	}
 	free(key);
 	return (0);
@@ -104,7 +109,8 @@ char	*get_key(char *str)
 	int		i;
 
 	i = 0;
-	while (str[i] && str[i] != '=')
+	while (str[i] && str[i] != '='
+		&& !(str[i] == '+' && str[i + 1] == '='))
 		i++;
 	key = ft_substr(str, 0, i);
 	return (key);

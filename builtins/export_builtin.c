@@ -58,6 +58,27 @@ static void	print_export(t_list *env)
 	}
 }
 
+void	export_append(char *str, char *key, t_list **env)
+{
+	char	*tmp1;
+	char	*tmp2;
+
+	tmp1 = ft_strjoin(key, "=");
+	if (ft_getenv(key, *env) == NULL)
+	{
+		tmp2 = ft_strjoin(tmp1, ft_strchr(str, '=') + 1);
+		free(tmp1);
+		ft_lstadd_back(env, ft_lstnew(tmp2));
+		return ;
+	}
+	tmp2 = ft_strjoin(tmp1, ft_getenv(key, *env));
+	free(tmp1);
+	tmp1 = ft_strjoin(tmp2, ft_strchr(str, '=') + 1);
+	free(tmp2);
+	lst_remove_key(env, key);
+	ft_lstadd_back(env, ft_lstnew(tmp1));
+}
+
 int	export_builtin(char **argv, t_list **env)
 {
 	int		i;

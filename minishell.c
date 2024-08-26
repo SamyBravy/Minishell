@@ -60,17 +60,17 @@ void add_input_node(t_input **head, t_input *new_node)
 
 t_type identify_type(char *token)
 {
-    if (strcmp(token, ">") == 0)
-        return TRUNC;
-    if (strcmp(token, ">>") == 0)
-        return APPEND;
-    if (strcmp(token, "<") == 0)
-        return INPUT;
-    if (strcmp(token, "<<") == 0)
-        return HEREDOC;
-    if (strcmp(token, "|") == 0)
-        return PIPE;
-    return CMD;
+    if (ft_strncmp(token, ">>", 2) == 0)
+		return (APPEND);
+	if (strncmp(token, "<<", 2) == 0)
+		return (HEREDOC);
+	if (ft_strncmp(token, ">", 1) == 0)
+		return (TRUNC);
+	if (strncmp(token, "<", 1) == 0)
+		return (INPUT);
+	if (strncmp(token, "|", 1) == 0)
+		return (PIPE);
+	return (CMD);
 }
 
 int spaces(char c)
@@ -207,6 +207,8 @@ int main(int argc, char **argv, char **env)
     (void)argv;
     read_history(".tmp/.history.txt");
     lst_env = ft_matrix_to_lst(env);
+    if (ft_getenv("OLDPWD", lst_env) == NULL)
+        ft_export("OLDPWD", &lst_env);
     int tmp = dup(STDIN_FILENO); // per avere tutto perfettamente pulito
 	dup2(tmp, STDIN_FILENO); // per avere tutto perfettamente pulito
 	close(tmp); // per avere tutto perfettamente pulito
@@ -228,15 +230,16 @@ int main(int argc, char **argv, char **env)
         }
 		if (input && *input) // Assicurati che input non sia NULL e non sia una stringa vuota
         {
+            add_history(input);
+            append_history(1, ".tmp/.history.txt");
             if (check_syntax_errors(input) != 0)
             {
                 exit_status = 2;
                 free(input);
                 continue; // Evita di terminare il programma, passa alla prossima iterazione
             }
-            add_history(input);
-            append_history(1, ".tmp/.history.txt");
             tokens = tokenize(input);
+            free(input);
             executer(&tokens, &lst_env, &exit_status);
         }
     }

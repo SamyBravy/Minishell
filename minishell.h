@@ -13,7 +13,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <stdbool.h>
+# include <stdbool.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -110,6 +110,7 @@ int			env_builtin(t_list *env);
 int			unset_builtin(char **argv, t_list **env);
 
 int			export_builtin(char **argv, t_list **env);
+void		export_append(char *str, char *key, t_list **env);
 
 int			cd_builtin(char **argv, t_list **env);
 
@@ -120,7 +121,8 @@ int			ft_export(char *str, t_list **env);
 int			is_valid_identifier(char *str);
 void		lst_remove_key(t_list **env, char *key);
 
-/*parsing*/
-int check_syntax_errors(char *token);
+/* parsing */
+int			check_syntax_errors(char *token);
+t_type		identify_type(char *token);
 
 #endif

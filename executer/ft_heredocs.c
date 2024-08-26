@@ -42,12 +42,11 @@ static void	read_heredoc(int fd, char *eof)
 			if (line)
 				free(line);
 			else if (g_signal != SIGINT)
-			{
-				ft_printf("minicecco: warning: here-document ");
-				ft_printf("delimited by end-of-file (wanted `%s')\n", eof);
-			}
+				ft_printf("minicecco: warning: \
+here-document delimited by end-of-file (wanted `%s')\n", eof);
 			break ;
 		}
+		// espandi variabili
 		ft_putstr_fd(line, fd);
 		free(line);
 	}

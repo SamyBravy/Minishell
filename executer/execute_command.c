@@ -19,7 +19,7 @@ static char	*realloc_with_path(char *path, t_list *env)
 	char	*tmp;
 	int		i;
 
-	if (!ft_getenv("PATH", env))
+	if (!ft_getenv("PATH", env) || (ft_getenv("PATH", env))[0] == '\0')
 		return (free(path), NULL);
 	possible_paths = ft_split(ft_getenv("PATH", env), ':');
 	cmd_name = path;
