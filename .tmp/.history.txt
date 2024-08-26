@@ -363,3 +363,14 @@ exit error | ciao
 exit error
 echo ciao | grep c | cat
 cd >>>
+> ciao
+ls
+rm ciao
+>>>><<<<<<<<<>>>>>>>. jdshf
+>>>><<<<<<<<<>>>>>>> jdshf
+ls
+rm jdshf 
+| kasjfks |
+| ls  |
+ls
+exit

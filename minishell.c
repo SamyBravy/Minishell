@@ -230,20 +230,18 @@ int main(int argc, char **argv, char **env)
         {
             if (check_syntax_errors(input) != 0)
             {
+                exit_status = 2;
                 free(input);
                 continue; // Evita di terminare il programma, passa alla prossima iterazione
             }
-
             add_history(input);
             append_history(1, ".tmp/.history.txt");
-
             tokens = tokenize(input);
             executer(&tokens, &lst_env, &exit_status);
         }
     }
     close(STDIN_FILENO); // per avere tutto perfettamente pulito
 	ft_lstclear(&lst_env, free);
-
     return 0;
 }
 
