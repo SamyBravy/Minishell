@@ -226,13 +226,20 @@ int main(int argc, char **argv, char **env)
             input = new_input;
             free(temp_input);
         }
-        if (*input)
+		if (input && *input) // Assicurati che input non sia NULL e non sia una stringa vuota
         {
+            if (check_syntax_errors(input) != 0)
+            {
+                free(input);
+                continue; // Evita di terminare il programma, passa alla prossima iterazione
+            }
+
             add_history(input);
             append_history(1, ".tmp/.history.txt");
+
+            tokens = tokenize(input);
+            executer(&tokens, &lst_env, &exit_status);
         }
-        tokens = tokenize(input);
-        executer(&tokens, &lst_env, &exit_status);
     }
     close(STDIN_FILENO); // per avere tutto perfettamente pulito
 	ft_lstclear(&lst_env, free);

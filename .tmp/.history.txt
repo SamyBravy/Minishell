@@ -361,3 +361,5 @@ echo ciao | grep c | cat
 echo ciao
 exit error | ciao
 exit error
+echo ciao | grep c | cat
+cd >>>

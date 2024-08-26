@@ -13,6 +13,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+#include <stdbool.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -118,5 +119,8 @@ char		*get_key(char *str);
 int			ft_export(char *str, t_list **env);
 int			is_valid_identifier(char *str);
 void		lst_remove_key(t_list **env, char *key);
+
+/*parsing*/
+int check_syntax_errors(char *token);
 
 #endif
