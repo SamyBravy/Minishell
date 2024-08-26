@@ -325,3 +325,39 @@ cat | cat | ls
 cd
 ls
 exit 86
+<< ok
+> ok
+< ok
+<< ok
+exit
+< ok
+> ok
+<< ok
+>> ok
+<< ciao
+exit
+<< ciao
+<< ciao
+<< ciao
+exit
+<< ciao
+ciao << ciao
+cat << ciao
+cd << ciao
+cat << cat
+exit
+cat << cat
+cat << cat
+cat << cat
+cat
+cat
+exit
+ok
+ok | grep e
+exit
+ok
+exit
+echo ciao | grep c | cat
+echo ciao
+exit error | ciao
+exit error

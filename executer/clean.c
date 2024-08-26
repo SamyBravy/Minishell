@@ -66,11 +66,9 @@ void	clean_and_exit(t_input **input, t_list **env, int exit_status,
 {
 	while (input && *input)
 		clean_block(input, !forked);
+	close(STDIN_FILENO);
 	if (forked)
-	{
-		close(STDIN_FILENO);
 		close(STDOUT_FILENO);
-	}
 	ft_lstclear(env, free);
 	exit(exit_status);
 }

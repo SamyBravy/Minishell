@@ -100,6 +100,7 @@ static int	create_pipe_and_fork(t_input **input, t_cmd *cmd, t_list **env,
 		close(original_stdin);
 		exec_cmd(input, cmd, env);
 	}
+	close(STDIN_FILENO);
 	dup2(pipefd[0], STDIN_FILENO);
 	close_pipefd(pipefd);
 	return (pid);
@@ -114,7 +115,6 @@ void	executer(t_input **input, t_list **env, int *exit_status)
 
 	init_signals_and_heredocs(input, exit_status);
 	original_stdin = dup(STDIN_FILENO);
-	//close(STDIN_FILENO);	// per avere tutto perfettamente pulito (non funziona se la metto)
 	i = 0;
 	while (*input)
 	{
@@ -128,6 +128,7 @@ void	executer(t_input **input, t_list **env, int *exit_status)
 		clean_block(input, 1);
 	}
 	set_exit_status(i, pid, exit_status);
+	close(STDIN_FILENO);
 	dup2(original_stdin, STDIN_FILENO);
 	close(original_stdin);
 }

@@ -100,7 +100,7 @@ t_input *tokenize(char *str)
         if (*str == '>' || *str == '<' || *str == '|')
         {
             i = 0;
-            while (i++ < 2)
+            while (i++ < 3  )
                 temp[i - 1] = 0; //usare bzero
             temp[0] = *str++;
             if ((*str == '>' || *str == '<') && temp[0] == *str)
@@ -207,9 +207,9 @@ int main(int argc, char **argv, char **env)
     (void)argv;
     read_history(".tmp/.history.txt");
     lst_env = ft_matrix_to_lst(env);
-    //int tmp = dup(STDIN_FILENO); // per avere tutto perfettamente pulito
-	//dup2(tmp, STDIN_FILENO); // per avere tutto perfettamente pulito
-	//close(tmp); // per avere tutto perfettamente pulito
+    int tmp = dup(STDIN_FILENO); // per avere tutto perfettamente pulito
+	dup2(tmp, STDIN_FILENO); // per avere tutto perfettamente pulito
+	close(tmp); // per avere tutto perfettamente pulito
     while (TRUE)
     {
         input = readline("minicecco> ");
@@ -234,7 +234,7 @@ int main(int argc, char **argv, char **env)
         tokens = tokenize(input);
         executer(&tokens, &lst_env, &exit_status);
     }
-    //close(STDIN_FILENO); // per avere tutto perfettamente pulito
+    close(STDIN_FILENO); // per avere tutto perfettamente pulito
 	ft_lstclear(&lst_env, free);
 
     return 0;
