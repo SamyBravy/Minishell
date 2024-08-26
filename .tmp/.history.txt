@@ -374,3 +374,29 @@ rm jdshf
 | ls  |
 ls
 exit
+exit
+rm jdshf 
+ls
+exit
+cat | ls
+ls|cat
+exit
+ls|cat
+exit
+>r
+ls
+rm r
+exit
+exit 32423423423423423423423423423423423423423423423
+exit 1 | exit 2
+pwd
+clear
+exit 1 | exit 2
+>>>
+exit
+>>>
+exit
+ezit
+exit
+cd
+cd >2
