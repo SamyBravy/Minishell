@@ -46,6 +46,7 @@ static void	read_heredoc(int fd, char *eof)
 here-document delimited by end-of-file (wanted `%s')\n", eof);
 			break ;
 		}
+		//if (expand)
 		// espandi variabili
 		ft_putstr_fd(line, fd);
 		free(line);
