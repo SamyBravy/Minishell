@@ -20,7 +20,7 @@ static int	number_of_flags(char **argv)
 	i = 1;
 	while (argv[i])
 	{
-		if (argv[i][0] == '-')
+		if (argv[i][0] == '-' && argv[i][1] == 'n')
 		{
 			j = 1;
 			while (argv[i][j] == 'n')
