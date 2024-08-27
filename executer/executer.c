@@ -16,6 +16,8 @@ int	g_signal = 0;
 
 static void	open_block_files(t_input *input, t_cmd *cmd)
 {
+	cmd->fd_in = STDIN_FILENO;
+	cmd->fd_out = STDOUT_FILENO;
 	while (input && input->type != PIPE)
 	{
 		if (input->type != CMD)
@@ -77,58 +79,60 @@ static void	set_exit_status(int i, int pid, int *exit_status)
 }
 
 static int	create_pipe_and_fork(t_input **input, t_cmd *cmd, t_list **env,
-	int original_stdin)
+	t_int_list **std_inout_pipes)
 {
 	int	pid;
 	int	pipefd[2];
 
 	if (pipe(pipefd) == -1)
-		exit_error(input, env, original_stdin);
+		exit_error(input, env, std_inout_pipes);
+	ft_lstadd_back_int(std_inout_pipes, pipefd[0]);
 	if (!only_one_cmd(*input) && cmd->fd_out == STDOUT_FILENO)
 		cmd->fd_out = pipefd[1];
 	pid = fork();
 	if (pid == -1)
 	{
-		close_pipefd(pipefd);
-		exit_error(input, env, original_stdin);
+		close(pipefd[1]);
+		exit_error(input, env, std_inout_pipes);
 	}
 	if (pid == 0)
 	{
 		dup2(cmd->fd_in, STDIN_FILENO);
 		dup2(cmd->fd_out, STDOUT_FILENO);
-		close_pipefd(pipefd);
-		close(original_stdin);
+		close(pipefd[1]);
+		clean_int_list(std_inout_pipes);
 		exec_cmd(input, cmd, env);
 	}
 	close(STDIN_FILENO);
 	dup2(pipefd[0], STDIN_FILENO);
-	close_pipefd(pipefd);
-	return (pid);
+	return (close(pipefd[1]), pid);
 }
 
-void	executer(t_input **input, t_list **env, int *exit_status)
+void	*executer(t_input **input, t_list **env, int *exit_status)
 {
 	int			i;
 	int			pid;
-	int			original_stdin;
+	t_int_list	*std_inout_pipes;
 	t_cmd		cmd;
 
 	init_signals_and_heredocs(input, exit_status);
-	original_stdin = dup(STDIN_FILENO);
+	std_inout_pipes = ft_new_intlst(dup(STDIN_FILENO));
+	ft_lstadd_back_int(&std_inout_pipes, dup(STDOUT_FILENO));
 	i = 0;
 	while (*input)
 	{
-		cmd.fd_in = STDIN_FILENO;
-		cmd.fd_out = STDOUT_FILENO;
 		open_block_files(*input, &cmd);
 		if (!i && only_one_cmd(*input) && which_builtin(*input) != INTERNAL)
-			*exit_status = exec_builtin(input, &cmd, &original_stdin, env);
-		else if (i++ || TRUE)
-			pid = create_pipe_and_fork(input, &cmd, env, original_stdin);
+		{
+			dup2(cmd.fd_out, STDOUT_FILENO);
+			*exit_status = exec_builtin(input, &cmd, &std_inout_pipes, env);
+		}
+		else if (i++ || true)
+			pid = create_pipe_and_fork(input, &cmd, env, &std_inout_pipes);
 		clean_block(input, 1);
 	}
-	set_exit_status(i, pid, exit_status);
-	close(STDIN_FILENO);
-	dup2(original_stdin, STDIN_FILENO);
-	close(original_stdin);
+	return (set_exit_status(i, pid, exit_status), close(STDIN_FILENO),
+		close(STDOUT_FILENO), dup2(std_inout_pipes->content, STDIN_FILENO),
+		dup2(std_inout_pipes->next->content, STDOUT_FILENO),
+		clean_int_list(&std_inout_pipes), NULL);
 }

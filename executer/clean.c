@@ -12,15 +12,22 @@
 
 #include "../minishell.h"
 
-void	close_pipefd(int *pipefd)
+void	clean_int_list(t_int_list **lst)
 {
-	close(pipefd[0]);
-	close(pipefd[1]);
+	t_int_list	*tmp;
+
+	while (*lst)
+	{
+		close((*lst)->content);
+		tmp = *lst;
+		*lst = (*lst)->next;
+		free(tmp);
+	}
 }
 
-void	exit_error(t_input **input, t_list **env, int original_stdin)
+void	exit_error(t_input **input, t_list **env, t_int_list **std_inout_pipes)
 {
-	close(original_stdin);
+	clean_int_list(std_inout_pipes);
 	clean_and_exit(input, env, 1, 0);
 }
 
@@ -67,8 +74,7 @@ void	clean_and_exit(t_input **input, t_list **env, int exit_status,
 	while (input && *input)
 		clean_block(input, !forked);
 	close(STDIN_FILENO);
-	if (forked)
-		close(STDOUT_FILENO);
+	close(STDOUT_FILENO);
 	ft_lstclear(env, free);
 	exit(exit_status);
 }

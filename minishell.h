@@ -29,8 +29,6 @@
 # include "my_lib/ft_printf/ft_printf.h"
 # include "my_lib/get_next_line/get_next_line_bonus.h"
 
-# define TRUE 1
-
 typedef enum e_builtin
 {
 	INTERNAL,
@@ -74,17 +72,17 @@ typedef struct s_cmd
 extern int	g_signal;
 
 /* executer */
-void		executer(t_input **input, t_list **env, int *exit_status);
+void		*executer(t_input **input, t_list **env, int *exit_status);
 
 void		create_heredocs(t_input *input);
 
 void		exec_cmd(t_input **input, t_cmd *cmd, t_list **env);
 int			exec_builtin(t_input **input, t_cmd *cmd,
-				int *original_stdin, t_list **env);
+				t_int_list **std_inout_pipes, t_list **env);
 
-void		close_pipefd(int *pipefd);
 void		exit_error(t_input **input, t_list **env,
-				int original_stdin);
+				t_int_list **std_inout_pipes);
+void		clean_int_list(t_int_list **lst);
 void		clean_block(t_input **input, int unlink_heredoc);
 void		clean_and_exit(t_input **input, t_list **env, int exit_status,
 				int forked);
@@ -99,7 +97,7 @@ void		handle_sig_execve(int sig);
 
 /* builtins */
 int			exit_builtin(char **argv, t_input **input, t_list **env,
-				int *original_stdin);
+				t_int_list **std_inout_pipes);
 
 int			echo_builtin(char **argv);
 

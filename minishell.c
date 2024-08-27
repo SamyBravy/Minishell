@@ -212,7 +212,10 @@ int main(int argc, char **argv, char **env)
     int tmp = dup(STDIN_FILENO); // per avere tutto perfettamente pulito
 	dup2(tmp, STDIN_FILENO); // per avere tutto perfettamente pulito
 	close(tmp); // per avere tutto perfettamente pulito
-    while (TRUE)
+    tmp = dup(STDOUT_FILENO); // per avere tutto perfettamente pulito
+    dup2(tmp, STDOUT_FILENO); // per avere tutto perfettamente pulito
+    close(tmp); // per avere tutto perfettamente pulito
+    while (true)
     {
         input = readline("minicecco> ");
         while (is_quote_balanced(input) == -1)
@@ -244,6 +247,7 @@ int main(int argc, char **argv, char **env)
         }
     }
     close(STDIN_FILENO); // per avere tutto perfettamente pulito
+    close(STDOUT_FILENO); // per avere tutto perfettamente pulito
 	ft_lstclear(&lst_env, free);
     return 0;
 }

@@ -65,7 +65,7 @@ static int	parse_internal_cmd(char *str_cmd, t_cmd *cmd, t_list *env)
 }
 
 int	exec_builtin(t_input **input, t_cmd *cmd,
-	int *original_stdin, t_list **env)
+	t_int_list **std_inout_pipes, t_list **env)
 {
 	t_builtin	builtin;
 	char		**argv;
@@ -89,7 +89,7 @@ int	exec_builtin(t_input **input, t_cmd *cmd,
 	else if (builtin == ENV)
 		exit_status = env_builtin(*env);
 	if (builtin == EXIT)
-		exit_status = exit_builtin(argv, input, env, original_stdin);
+		exit_status = exit_builtin(argv, input, env, std_inout_pipes);
 	return (ft_free_mat(argv), exit_status);
 }
 
@@ -118,19 +118,18 @@ void	exec_cmd(t_input **input, t_cmd *cmd, t_list **env)
 		clean_and_exit(input, env, 127, 1);
 	insert_null_char(cmd->argv);
 	cmd->env = ft_lst_to_matrix(*env);
-	if (clean_block(input, 0), execve(cmd->path, cmd->argv, cmd->env) == -1)
-	{
-		ft_putstr_fd("minicecco: ", STDERR_FILENO);
-		perror(cmd->path);
-		free(cmd->path);
-		ft_free_mat(cmd->argv);
-		ft_free_mat(cmd->env);
-		exit_status = 1;
-		if (errno == 2)
-			exit_status = 127;
-		if (errno == 13 || errno == 8 || errno == 21 || errno == 40 || errno
-			== 20 || errno == 1 || errno == 30 || errno == 26 || errno == 16)
-			exit_status = 126;
-		clean_and_exit(input, env, exit_status, 1);
-	}
+	clean_block(input, 0);
+	execve(cmd->path, cmd->argv, cmd->env);
+	ft_putstr_fd("minicecco: ", STDERR_FILENO);
+	perror(cmd->path);
+	free(cmd->path);
+	ft_free_mat(cmd->argv);
+	ft_free_mat(cmd->env);
+	exit_status = 1;
+	if (errno == 2)
+		exit_status = 127;
+	if (errno == 13 || errno == 8 || errno == 21 || errno == 40 || errno
+		== 20 || errno == 1 || errno == 30 || errno == 26 || errno == 16)
+		exit_status = 126;
+	clean_and_exit(input, env, exit_status, 1);
 }

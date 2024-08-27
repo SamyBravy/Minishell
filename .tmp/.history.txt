@@ -786,3 +786,80 @@ exit
 echo ciao | env | echo ciao | cat
 k
 exit
+echo ciao > out
+cat out
+exit
+echo ciao 
+echo ciao > out
+cat out
+exit
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao > out
+exit
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao > out
+exit
+exit
+echo ciao
+echo > out ciao
+echo > out ciao
+echo > out ciao
+echo > out ciao
+echo > out ciao
+echo > out ciao
+echo > out ciao
+echo > out ciao
+exit
+echo ciao
+exit
+echo ciao
+exit
+echo ciao
+echo > out ciao
+echo > out ciao
+exit
+echo ciao
+echo > out ciao
+echo > out ciao
+cat out
+echo ciao
+exit
+echo ciao
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao > out
+echo ciao
+exit
+echo ciao | cat
+echo ciao
+echo ciao > out
+echo ciao | echo ciao > out
+echo ciao | grep ciao
+exit
+cat | cat | ls
+cat | cat | wc -l
+exit
+env | echo ciao
+export | echo ciao
+export | ls
+exit
+echo ciao
+echo ciao > out
+cat out
+echo ciao | echo ciao
+echo ciao | grep e
+echo ciao
+echo > out
+echo ciao
+exit

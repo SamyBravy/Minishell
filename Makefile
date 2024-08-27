@@ -10,14 +10,11 @@
 #                                                                              #
 # **************************************************************************** #
 
-# valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all --track-origins=yes --quiet --tool=memcheck --keep-debuginfo=yes --track-fds=yes ./minishell
 NAME = minishell
 MY_LIB = ./my_lib
 SRC = 	minishell.c parsing.c env_utils.c \
-		\
 		executer/executer.c executer/clean.c executer/handle_signals.c \
 		executer/executer_utils.c executer/ft_heredocs.c executer/execute_command.c \
-		\
 		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c builtins/env_builtin.c \
 		builtins/unset_builtin.c builtins/export_builtin.c builtins/cd_builtin.c
 FLAGS = -g -Wall -Wextra -Werror -lreadline
@@ -37,6 +34,10 @@ fclean:
 	@make fclean -C $(MY_LIB) 2>&1 | grep -v 'Entering directory' | grep -v 'Leaving directory'
 	@rm -f $(NAME)
 	@echo "\e[0;91m[$(NAME)] deleted!\e[0m"
+
+val: all
+	clear
+	valgrind --quiet --suppressions=readline.supp --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck --keep-debuginfo=yes --track-fds=yes ./minishell
 
 re: fclean all
 
