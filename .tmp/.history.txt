@@ -863,3 +863,6 @@ echo ciao
 echo > out
 echo ciao
 exit
+cat | cat | ls
+cat | cat | ls
+exit

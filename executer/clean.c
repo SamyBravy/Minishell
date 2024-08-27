@@ -25,9 +25,9 @@ void	clean_int_list(t_int_list **lst)
 	}
 }
 
-void	exit_error(t_input **input, t_list **env, t_int_list **std_inout_pipes)
+void	exit_error(t_input **input, t_list **env, t_int_list **stdio_pipes_fds)
 {
-	clean_int_list(std_inout_pipes);
+	clean_int_list(stdio_pipes_fds);
 	clean_and_exit(input, env, 1, 0);
 }
 

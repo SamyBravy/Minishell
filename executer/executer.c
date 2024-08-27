@@ -79,28 +79,28 @@ static void	set_exit_status(int i, int pid, int *exit_status)
 }
 
 static int	create_pipe_and_fork(t_input **input, t_cmd *cmd, t_list **env,
-	t_int_list **std_inout_pipes)
+	t_int_list **stdio_pipes_fds)
 {
 	int	pid;
 	int	pipefd[2];
 
 	if (pipe(pipefd) == -1)
-		exit_error(input, env, std_inout_pipes);
-	ft_lstadd_back_int(std_inout_pipes, pipefd[0]);
+		exit_error(input, env, stdio_pipes_fds);
+	ft_lstadd_back_int(stdio_pipes_fds, pipefd[0]);
 	if (!only_one_cmd(*input) && cmd->fd_out == STDOUT_FILENO)
 		cmd->fd_out = pipefd[1];
 	pid = fork();
 	if (pid == -1)
 	{
 		close(pipefd[1]);
-		exit_error(input, env, std_inout_pipes);
+		exit_error(input, env, stdio_pipes_fds);
 	}
 	if (pid == 0)
 	{
 		dup2(cmd->fd_in, STDIN_FILENO);
 		dup2(cmd->fd_out, STDOUT_FILENO);
 		close(pipefd[1]);
-		clean_int_list(std_inout_pipes);
+		clean_int_list(stdio_pipes_fds);
 		exec_cmd(input, cmd, env);
 	}
 	close(STDIN_FILENO);
@@ -112,12 +112,12 @@ void	*executer(t_input **input, t_list **env, int *exit_status)
 {
 	int			i;
 	int			pid;
-	t_int_list	*std_inout_pipes;
+	t_int_list	*stdio_pipes_fds;
 	t_cmd		cmd;
 
 	init_signals_and_heredocs(input, exit_status);
-	std_inout_pipes = ft_new_intlst(dup(STDIN_FILENO));
-	ft_lstadd_back_int(&std_inout_pipes, dup(STDOUT_FILENO));
+	stdio_pipes_fds = ft_new_intlst(dup(STDIN_FILENO));
+	ft_lstadd_back_int(&stdio_pipes_fds, dup(STDOUT_FILENO));
 	i = 0;
 	while (*input)
 	{
@@ -125,14 +125,14 @@ void	*executer(t_input **input, t_list **env, int *exit_status)
 		if (!i && only_one_cmd(*input) && which_builtin(*input) != INTERNAL)
 		{
 			dup2(cmd.fd_out, STDOUT_FILENO);
-			*exit_status = exec_builtin(input, &cmd, &std_inout_pipes, env);
+			*exit_status = exec_builtin(input, &cmd, &stdio_pipes_fds, env);
 		}
 		else if (i++ || true)
-			pid = create_pipe_and_fork(input, &cmd, env, &std_inout_pipes);
+			pid = create_pipe_and_fork(input, &cmd, env, &stdio_pipes_fds);
 		clean_block(input, 1);
 	}
 	return (set_exit_status(i, pid, exit_status), close(STDIN_FILENO),
-		close(STDOUT_FILENO), dup2(std_inout_pipes->content, STDIN_FILENO),
-		dup2(std_inout_pipes->next->content, STDOUT_FILENO),
-		clean_int_list(&std_inout_pipes), NULL);
+		close(STDOUT_FILENO), dup2(stdio_pipes_fds->content, STDIN_FILENO),
+		dup2(stdio_pipes_fds->next->content, STDOUT_FILENO),
+		clean_int_list(&stdio_pipes_fds), NULL);
 }
