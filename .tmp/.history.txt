@@ -311,3 +311,65 @@ export b=nonna
 env | grep b
 cd
 cd
+$USER$USER
+$USE$UER$osjf
+$USE$UER$osjf $osfa
+exit
+$USER
+$USER %USER 
+$USEd
+$USEd $US
+$USEd $US        
+ok |k
+ok |'
+ok
+'
+| ok '
+| ok |
+ok | |
+ok | ok | ok | e
+ok | ok | '
+ok'
+ok | ok | '
+ok
+
+d
+s
+'
+make val
+ok | |
+ok | |
+ok | |
+exit
+make val
+ok | |
+ok | |
+ok | |
+exit
+make val
+ok | ok >
+ok | ok >
+ok | ok >
+exit
+make val
+ok | ok >
+ok | ok >
+ok | ok >
+exit
+git pull
+make val
+ok ||
+ok ||
+ok ||
+exit
+| ok
+k || ok
+k ||
+k |>
+k | ok > |ok
+k | '
+||||
+' |ok
+k | '
+ok ' |||||||| |0o
+exit

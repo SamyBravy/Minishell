@@ -849,15 +849,9 @@ void	ask_more_for_quotes(t_main_vars *vars)
 	free(vars->temp_input);
 }
 
-void	ask_more_for_pipes(t_main_vars *vars, int *exit_status)
+void	ask_more_for_pipes(t_main_vars *vars)
 {
 	vars->temp_input = readline("> ");
-	if (check_syntax_errors(vars->temp_input) != 0)
-	{
-		*exit_status = 2;
-		free(vars->temp_input);
-		return ;
-	}
 	vars->new_input = malloc(ft_strlen(vars->input)
 			+ ft_strlen(vars->temp_input) + 1);
 	ft_strlcpy(vars->new_input, vars->input, INT_MAX);
@@ -1004,22 +998,12 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		}
 		while (is_quote_balanced(vars.input) == -1)
-		{
 			ask_more_for_quotes(&vars);
-			if (check_syntax_errors(vars.input) != 0)
-			{
-				update_history(&vars);
-				exit_status = 2;
-				free(vars.input);
-				continue ;
-			}
-		}
 		while (is_pipe_balanced(vars.input) == -1)
-			ask_more_for_pipes(&vars, &exit_status);
+			ask_more_for_pipes(&vars);
 		update_history(&vars);
 		if (check_syntax_errors(vars.input) != 0)
 		{
-			update_history(&vars);
 			exit_status = 2;
 			free(vars.input);
 			continue ;
