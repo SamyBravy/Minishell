@@ -12,7 +12,7 @@
 
 NAME = minishell
 MY_LIB = ./my_lib
-SRC = 	cecco.c parsing.c env_utils.c \
+SRC = 	copy.c parsing.c env_utils.c \
 		executer/executer.c executer/clean.c executer/handle_signals.c \
 		executer/executer_utils.c executer/ft_heredocs.c executer/execute_command.c \
 		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c builtins/env_builtin.c \
