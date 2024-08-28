@@ -133,6 +133,7 @@ typedef struct s_main_vars {
     t_input *current;
     int history_fd;
     char *line;
+    t_input *free_tmp;
 } t_main_vars;
 
 typedef struct {

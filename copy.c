@@ -921,6 +921,19 @@ void	expand_tokens(t_main_vars *vars, t_list *lst_env)
 	}
 }
 
+void	free_tokens_and_input(t_main_vars *vars)
+{
+	while (vars->tokens)
+	{
+		vars->free_tmp = vars->tokens;
+		vars->tokens = vars->tokens->next;
+		if (vars->free_tmp->str)
+			free(vars->free_tmp->str);
+		free(vars->free_tmp);
+	}
+	free(vars->input);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_main_vars	vars;
@@ -989,7 +1002,7 @@ int	main(int argc, char **argv, char **env)
 		vars.tokens = tokenize(vars.input);
 		expand_tokens(&vars, lst_env);
 		print_tokens(vars.tokens);
-		free(vars.input);
+		free_tokens_and_input(&vars);
 		//executer(&vars.tokens, &lst_env, &exit_status);
 	}
 	close(STDIN_FILENO); // per avere tutto perfettamente pulito
