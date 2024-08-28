@@ -35,12 +35,12 @@ char	*ft_getenv(char *key, t_list *env)
 	return (NULL);
 }
 
-int	ft_export(char *str, t_list **env)
+int	ft_export(char *str, t_list **env, int check)
 {
 	char	*key;
 
 	key = get_key(str);
-	if (is_valid_identifier(key) && !(key[0] == '_' && key[1] == '\0'))
+	if (is_valid_identifier(key, check) && !(key[0] == '_' && key[1] == '\0'))
 	{
 		if (ft_strchr(str, '=') && ft_strchr(str, '+')
 			&& ft_strchr(str, '=') == ft_strchr(str, '+') + 1)
@@ -86,10 +86,12 @@ void	lst_remove_key(t_list **env, char *key)
 	}
 }
 
-int	is_valid_identifier(char *str)
+int	is_valid_identifier(char *str, int check)
 {
 	int	i;
 
+	if (check)
+		return (1);
 	i = 0;
 	if (!ft_isalpha(str[i]) && str[i] != '_')
 		return (0);

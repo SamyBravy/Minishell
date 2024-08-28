@@ -37,7 +37,7 @@ fclean:
 
 val: all
 	clear
-	valgrind --quiet --suppressions=readline.supp --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck --keep-debuginfo=yes --track-fds=yes ./minishell
+	valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck --keep-debuginfo=yes --track-fds=yes ./minishell
 
 re: fclean all
 

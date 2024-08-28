@@ -99,6 +99,7 @@ typedef struct s_expand_vars
     size_t value_len;
     size_t i;
     size_t j;
+	t_list *env;
 } expand_vars;
 
 typedef struct s_expansion_vars {
@@ -113,6 +114,7 @@ typedef struct s_expansion_vars {
     char *var_name;
     char *var_value;
     char *cleaned_value;
+	t_list *env;
 } t_expansion_vars_b;
 
 typedef struct s_clean
@@ -126,7 +128,6 @@ typedef struct s_main_vars {
     char *input;
     char *temp_input;
     t_input *tokens;
-    t_input *free_tmp;
     char *expanded_str;
     char *new_input;
     t_input *current;
@@ -142,6 +143,7 @@ typedef struct {
     size_t result_len;
     char *var_name;
     const char *var_value;
+    t_list *env;
 } t_vars_samu;
 
 extern int	g_signal;
@@ -149,7 +151,7 @@ extern int	g_signal;
 /* executer */
 void		*executer(t_input **input, t_list **env, int *exit_status);
 
-void		create_heredocs(t_input *input);
+void		create_heredocs(t_input *input, t_list *env);
 
 void		exec_cmd(t_input **input, t_cmd *cmd, t_list **env);
 int			exec_builtin(t_input **input, t_cmd *cmd,
@@ -190,12 +192,14 @@ int			cd_builtin(char **argv, t_list **env);
 /* env_utils */
 char		*ft_getenv(char *key, t_list *env);
 char		*get_key(char *str);
-int			ft_export(char *str, t_list **env);
-int			is_valid_identifier(char *str);
+int			ft_export(char *str, t_list **env, int check);
+int			is_valid_identifier(char *str, int check);
 void		lst_remove_key(t_list **env, char *key);
 
 /* parsing */
 int			check_syntax_errors(char *token);
 t_type		identify_type(char *token);
+
+char	    *expand_samu(const char *str, t_list *env);
 
 #endif

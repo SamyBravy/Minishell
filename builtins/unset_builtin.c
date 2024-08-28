@@ -21,7 +21,7 @@ int	unset_builtin(char **argv, t_list **env)
 	i = 1;
 	while (argv[i])
 	{
-		if (!is_valid_identifier(argv[i]))
+		if (!is_valid_identifier(argv[i], 0))
 		{
 			ft_putstr_fd("minicecco: unset: `", STDERR_FILENO);
 			ft_putstr_fd(argv[i], STDERR_FILENO);

@@ -16,6 +16,11 @@ int	env_builtin(t_list *env)
 {
 	while (env)
 	{
+		if (((char *)env->content)[0] == '?')
+		{
+			env = env->next;
+			continue ;
+		}
 		if (ft_strchr(env->content, '='))
 			ft_printf("%s\n", (char *)env->content);
 		env = env->next;

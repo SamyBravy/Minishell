@@ -43,12 +43,13 @@ static void	open_block_files(t_input *input, t_cmd *cmd)
 	}
 }
 
-static void	init_signals_and_heredocs(t_input **input, int *exit_status)
+static void	init_signals_and_heredocs(t_input **input, int *exit_status,
+	t_list *env)
 {
 	g_signal = 0;
 	signal(SIGINT, handle_sig_heredoc);
 	signal(SIGQUIT, handle_sig_heredoc);
-	create_heredocs(*input);
+	create_heredocs(*input, env);
 	if (g_signal == SIGINT)
 	{
 		*exit_status = 130;
@@ -115,7 +116,7 @@ void	*executer(t_input **input, t_list **env, int *exit_status)
 	t_int_list	*stdio_pipes_fds;
 	t_cmd		cmd;
 
-	init_signals_and_heredocs(input, exit_status);
+	init_signals_and_heredocs(input, exit_status, *env);
 	stdio_pipes_fds = ft_new_intlst(dup(STDIN_FILENO));
 	ft_lstadd_back_int(&stdio_pipes_fds, dup(STDOUT_FILENO));
 	i = 0;

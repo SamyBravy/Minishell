@@ -208,7 +208,7 @@ int main(int argc, char **argv, char **env)
     read_history(".tmp/.history.txt");
     lst_env = ft_matrix_to_lst(env);
     if (ft_getenv("OLDPWD", lst_env) == NULL)
-        ft_export("OLDPWD", &lst_env);
+        ft_export("OLDPWD", &lst_env, 0);
     int tmp = dup(STDIN_FILENO); // per avere tutto perfettamente pulito
 	dup2(tmp, STDIN_FILENO); // per avere tutto perfettamente pulito
 	close(tmp); // per avere tutto perfettamente pulito

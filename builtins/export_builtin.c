@@ -47,6 +47,11 @@ static void	print_export(t_list *env)
 	sort_keys(env);
 	while (env)
 	{
+		if (((char *)env->content)[0] == '?')
+		{
+			env = env->next;
+			continue ;
+		}
 		i = 0;
 		ft_printf("declare -x ");
 		while (((char *)env->content)[i] != '=' && ((char *)env->content)[i])
@@ -89,7 +94,7 @@ int	export_builtin(char **argv, t_list **env)
 	exit_status = 0;
 	i = 0;
 	while (argv[++i])
-		if (ft_export(argv[i], env) == 1)
+		if (ft_export(argv[i], env, 0) == 1)
 			exit_status = 1;
 	return (exit_status);
 }

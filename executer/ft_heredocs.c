@@ -25,7 +25,19 @@ static char	*unique_name(void)
 	return (str);
 }
 
-static void	read_heredoc(int fd, char *eof)
+static void	expand_line(char **line, t_list *env, int expand)
+{
+	char	*tmp;
+
+	if (expand)
+	{
+		tmp = expand_samu(*line, env);
+		free(*line);
+		*line = tmp;
+	}
+}
+
+static void	read_heredoc(int fd, char *eof, t_list *env, int expand)
 {
 	char	*line;
 
@@ -46,23 +58,26 @@ static void	read_heredoc(int fd, char *eof)
 here-document delimited by end-of-file (wanted `%s')\n", eof);
 			break ;
 		}
-		//if (expand)
-		// espandi variabili
+		expand_line(&line, env, expand);
 		ft_putstr_fd(line, fd);
 		free(line);
 	}
 	get_next_line(-fd);
 }
 
-void	create_heredocs(t_input *input)
+void	create_heredocs(t_input *input, t_list *env)
 {
 	char	*eof;
+	int		expand;
 
 	while (input)
 	{
 		if (input->type == HEREDOC)
 		{
 			eof = input->str;
+			expand = 1;
+			if (input->fd == -420)
+				expand = 0;
 			while (input->fd < 0)
 			{
 				input->str = unique_name();
@@ -70,7 +85,7 @@ void	create_heredocs(t_input *input)
 				if (input->fd == -1)
 					free(input->str);
 			}
-			read_heredoc(input->fd, eof);
+			read_heredoc(input->fd, eof, env, expand);
 			free(eof);
 			close(input->fd);
 		}
