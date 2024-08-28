@@ -46,7 +46,8 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 			vars.var_start = vars.i + 1;
 			vars.var_len = 0;
 			while (vars.var_start + vars.var_len < vars.len
-				&& (isalnum(str[vars.var_start + vars.var_len])
+				&& ((ft_isalnum(str[vars.var_start + vars.var_len])
+					|| str[vars.var_start + vars.var_len] == '?')
 					|| str[vars.var_start + vars.var_len] == '_'))
 			{
 				vars.var_len++;
@@ -103,7 +104,8 @@ void	check_dollar(t_vars_samu *vars, const char *str, char *result)
 		vars->var_start = vars->i + 1;
 		vars->var_len = 0;
 		while (vars->var_start + vars->var_len < vars->len
-			&& (isalnum(str[vars->var_start + vars->var_len])
+			&& ((ft_isalnum(str[vars->var_start + vars->var_len])
+				|| str[vars->var_start + vars->var_len] == '?')
 				|| str[vars->var_start + vars->var_len] == '_'))
 		{
 			vars->var_len++;
@@ -239,17 +241,17 @@ void	add_node(t_input **head, t_input *new_node)
 	}
 }
 
-t_type	identify_type(char *token)
+t_type identify_type(char *token)
 {
-	if (ft_strcmp(token, ">") == 0)
-		return (TRUNC);
-	if (ft_strcmp(token, ">>") == 0)
+    if (ft_strncmp(token, ">>", 2) == 0)
 		return (APPEND);
-	if (ft_strcmp(token, "<") == 0)
-		return (INPUT);
-	if (ft_strcmp(token, "<<") == 0)
+	if (strncmp(token, "<<", 2) == 0)
 		return (HEREDOC);
-	if (ft_strcmp(token, "|") == 0)
+	if (ft_strncmp(token, ">", 1) == 0)
+		return (TRUNC);
+	if (strncmp(token, "<", 1) == 0)
+		return (INPUT);
+	if (strncmp(token, "|", 1) == 0)
 		return (PIPE);
 	return (CMD);
 }
@@ -535,21 +537,13 @@ void	find_value_var(t_expansion_vars_b *vars, t_input *current)
 
 void	expansion(t_expansion_vars_b *vars, t_input *current)
 {
-	bool	is_question_mark;
-
-	is_question_mark = false;
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
 		&& ((ft_isalnum(vars->current_copy->str[vars->var_start + vars->var_len])
-		|| (vars->current_copy->str[vars->var_start + vars->var_len] == '?'
-		&& !is_question_mark))
+		|| vars->current_copy->str[vars->var_start + vars->var_len] == '?')
 		|| vars->current_copy->str[vars->var_start + vars->var_len] == '_'))
-	{
-		if (vars->current_copy->str[vars->var_start + vars->var_len] == '?')
-			is_question_mark = true;
 		vars->var_len++;
-	}
 	if (vars->var_len > 0)
 		find_value_var(vars, current);
 	else
@@ -660,21 +654,13 @@ void	expand_variable(expand_vars *vars, t_input *current, char *result)
 
 void	variable_expansion(expand_vars *vars, t_input *current, char *result)
 {
-	bool	is_question_mark;
-
-	is_question_mark = false;
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
 		&& (((ft_isalnum(vars->current_copy->str[vars->var_start + vars->var_len])
-			|| (vars->current_copy->str[vars->var_start + vars->var_len] == '?'
-			&& !is_question_mark))
+			|| vars->current_copy->str[vars->var_start + vars->var_len] == '?')
 			|| current->str[vars->var_start + vars->var_len] == '_')))
-	{
-		if (current->str[vars->var_start + vars->var_len] == '?')
-			is_question_mark = true;
 		vars->var_len++;
-	}
 	if (vars->var_len > 0)
 		expand_variable(vars, current, result);
 	else
@@ -884,7 +870,7 @@ void	update_history(t_main_vars *vars)
 {
 	if (*vars->input)
 	{
-		vars->history_fd = open(".tmp/.history.txt", O_WRONLY | O_APPEND,
+		vars->history_fd = open(".tmp/.history.txt", O_WRONLY | O_APPEND | O_EXCL,
 				0644);
 		add_history(vars->input);
 		if (vars->history_fd != -1)
@@ -1001,9 +987,10 @@ int	main(int argc, char **argv, char **env)
 		vars.input = quotes_to_special(vars.input);
 		vars.tokens = tokenize(vars.input);
 		expand_tokens(&vars, lst_env);
-		print_tokens(vars.tokens);
-		free_tokens_and_input(&vars);
-		//executer(&vars.tokens, &lst_env, &exit_status);
+		//print_tokens(vars.tokens);
+		//free_tokens_and_input(&vars);
+		free(vars.input);
+		executer(&vars.tokens, &lst_env, &exit_status);
 	}
 	close(STDIN_FILENO); // per avere tutto perfettamente pulito
 	close(STDOUT_FILENO); // per avere tutto perfettamente pulito

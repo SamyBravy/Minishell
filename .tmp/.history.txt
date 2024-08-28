@@ -174,3 +174,140 @@ exit
 export a=" echo ciao '$USER'  "
 $a
 exit
+echo ciao | cat
+exit 
+echo ciao | cat
+exit
+echo ciao | cat
+exit
+echo ciao
+echo ciao | echo ciao
+exiy
+exit
+echo |ciao
+| ok
+exit
+| ok
+exit
+| ok
+ok <>>>>
+exit
+ok
+|
+| ok
+ok |ok | ok
+exit
+ok | ok
+exit
+ok | ok
+exit
+ok | ok
+exit
+ok | ok
+echo ciao | cat
+cat | cat | ls
+cat | cat
+echo $?
+echo $?9
+exit
+echo $?9
+exit
+cat << here
+cat << here
+cat << here
+exit
+echo $USER>out
+cat out
+rm out
+cat << here
+exit
+exit
+echo $?9
+exit
+cat << here
+exit
+$USERd
+exit
+' '
+             
+             
+             
+             
+             
+             
+             
+             
+exit
+echo $1 $2 $3 | cat -e
+'"'"'
+'
+"
+e'cho' ciao
+echo'' ciao
+echo '' ciao
+export a="      echo        a      b    "
+echo $a
+$a
+"$a"
+echo "$a"
+echo '$a'
+< $a
+export a=3
+< $a
+echo ciao | cat
+<< "here"
+<< "here" cat 
+<< "here" cat
+<< $USER
+''
+< ''
+cat ''
+cat ' '
+cat '9'
+cat | cat | ls
+env
+export
+exit | exit
+exit 3 5 6
+exit 3l 5 6
+./minishell
+exit 255
+echo $?
+./minishell
+./minishell
+./minishell
+exit
+exit
+exit
+exit
+make val
+make re
+eit
+exit
+exit
+make
+mka
+          
+eihef
+lksflkas
+echo | grep e
+echo ciao exit | grep e
+exit
+exit
+exit
+export a="echo ciao"
+$a
+export a="echo $a"
+$a
+echo $a
+export a+=ielfjsd
+echo $a
+env | grep a=
+export b=8
+env | grep b=8
+export b+=cacca
+env | grep b=8
+export b=nonna
+env | grep b
+cd
+cd

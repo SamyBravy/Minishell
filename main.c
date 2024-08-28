@@ -16,7 +16,7 @@ int	main(int argc, char **argv, char **env)
 {
 	t_input *input = malloc(sizeof(t_input));
 	input->type = CMD;
-	input->str = ft_strdup("echo");
+	input->str = ft_strdup("ok");
 	input->next = NULL;
 	input->fd = -1;
 
@@ -28,7 +28,7 @@ int	main(int argc, char **argv, char **env)
 
 	t_input *input3 = malloc(sizeof(t_input));
 	input3->type = CMD;
-	input3->str = ft_strdup("cat");
+	input3->str = ft_strdup("ok");
 	input3->next = NULL;
 	input3->fd = -1;
 
