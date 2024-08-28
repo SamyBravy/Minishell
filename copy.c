@@ -47,7 +47,7 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 			vars.var_len = 0;
 			while (vars.var_start + vars.var_len < vars.len
 				&& ((ft_isalnum(str[vars.var_start + vars.var_len])
-					|| str[vars.var_start + vars.var_len] == '?')
+						|| str[vars.var_start + vars.var_len] == '?')
 					|| str[vars.var_start + vars.var_len] == '_'))
 			{
 				vars.var_len++;
@@ -80,7 +80,7 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 void	copy_value(t_vars_samu *vars, char *result)
 {
 	size_t	value_len;
-	size_t		i;
+	size_t	i;
 
 	value_len = ft_strlen(vars->var_value);
 	i = 0;
@@ -91,7 +91,7 @@ void	copy_value(t_vars_samu *vars, char *result)
 void	expand(t_vars_samu *vars, const char *str, char *result)
 {
 	vars->var_name = ft_strndup(str + vars->var_start, vars->var_len);
-	vars->var_value =ft_getenv(vars->var_name, vars->env);
+	vars->var_value = ft_getenv(vars->var_name, vars->env);
 	free(vars->var_name);
 	if (vars->var_value)
 		copy_value(vars, result);
@@ -105,7 +105,7 @@ void	check_dollar(t_vars_samu *vars, const char *str, char *result)
 		vars->var_len = 0;
 		while (vars->var_start + vars->var_len < vars->len
 			&& ((ft_isalnum(str[vars->var_start + vars->var_len])
-				|| str[vars->var_start + vars->var_len] == '?')
+					|| str[vars->var_start + vars->var_len] == '?')
 				|| str[vars->var_start + vars->var_len] == '_'))
 		{
 			vars->var_len++;
@@ -139,9 +139,9 @@ t_vars_samu	*init_expand_samu(const char *str)
 
 char	*expand_samu(const char *str, t_list *env)
 {
-	t_vars_samu *vars;
-	size_t expanded_length;
-	char *result;
+	t_vars_samu	*vars;
+	size_t		expanded_length;
+	char		*result;
 
 	vars = init_expand_samu(str);
 	vars->env = env;
@@ -154,7 +154,7 @@ char	*expand_samu(const char *str, t_list *env)
 	}
 	result[vars->result_len] = '\0';
 	free(vars);
-	return(result);
+	return (result);
 }
 
 t_input	*new_node(t_type type, char *str)
@@ -175,8 +175,8 @@ t_input	*new_node(t_type type, char *str)
 void	find_lst_cmd(t_input *temp, t_input **last_cmd)
 {
 	t_input	*save;
-	
-	//printf("GG\n");
+
+	// printf("GG\n");
 	save = temp;
 	while ((temp))
 	{
@@ -187,7 +187,7 @@ void	find_lst_cmd(t_input *temp, t_input **last_cmd)
 		if (!(temp)->next)
 			break ;
 		(temp) = (temp)->next;
-		//printf("GG\n");
+		// printf("GG\n");
 	}
 	/*if (*last_cmd)
 		printf("LAST CMD: %s\n", (*last_cmd)->str);
@@ -224,7 +224,7 @@ void	add_node(t_input **head, t_input *new_node)
 	temp_str = NULL;
 	temp = *head;
 	last_cmd = NULL;
-	//printf("IN ADD NODE\n");
+	// printf("IN ADD NODE\n");
 	if (!(*head))
 	{
 		*head = new_node;
@@ -235,15 +235,15 @@ void	add_node(t_input **head, t_input *new_node)
 		concatenate_str(new_node, temp, last_cmd, temp_str);
 	else
 	{
-		while(temp->next)
+		while (temp->next)
 			temp = temp->next;
 		temp->next = new_node;
 	}
 }
 
-t_type identify_type(char *token)
+t_type	identify_type(char *token)
 {
-    if (ft_strncmp(token, ">>", 2) == 0)
+	if (ft_strncmp(token, ">>", 2) == 0)
 		return (APPEND);
 	if (strncmp(token, "<<", 2) == 0)
 		return (HEREDOC);
@@ -274,10 +274,10 @@ void	special_char(t_input **head, token_variables *vars)
 	vars->current_type = identify_type(vars->temp);
 	if (vars->current_type == PIPE)
 	{
-		//printf("IF PIPE\n");
+		// printf("IF PIPE\n");
 		if (vars->cmd_str)
 		{
-			//printf("STO PER AGGIUNGERE FIRST CMD\n");
+			// printf("STO PER AGGIUNGERE FIRST CMD\n");
 			add_node(head, new_node(CMD, vars->cmd_str));
 			free(vars->cmd_str);
 			vars->cmd_str = NULL;
@@ -313,14 +313,14 @@ void	normal_char(token_variables *vars)
 			vars->copy_str++;
 	}
 	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
-	//printf("%s\n", vars->token);
+	// printf("%s\n", vars->token);
 }
 
 void	save_cmd(token_variables *vars)
 {
 	if (vars->cmd_str)
 	{
-		//printf("QUIII???\n");
+		// printf("QUIII???\n");
 		vars->temp_cmd_str = calloc(ft_strlen(vars->cmd_str)
 				+ ft_strlen(vars->token) + 2, 1);
 		ft_strlcpy(vars->temp_cmd_str, vars->cmd_str, INT_MAX);
@@ -331,7 +331,7 @@ void	save_cmd(token_variables *vars)
 	}
 	else
 	{
-		//printf("STO PER CREARE CMDSTR\n");
+		// printf("STO PER CREARE CMDSTR\n");
 		vars->cmd_str = ft_strndup(vars->token, INT_MAX);
 	}
 }
@@ -391,7 +391,7 @@ t_input	*tokenize(char *str)
 			special_char(&head, vars);
 		else
 			save_not_pipe(&head, vars);
-		//printf("%s\n", vars->cmd_str);
+		// printf("%s\n", vars->cmd_str);
 	}
 	if (vars->cmd_str)
 	{
@@ -540,9 +540,10 @@ void	expansion(t_expansion_vars_b *vars, t_input *current)
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
-		&& ((ft_isalnum(vars->current_copy->str[vars->var_start + vars->var_len])
-		|| vars->current_copy->str[vars->var_start + vars->var_len] == '?')
-		|| vars->current_copy->str[vars->var_start + vars->var_len] == '_'))
+		&& ((ft_isalnum(vars->current_copy->str[vars->var_start
+					+ vars->var_len]) || vars->current_copy->str[vars->var_start
+				+ vars->var_len] == '?')
+			|| vars->current_copy->str[vars->var_start + vars->var_len] == '_'))
 		vars->var_len++;
 	if (vars->var_len > 0)
 		find_value_var(vars, current);
@@ -572,8 +573,8 @@ void	check_char(t_expansion_vars_b *vars, t_input *current)
 		single_quotes(vars);
 	else if (vars->current_copy->str[vars->i] == '"')
 		double_quotes(vars);
-	else if (vars->current_copy->str[vars->i] == '$' && vars->in_single_quotes == -1
-		&& vars->current_copy->type != HEREDOC)
+	else if (vars->current_copy->str[vars->i] == '$'
+		&& vars->in_single_quotes == -1 && vars->current_copy->type != HEREDOC)
 		expansion(vars, current);
 	else
 		vars->result_len++;
@@ -628,7 +629,7 @@ void	expand_variable(expand_vars *vars, t_input *current, char *result)
 	vars->var_name = ft_strndup(current->str + vars->var_start, vars->var_len);
 	if (!vars->var_name)
 		return ;
-	vars->var_value =ft_getenv(vars->var_name, vars->env);
+	vars->var_value = ft_getenv(vars->var_name, vars->env);
 	if (current->type != CMD && vars->var_value == NULL)
 		current->fd = -42;
 	free(vars->var_name);
@@ -657,9 +658,11 @@ void	variable_expansion(expand_vars *vars, t_input *current, char *result)
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
-		&& (((ft_isalnum(vars->current_copy->str[vars->var_start + vars->var_len])
-			|| vars->current_copy->str[vars->var_start + vars->var_len] == '?')
-			|| current->str[vars->var_start + vars->var_len] == '_')))
+		&& (((ft_isalnum(vars->current_copy->str[vars->var_start
+						+ vars->var_len])
+					|| vars->current_copy->str[vars->var_start
+					+ vars->var_len] == '?') || current->str[vars->var_start
+				+ vars->var_len] == '_')))
 		vars->var_len++;
 	if (vars->var_len > 0)
 		expand_variable(vars, current, result);
@@ -772,7 +775,7 @@ char	*quotes_to_special(char *input)
 				|| (input[j] == '\'' && j + 1 < length && input[j + 1] == '\''))
 				j += 2;
 			if ((i > 0 && spaces(input[i - 1] == 0)) || ((j < length
-					&& spaces(input[j]) == 0)))
+						&& spaces(input[j]) == 0)))
 				i = j;
 			else
 			{
@@ -870,8 +873,8 @@ void	update_history(t_main_vars *vars)
 {
 	if (*vars->input)
 	{
-		vars->history_fd = open(".tmp/.history.txt", O_WRONLY | O_APPEND | O_EXCL,
-				0644);
+		vars->history_fd = open(".tmp/.history.txt",
+				O_WRONLY | O_APPEND | O_EXCL, 0644);
 		add_history(vars->input);
 		if (vars->history_fd != -1)
 		{
@@ -919,6 +922,48 @@ void	free_tokens_and_input(t_main_vars *vars)
 	}
 	free(vars->input);
 }
+int	only_spaces(const char *str)
+{
+	if (str == NULL || *str == '\0')
+		return (0);
+	while (*str != '\0')
+	{
+		if (*str != '\x1d')
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+void	remove_empty_nodes(t_input **head)
+{
+	t_input	*current;
+	t_input	*prev;
+	t_input	*temp;
+
+	current = *head;
+	prev = NULL;
+	while (current != NULL)
+	{
+		if (current->str != NULL && (current->str[0] == '\0'
+				|| only_spaces(current->str) == 1))
+		{
+			temp = current;
+			if (prev == NULL)
+				*head = current->next;
+			else
+				prev->next = current->next;
+			current = current->next;
+			free(temp->str);
+			free(temp);
+		}
+		else
+		{
+			prev = current;
+			current = current->next;
+		}
+	}
+}
 
 int	main(int argc, char **argv, char **env)
 {
@@ -936,11 +981,11 @@ int	main(int argc, char **argv, char **env)
 	if (ft_getenv("OLDPWD", lst_env) == NULL)
 		ft_export("OLDPWD", &lst_env, 0);
 	int tmp = dup(STDIN_FILENO); // per avere tutto perfettamente pulito
-	dup2(tmp, STDIN_FILENO); // per avere tutto perfettamente pulito
-	close(tmp); // per avere tutto perfettamente pulito
-	tmp = dup(STDOUT_FILENO); // per avere tutto perfettamente pulito
-	dup2(tmp, STDOUT_FILENO); // per avere tutto perfettamente pulito
-	close(tmp); // per avere tutto perfettamente pulito
+	dup2(tmp, STDIN_FILENO);     // per avere tutto perfettamente pulito
+	close(tmp);                  // per avere tutto perfettamente pulito
+	tmp = dup(STDOUT_FILENO);    // per avere tutto perfettamente pulito
+	dup2(tmp, STDOUT_FILENO);    // per avere tutto perfettamente pulito
+	close(tmp);                  // per avere tutto perfettamente pulito
 	while (1)
 	{
 		vars.input = readline("minicecco> ");
@@ -956,7 +1001,7 @@ int	main(int argc, char **argv, char **env)
 			update_history(&vars);
 			exit_status = 2;
 			free(vars.input);
-			continue;
+			continue ;
 		}
 		while (is_quote_balanced(vars.input) == -1)
 		{
@@ -966,7 +1011,7 @@ int	main(int argc, char **argv, char **env)
 				update_history(&vars);
 				exit_status = 2;
 				free(vars.input);
-				continue;
+				continue ;
 			}
 		}
 		while (is_pipe_balanced(vars.input) == -1)
@@ -977,7 +1022,7 @@ int	main(int argc, char **argv, char **env)
 			update_history(&vars);
 			exit_status = 2;
 			free(vars.input);
-			continue;
+			continue ;
 		}
 		tmp2_str = ft_itoa(exit_status);
 		tmp_str = ft_strjoin("?=", tmp2_str);
@@ -987,12 +1032,13 @@ int	main(int argc, char **argv, char **env)
 		vars.input = quotes_to_special(vars.input);
 		vars.tokens = tokenize(vars.input);
 		expand_tokens(&vars, lst_env);
-		//print_tokens(vars.tokens);
-		//free_tokens_and_input(&vars);
+		remove_empty_nodes(&vars.tokens);
+		// print_tokens(vars.tokens);
+		// free_tokens_and_input(&vars);
 		free(vars.input);
 		executer(&vars.tokens, &lst_env, &exit_status);
 	}
-	close(STDIN_FILENO); // per avere tutto perfettamente pulito
+	close(STDIN_FILENO);  // per avere tutto perfettamente pulito
 	close(STDOUT_FILENO); // per avere tutto perfettamente pulito
 	ft_lstclear(&lst_env, free);
 	return (0);
