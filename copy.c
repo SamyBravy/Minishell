@@ -1176,7 +1176,7 @@ int	main(int argc, char **argv, char **env)
 		free(tmp2_str);
 		ft_export(tmp_str, &lst_env, 1);
 		free(tmp_str);
-		//vars.input = quotes_to_special(vars.input);
+		vars.input = quotes_to_special(vars.input);
 		vars.tokens = tokenize(vars.input);
 		//print_tokens(vars.tokens);
 		expand_tokens(&vars, lst_env);
