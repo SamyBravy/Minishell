@@ -71,7 +71,7 @@ int	exec_builtin(t_input **input, t_cmd *cmd,
 	char		**argv;
 	int			exit_status;
 
-	if (cmd->fd_in < 0)
+	if (cmd->fd_in < 0 || cmd->fd_out < 0)
 		return (1);
 	argv = ft_split(get_block_cmd(*input), '\x1D');
 	builtin = which_builtin(*input);
