@@ -46,10 +46,7 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 			vars.var_start = vars.i + 1;
 			vars.var_len = 0;
 			while (vars.var_start + vars.var_len < vars.len
-				&& (((str[vars.var_start + vars.var_len] != '>' && str[vars.var_start + vars.var_len] != '<' && str[vars.var_start + vars.var_len] != '|')
-						|| (str[vars.var_start + vars.var_len] == '?'
-						&& vars.var_len == 0))
-					|| str[vars.var_start + vars.var_len] == '_'))
+				&& (str[vars.var_start + vars.var_len] != '>' && str[vars.var_start + vars.var_len] != '<' && str[vars.var_start + vars.var_len] != '|'  && str[vars.var_start + vars.var_len] != '"' && str[vars.var_start + vars.var_len] != '\''))
 			{
 				vars.var_len++;
 				if (str[vars.var_start] == '?')
@@ -108,10 +105,7 @@ void	check_dollar(t_vars_samu *vars, const char *str, char *result)
 		vars->var_start = vars->i + 1;
 		vars->var_len = 0;
 		while (vars->var_start + vars->var_len < vars->len
-			&& (((str[vars->var_start + vars->var_len] != '>' && str[vars->var_start + vars->var_len] != '<' && str[vars->var_start + vars->var_len] != '|')
-					|| (str[vars->var_start + vars->var_len] == '?'
-					&& vars->var_len == 0))
-				|| str[vars->var_start + vars->var_len] == '_'))
+			&& (str[vars->var_start + vars->var_len] != '>' && str[vars->var_start + vars->var_len] != '<' && str[vars->var_start + vars->var_len] != '|'   && str[vars->var_start + vars->var_len] != '"' && str[vars->var_start + vars->var_len] != '\''))
 		{
 			vars->var_len++;
 			if (str[vars->var_start] == '?')
@@ -304,6 +298,7 @@ void	quotes(token_variables *vars)
 	vars->copy_str++;
 	if (spaces(*vars->copy_str) == 0 && *vars->copy_str != '\0')
 		vars->flag = 1;
+	//printf("%c\n", *vars->copy_str);
 	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
 }
 void	normal_char(token_variables *vars)
@@ -313,6 +308,7 @@ void	normal_char(token_variables *vars)
 		&& *vars->copy_str != '>' && *vars->copy_str != '<'
 		&& *vars->copy_str != '|')
 	{
+		//printf("%c\n", *vars->copy_str);
 		if (*vars->copy_str == '"' || *vars->copy_str == '\'')
 		{
 			vars->c_for_quotes = *vars->copy_str;
@@ -329,14 +325,17 @@ void	normal_char(token_variables *vars)
 
 void	save_cmd(token_variables *vars)
 {
+	char	*help;
+
 	if (vars->cmd_str)
 	{
+		//printf("%s\n", vars->copy_str - ft_strlen(vars->token));
+		help = vars->copy_str - ft_strlen(vars->token) - 1;
 		vars->temp_cmd_str = calloc(ft_strlen(vars->cmd_str)
 				+ ft_strlen(vars->token) + 2, 1);
 		ft_strlcpy(vars->temp_cmd_str, vars->cmd_str, INT_MAX);
-		if (vars->flag != 1)
+		if (spaces(*help) == 1)
 			ft_strlcat(vars->temp_cmd_str, "\x1D", INT_MAX);
-		vars->flag = 0;
 		ft_strlcat(vars->temp_cmd_str, vars->token, INT_MAX);
 		free(vars->cmd_str);
 		vars->cmd_str = vars->temp_cmd_str;
@@ -572,14 +571,14 @@ void	expansion(t_expansion_vars_b *vars, t_input *current)
 		&& ((vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '>' && vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '<' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '|') || (vars->current_copy->str[vars->var_start
-				+ vars->var_len] == '?' && vars->var_len == 0)
-			|| vars->current_copy->str[vars->var_start + vars->var_len] == '_'))
-		{
+					+ vars->var_len] != '|'  && vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '"' && vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '\'')))
+			{
 			vars->var_len++;
 			if (vars->current_copy->str[vars->var_start] == '?')
 				break ;
-		}
+			}
 	if (vars->var_len > 0)
 		find_value_var(vars, current);
 	else
@@ -663,6 +662,7 @@ void	expand_variable(expand_vars *vars, t_input *current, char *result)
 {
 	vars->var_name = ft_strndup(current->str + vars->var_start, vars->var_len);
 	vars->var_value = ft_getenv(vars->var_name, vars->env);
+	//printf("%s\n", vars->var_name);
 	if (current->type != CMD && vars->var_value == NULL)
 		current->fd = -42;
 	free(vars->var_name);
@@ -671,6 +671,7 @@ void	expand_variable(expand_vars *vars, t_input *current, char *result)
 		if (vars->in_double_quotes == 1)
 		{
 			vars->expanded_value = ft_strdup(vars->var_value);
+			//printf("%s\n", vars->expanded_value);
 		}
 		else
 		{
@@ -691,18 +692,18 @@ void	variable_expansion(expand_vars *vars, t_input *current, char *result)
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
-		&& ((((vars->current_copy->str[vars->var_start
+		&& ((vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '>' && vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '<' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '|')
-					|| (vars->current_copy->str[vars->var_start
-					+ vars->var_len] == '?' && vars->var_len == 0) || current->str[vars->var_start
-				+ vars->var_len] == '_'))))
+					+ vars->var_len] != '|'  && vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '"' && vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '\'')))
 				{
 					vars->var_len++;
 					if (vars->current_copy->str[vars->var_start] == '?')
 						break ;
 				}
+	//printf("%li\n", vars->var_len);
 	if (vars->var_len > 0)
 		expand_variable(vars, current, result);
 	else
@@ -1177,7 +1178,7 @@ int	main(int argc, char **argv, char **env)
 		free(tmp2_str);
 		ft_export(tmp_str, &lst_env, 1);
 		free(tmp_str);
-		vars.input = quotes_to_special(vars.input);
+		//vars.input = quotes_to_special(vars.input);
 		vars.tokens = tokenize(vars.input);
 		//print_tokens(vars.tokens);
 		expand_tokens(&vars, lst_env);
