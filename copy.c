@@ -46,7 +46,7 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 			vars.var_start = vars.i + 1;
 			vars.var_len = 0;
 			while (vars.var_start + vars.var_len < vars.len
-				&& ((ft_isalnum(str[vars.var_start + vars.var_len])
+				&& (((str[vars.var_start + vars.var_len] != '>' && str[vars.var_start + vars.var_len] != '<' && str[vars.var_start + vars.var_len] != '|')
 						|| (str[vars.var_start + vars.var_len] == '?'
 						&& vars.var_len == 0))
 					|| str[vars.var_start + vars.var_len] == '_'))
@@ -108,7 +108,7 @@ void	check_dollar(t_vars_samu *vars, const char *str, char *result)
 		vars->var_start = vars->i + 1;
 		vars->var_len = 0;
 		while (vars->var_start + vars->var_len < vars->len
-			&& ((ft_isalnum(str[vars->var_start + vars->var_len])
+			&& (((str[vars->var_start + vars->var_len] != '>' && str[vars->var_start + vars->var_len] != '<' && str[vars->var_start + vars->var_len] != '|')
 					|| (str[vars->var_start + vars->var_len] == '?'
 					&& vars->var_len == 0))
 				|| str[vars->var_start + vars->var_len] == '_'))
@@ -302,7 +302,7 @@ void	quotes(token_variables *vars)
 	while (*vars->copy_str && *vars->copy_str != vars->c_for_quotes)
 		vars->copy_str++;
 	vars->copy_str++;
-	if (spaces(*vars->copy_str) == 0)
+	if (spaces(*vars->copy_str) == 0 && *vars->copy_str != '\0')
 		vars->flag = 1;
 	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
 }
