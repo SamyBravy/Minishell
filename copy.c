@@ -51,6 +51,9 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 					|| str[vars.var_start + vars.var_len] == '_'))
 			{
 				vars.var_len++;
+				if (str[vars.var_start] == '?')
+					break ;
+				
 			}
 			if (vars.var_len > 0)
 			{
@@ -109,6 +112,8 @@ void	check_dollar(t_vars_samu *vars, const char *str, char *result)
 				|| str[vars->var_start + vars->var_len] == '_'))
 		{
 			vars->var_len++;
+			if (str[vars->var_start] == '?')
+				break ;
 		}
 		if (vars->var_len > 0)
 		{
@@ -540,11 +545,15 @@ void	expansion(t_expansion_vars_b *vars, t_input *current)
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
-		&& ((ft_isalnum(vars->current_copy->str[vars->var_start
-					+ vars->var_len]) || vars->current_copy->str[vars->var_start
-				+ vars->var_len] == '?')
+		&& (ft_isalnum(vars->current_copy->str[vars->var_start
+					+ vars->var_len]) || (vars->current_copy->str[vars->var_start
+				+ vars->var_len] == '?' && vars->var_len == 0)
 			|| vars->current_copy->str[vars->var_start + vars->var_len] == '_'))
-		vars->var_len++;
+		{
+			vars->var_len++;
+			if (vars->current_copy->str[vars->var_start] == '?')
+				break ;
+		}
 	if (vars->var_len > 0)
 		find_value_var(vars, current);
 	else
@@ -569,9 +578,9 @@ void	single_quotes(t_expansion_vars_b *vars)
 
 void	check_char(t_expansion_vars_b *vars, t_input *current)
 {
-	if (vars->current_copy->str[vars->i] == '\'')
+	if (vars->current_copy->str[vars->i] == '\''  && vars->in_double_quotes == -1)
 		single_quotes(vars);
-	else if (vars->current_copy->str[vars->i] == '"')
+	else if (vars->current_copy->str[vars->i] == '"' && vars->in_single_quotes == -1)
 		double_quotes(vars);
 	else if (vars->current_copy->str[vars->i] == '$'
 		&& vars->in_single_quotes == -1 && vars->current_copy->type != HEREDOC)
@@ -627,8 +636,6 @@ void	append_value(expand_vars *vars, char *result)
 void	expand_variable(expand_vars *vars, t_input *current, char *result)
 {
 	vars->var_name = ft_strndup(current->str + vars->var_start, vars->var_len);
-	if (!vars->var_name)
-		return ;
 	vars->var_value = ft_getenv(vars->var_name, vars->env);
 	if (current->type != CMD && vars->var_value == NULL)
 		current->fd = -42;
@@ -660,10 +667,14 @@ void	variable_expansion(expand_vars *vars, t_input *current, char *result)
 	while (vars->var_start + vars->var_len < vars->len
 		&& (((ft_isalnum(vars->current_copy->str[vars->var_start
 						+ vars->var_len])
-					|| vars->current_copy->str[vars->var_start
-					+ vars->var_len] == '?') || current->str[vars->var_start
-				+ vars->var_len] == '_')))
-		vars->var_len++;
+					|| (vars->current_copy->str[vars->var_start
+					+ vars->var_len] == '?' && vars->var_len == 0) || current->str[vars->var_start
+				+ vars->var_len] == '_'))))
+				{
+					vars->var_len++;
+					if (vars->current_copy->str[vars->var_start] == '?')
+						break ;
+				}
 	if (vars->var_len > 0)
 		expand_variable(vars, current, result);
 	else
@@ -674,9 +685,9 @@ void	variable_expansion(expand_vars *vars, t_input *current, char *result)
 
 void	check_character(expand_vars *vars, t_input *current, char *result)
 {
-	if (current->str[vars->i] == '\'')
+	if (current->str[vars->i] == '\'' && vars->in_double_quotes == -1)
 		vars->in_single_quotes *= -1;
-	else if (current->str[vars->i] == '"')
+	else if (current->str[vars->i] == '"'  && vars->in_single_quotes == -1)
 		vars->in_double_quotes *= -1;
 	else if (current->str[vars->i] == '$' && vars->in_single_quotes != 1
 		&& current->type != HEREDOC)
