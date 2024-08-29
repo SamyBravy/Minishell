@@ -46,7 +46,7 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 			vars.var_start = vars.i + 1;
 			vars.var_len = 0;
 			while (vars.var_start + vars.var_len < vars.len
-				&& (str[vars.var_start + vars.var_len] != '>' && str[vars.var_start + vars.var_len] != '<' && str[vars.var_start + vars.var_len] != '|'  && str[vars.var_start + vars.var_len] != '"' && str[vars.var_start + vars.var_len] != '\'' && str[vars.var_start + vars.var_len] != '\n'))
+				&& (str[vars.var_start + vars.var_len] != '>' && str[vars.var_start + vars.var_len] != '<' && str[vars.var_start + vars.var_len] != '|'  && str[vars.var_start + vars.var_len] != '"' && str[vars.var_start + vars.var_len] != '\'' && str[vars.var_start + vars.var_len] != '\n' && str[vars.var_start+ vars.var_len] != ' '))
 			{
 				vars.var_len++;
 				if (str[vars.var_start] == '?')
@@ -105,7 +105,7 @@ void	check_dollar(t_vars_samu *vars, const char *str, char *result)
 		vars->var_start = vars->i + 1;
 		vars->var_len = 0;
 		while (vars->var_start + vars->var_len < vars->len
-			&& (str[vars->var_start + vars->var_len] != '>' && str[vars->var_start + vars->var_len] != '<' && str[vars->var_start + vars->var_len] != '|'   && str[vars->var_start + vars->var_len] != '"' && str[vars->var_start + vars->var_len] != '\'' && str[vars->var_start + vars->var_len] != '\n'))
+			&& (str[vars->var_start + vars->var_len] != '>' && str[vars->var_start + vars->var_len] != '<' && str[vars->var_start + vars->var_len] != '|'   && str[vars->var_start + vars->var_len] != '"' && str[vars->var_start + vars->var_len] != '\'' && str[vars->var_start + vars->var_len] != '\n' && str[vars->var_start+ vars->var_len] != ' '))
 		{
 			vars->var_len++;
 			if (str[vars->var_start] == '?')
@@ -571,7 +571,8 @@ void	expansion(t_expansion_vars_b *vars, t_input *current)
 					+ vars->var_len] != '<' && vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '|'  && vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '"' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '\'')))
+					+ vars->var_len] != '\'' && vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '\x1d')))
 			{
 			vars->var_len++;
 			if (vars->current_copy->str[vars->var_start] == '?')
@@ -695,7 +696,8 @@ void	variable_expansion(expand_vars *vars, t_input *current, char *result)
 					+ vars->var_len] != '<' && vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '|'  && vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '"' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '\'')))
+					+ vars->var_len] != '\''&& vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '\x1d')))
 				{
 					vars->var_len++;
 					if (vars->current_copy->str[vars->var_start] == '?')
