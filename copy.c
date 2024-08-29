@@ -332,7 +332,8 @@ void	save_cmd(token_variables *vars)
 		vars->temp_cmd_str = calloc(ft_strlen(vars->cmd_str)
 				+ ft_strlen(vars->token) + 2, 1);
 		ft_strlcpy(vars->temp_cmd_str, vars->cmd_str, INT_MAX);
-		ft_strlcat(vars->temp_cmd_str, "\x1D", INT_MAX);
+		if (vars->cmd_str[ft_strlen(vars->cmd_str) - 1] != '\'' && vars->cmd_str[ft_strlen(vars->cmd_str) - 1] != '"')
+			ft_strlcat(vars->temp_cmd_str, "\x1D", INT_MAX);
 		ft_strlcat(vars->temp_cmd_str, vars->token, INT_MAX);
 		free(vars->cmd_str);
 		vars->cmd_str = vars->temp_cmd_str;
@@ -564,8 +565,10 @@ void	expansion(t_expansion_vars_b *vars, t_input *current)
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
-		&& (ft_isalnum(vars->current_copy->str[vars->var_start
-					+ vars->var_len]) || (vars->current_copy->str[vars->var_start
+		&& ((vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '>' && vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '<' && vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '|') || (vars->current_copy->str[vars->var_start
 				+ vars->var_len] == '?' && vars->var_len == 0)
 			|| vars->current_copy->str[vars->var_start + vars->var_len] == '_'))
 		{
@@ -684,8 +687,10 @@ void	variable_expansion(expand_vars *vars, t_input *current, char *result)
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
-		&& (((ft_isalnum(vars->current_copy->str[vars->var_start
-						+ vars->var_len])
+		&& ((((vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '>' && vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '<' && vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '|')
 					|| (vars->current_copy->str[vars->var_start
 					+ vars->var_len] == '?' && vars->var_len == 0) || current->str[vars->var_start
 				+ vars->var_len] == '_'))))
