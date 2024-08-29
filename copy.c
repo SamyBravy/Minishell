@@ -302,6 +302,8 @@ void	quotes(token_variables *vars)
 	while (*vars->copy_str && *vars->copy_str != vars->c_for_quotes)
 		vars->copy_str++;
 	vars->copy_str++;
+	if (spaces(*vars->copy_str) == 0)
+		vars->flag = 1;
 	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
 }
 void	normal_char(token_variables *vars)
@@ -332,8 +334,9 @@ void	save_cmd(token_variables *vars)
 		vars->temp_cmd_str = calloc(ft_strlen(vars->cmd_str)
 				+ ft_strlen(vars->token) + 2, 1);
 		ft_strlcpy(vars->temp_cmd_str, vars->cmd_str, INT_MAX);
-		if (vars->cmd_str[ft_strlen(vars->cmd_str) - 1] != '\'' && vars->cmd_str[ft_strlen(vars->cmd_str) - 1] != '"')
+		if (vars->flag != 1)
 			ft_strlcat(vars->temp_cmd_str, "\x1D", INT_MAX);
+		vars->flag = 0;
 		ft_strlcat(vars->temp_cmd_str, vars->token, INT_MAX);
 		free(vars->cmd_str);
 		vars->cmd_str = vars->temp_cmd_str;
@@ -380,6 +383,7 @@ token_variables	*prepare_var(char *str)
 	vars->current_type = CMD;
 	vars->cmd_str = NULL;
 	vars->copy_str = str;
+	vars->flag = 0;
 	return (vars);
 }
 

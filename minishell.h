@@ -80,6 +80,7 @@ typedef struct s_token_variables
     char    c_for_quotes;
     char    *start;
 	char	*copy_str;
+    int     flag;
 } token_variables;
 
 typedef struct s_expand_vars
