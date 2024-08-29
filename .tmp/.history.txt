@@ -513,3 +513,31 @@ ss '
 ss |'
 sss |'
 exit
+exit
+exit
+echo $?
+exit
+<< sjhda
+exit
+2
+exit
+echo $?
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+exit
+C
+exit
+exit
+<< saj
+<< f
+echo $?
+<< f
+echo $?
+echo $?
+exit

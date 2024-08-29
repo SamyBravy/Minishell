@@ -18,6 +18,8 @@ void	handel_sig_def(int sig)
 	{
 		g_signal = SIGINT;
 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
 	}
 	else if (sig == SIGQUIT)
 		ft_putstr_fd("\b\b  \b\b", STDERR_FILENO);
