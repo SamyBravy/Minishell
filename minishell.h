@@ -82,7 +82,6 @@ typedef struct s_token_variables
 	char	*copy_str;
 } token_variables;
 
-
 typedef struct s_expand_vars
 {
     t_input *current_copy;
@@ -170,7 +169,7 @@ char		*get_block_cmd(t_input *input);
 int			get_flags(t_type type);
 int			only_one_cmd(t_input *input);
 
-void		handle_sig_heredoc(int sig);
+void		handel_sig_def(int sig);
 void		handle_sig_execve(int sig);
 
 /* builtins */

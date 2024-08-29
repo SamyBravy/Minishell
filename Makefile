@@ -12,8 +12,8 @@
 
 NAME = minishell
 MY_LIB = ./my_lib
-SRC = 	copy.c parsing.c env_utils.c \
-		executer/executer.c executer/clean.c executer/handle_signals.c \
+SRC = 	copy.c parsing.c env_utils.c handle_signals.c \
+		executer/executer.c executer/clean.c \
 		executer/executer_utils.c executer/ft_heredocs.c executer/execute_command.c \
 		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c builtins/env_builtin.c \
 		builtins/unset_builtin.c builtins/export_builtin.c builtins/cd_builtin.c
@@ -37,7 +37,7 @@ fclean:
 
 val: all
 	clear
-	valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck --keep-debuginfo=yes --track-fds=yes ./minishell
+	valgrind --suppressions=readline.supp --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck --keep-debuginfo=yes --track-fds=yes --quiet ./minishell
 
 re: fclean all
 

@@ -373,3 +373,143 @@ k | '
 k | '
 ok ' |||||||| |0o
 exit
+echo "'$USER'" $USER '$USER' "$USER" '"$USER"'
+echo $? $?a $a?
+export a=9
+echo $? $?a $a?
+<< here
+<< here cat
+exit
+her'e' c'a't
+<< here cat
+<< he'r'e ca't'
+exit
+<< here cat
+exit
+./minishell
+echo $?
+./minishell
+echo $?
+exit
+askfjaf | jashfjsd |sjhda
+askfjaf |
+exi
+exit
+askfjaf |df |df
+askfjaf 
+djfhjsf |kfjsd |dsjfhs
+djfhjsf |ksja
+djfhjsf |ksja
+./minishell
+jkedf
+exit
+echo $?
+./minishell
+jkedf
+echo $?
+exit
+sdjf |fjdsk || '
+' |sd
+asf |sf |s
+asf | sa '
+sjda ' | sjdi
+clear
+echo $?
+echo $?
+echo $?
+exit
+dkjf |fsa '
+\
+d
+d
+'
+'
+\exit
+'
+exit
+   
+echo $?
+echo $?
+exit
+<< here
+<< here wc
+<< here wc
+exit
+exxit
+exit
+exit
+exit
+exit
+exit
+exit
+<< sjfh
+dkldfj
+cat
+exit
+echo $?
+cat
+echo $?
+cat
+echo $?
+exit
+cat
+echo $?
+exit
+echo $?
+cat
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+cat
+echo $?
+cat
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+cat
+cat
+exit
+cta
+cat
+cat
+exit
+cat
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+exit
+cat 
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+echo $?
+exit
+cat 
+echo $/
+cat 
+echo $?
+jkashf |
+dhas |
+echo $?
+dhas |
+s |
+s '
+echo $?
+s '
+ss '
+ss |'
+sss |'
+exit

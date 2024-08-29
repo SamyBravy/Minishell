@@ -47,7 +47,8 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 			vars.var_len = 0;
 			while (vars.var_start + vars.var_len < vars.len
 				&& ((ft_isalnum(str[vars.var_start + vars.var_len])
-						|| str[vars.var_start + vars.var_len] == '?')
+						|| (str[vars.var_start + vars.var_len] == '?'
+						&& vars.var_len == 0))
 					|| str[vars.var_start + vars.var_len] == '_'))
 			{
 				vars.var_len++;
@@ -108,7 +109,8 @@ void	check_dollar(t_vars_samu *vars, const char *str, char *result)
 		vars->var_len = 0;
 		while (vars->var_start + vars->var_len < vars->len
 			&& ((ft_isalnum(str[vars->var_start + vars->var_len])
-					|| str[vars->var_start + vars->var_len] == '?')
+					|| (str[vars->var_start + vars->var_len] == '?'
+					&& vars->var_len == 0))
 				|| str[vars->var_start + vars->var_len] == '_'))
 		{
 			vars->var_len++;
@@ -417,7 +419,7 @@ void	print_tokens(t_input *tokens)
 	}
 }
 
-int	is_quote_balanced(const char *str)
+int	is_quote_balanced(const char *str, char *quotes)
 {
 	int	in_double_quote;
 	int	in_single_quote;
@@ -438,6 +440,10 @@ int	is_quote_balanced(const char *str)
 		}
 		str++;
 	}
+	if (in_double_quote == 1)
+		*quotes = '"';
+	if (in_single_quote == 1)
+		*quotes = '\'';
 	if (in_double_quote == -1 && in_single_quote == -1)
 		return (1);
 	return (-1);
@@ -829,6 +835,21 @@ void	heredoc_quotes(t_input *current)
 	}
 }
 
+void	update_history(t_main_vars *vars)
+{
+	if (*vars->input)
+	{
+		vars->history_fd = open(".tmp/.history.txt",
+				O_WRONLY | O_APPEND | O_EXCL, 0644);
+		add_history(vars->input);
+		if (vars->history_fd != -1)
+		{
+			save_history(vars->history_fd, vars->input);
+			close(vars->history_fd);
+		}
+	}
+}
+
 void	take_history(t_main_vars *vars)
 {
 	vars->history_fd = open(".tmp/.history.txt", O_RDONLY);
@@ -847,9 +868,28 @@ void	take_history(t_main_vars *vars)
 	}
 }
 
-void	ask_more_for_quotes(t_main_vars *vars)
+bool	ask_more_for_quotes(t_main_vars *vars, char quotes)
 {
 	vars->temp_input = readline("> ");
+	if (g_signal == SIGINT)
+	{
+		update_history(vars);
+		free(vars->input);
+		vars->input = NULL;
+		return (false);
+	}
+	if (!vars->temp_input)
+	{
+		update_history(vars);
+		free(vars->input);
+		vars->input = NULL;
+		ft_putstr_fd("minicecco: unexpected EOF while looking for matching `" ,
+			STDERR_FILENO);
+		ft_putchar_fd(quotes, STDERR_FILENO);
+		ft_putstr_fd("'\nminicecco: syntax error: unexpected end of file\n",
+			STDERR_FILENO);
+		return (false);
+	}
 	vars->new_input = malloc(ft_strlen(vars->input)
 			+ ft_strlen(vars->temp_input) + 2);
 	ft_strlcpy(vars->new_input, vars->input, INT_MAX);
@@ -858,11 +898,29 @@ void	ask_more_for_quotes(t_main_vars *vars)
 	free(vars->input);
 	vars->input = vars->new_input;
 	free(vars->temp_input);
+	return (true);
 }
 
-void	ask_more_for_pipes(t_main_vars *vars)
+int	ask_more_for_pipes(t_main_vars *vars)
 {
+	char	quotes;
+
 	vars->temp_input = readline("> ");
+	if (g_signal == SIGINT)
+	{
+		update_history(vars);
+		free(vars->input);
+		vars->input = NULL;
+		return (0);
+	}
+	if (!vars->temp_input)
+	{
+		update_history(vars);
+		free(vars->input);
+		vars->input = NULL;
+		ft_putstr_fd("minicecco: syntax error: unexpected end of file\n", STDERR_FILENO);
+		return (0);
+	}
 	vars->new_input = malloc(ft_strlen(vars->input)
 			+ ft_strlen(vars->temp_input) + 1);
 	ft_strlcpy(vars->new_input, vars->input, INT_MAX);
@@ -870,23 +928,12 @@ void	ask_more_for_pipes(t_main_vars *vars)
 	free(vars->input);
 	vars->input = vars->new_input;
 	free(vars->temp_input);
-	while (is_quote_balanced(vars->input) == -1)
-		ask_more_for_quotes(vars);
-}
-
-void	update_history(t_main_vars *vars)
-{
-	if (*vars->input)
+	while (is_quote_balanced(vars->input, &quotes) == -1)
 	{
-		vars->history_fd = open(".tmp/.history.txt",
-				O_WRONLY | O_APPEND | O_EXCL, 0644);
-		add_history(vars->input);
-		if (vars->history_fd != -1)
-		{
-			save_history(vars->history_fd, vars->input);
-			close(vars->history_fd);
-		}
+		if (!ask_more_for_quotes(vars, quotes))
+			return (2);
 	}
+	return (1);
 }
 
 void	expand_tokens(t_main_vars *vars, t_list *lst_env)
@@ -977,6 +1024,7 @@ int	main(int argc, char **argv, char **env)
 	int			exit_status;
 	char		*tmp_str;
 	char		*tmp2_str;
+	char		quotes;
 
 	exit_status = 0;
 	(void)argc;
@@ -993,9 +1041,22 @@ int	main(int argc, char **argv, char **env)
 	close(tmp);                  // per avere tutto perfettamente pulito
 	while (1)
 	{
+		g_signal = 0;
+		signal(SIGINT, handel_sig_def);
+		signal(SIGQUIT, handel_sig_def);
 		vars.input = readline("minicecco> ");
+		if (g_signal == SIGINT)
+		{
+			g_signal = 0;
+			exit_status = 130;
+			free(vars.input);
+			continue ;
+		}
 		if (!vars.input)
+		{
+			ft_putstr_fd("exit\n", STDERR_FILENO);
 			break ;
+		}
 		if (vars.input[0] == '\0')
 		{
 			free(vars.input);
@@ -1008,10 +1069,59 @@ int	main(int argc, char **argv, char **env)
 			free(vars.input);
 			continue ;
 		}
-		while (is_quote_balanced(vars.input) == -1)
-			ask_more_for_quotes(&vars);
+		while (is_quote_balanced(vars.input, &quotes) == -1)
+		{
+			if (!ask_more_for_quotes(&vars, quotes))
+			{
+				if (g_signal == SIGINT)
+				{
+					g_signal = 0;
+					exit_status = 130;
+				}
+				else
+					exit_status = 2;
+				break ;
+			}
+		}
+		if (!vars.input)
+			continue ;
 		while (is_pipe_balanced(vars.input) == -1)
-			ask_more_for_pipes(&vars);
+		{
+			if(!ask_more_for_pipes(&vars))
+			{
+				if (g_signal == SIGINT)
+				{
+					g_signal = 0;
+					exit_status = 130;
+				}
+				else
+				{
+					ft_putstr_fd("exit\n", STDERR_FILENO);
+					exit_status = 2;
+				}
+				break ;
+			}
+			else if (!vars.input)
+			{
+				if (g_signal == SIGINT)
+				{
+					g_signal = 0;
+					exit_status = 130;
+				}
+				else
+					exit_status = -42;
+				break ;
+			}
+		}
+		if (!vars.input && exit_status == 2)
+			break ;
+		else if (!vars.input && exit_status == 130)
+			continue ;
+		else if (!vars.input)
+		{
+			exit_status = 2;
+			continue ;
+		}
 		update_history(&vars);
 		if (check_syntax_errors(vars.input) != 0)
 		{
@@ -1036,5 +1146,5 @@ int	main(int argc, char **argv, char **env)
 	close(STDIN_FILENO);  // per avere tutto perfettamente pulito
 	close(STDOUT_FILENO); // per avere tutto perfettamente pulito
 	ft_lstclear(&lst_env, free);
-	return (0);
+	return (exit_status);
 }

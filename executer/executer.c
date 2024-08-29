@@ -47,8 +47,8 @@ static void	init_signals_and_heredocs(t_input **input, int *exit_status,
 	t_list *env)
 {
 	g_signal = 0;
-	signal(SIGINT, handle_sig_heredoc);
-	signal(SIGQUIT, handle_sig_heredoc);
+	signal(SIGINT, handel_sig_def);
+	signal(SIGQUIT, handel_sig_def);
 	create_heredocs(*input, env);
 	if (g_signal == SIGINT)
 	{
