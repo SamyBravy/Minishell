@@ -987,6 +987,20 @@ int	only_spaces(const char *str)
 	return (1);
 }
 
+char	*remove_spaces(char* str)
+{
+    char	*start;
+	char	*str_no_spaces;
+
+	start = str;
+    while (*start == '\x1d')
+        start++;
+    str_no_spaces = calloc(ft_strlen(start) + 1, sizeof(char));
+    ft_strlcpy(str_no_spaces, start, INT_MAX);
+    free(str);
+    return (str_no_spaces);
+}
+
 void	remove_empty_nodes(t_input **head)
 {
 	t_input	*current;
@@ -997,6 +1011,8 @@ void	remove_empty_nodes(t_input **head)
 	prev = NULL;
 	while (current != NULL)
 	{
+		if (current->type == CMD)
+			current->str = remove_spaces(current->str);
 		if (current->str != NULL && (current->str[0] == '\0'
 				|| only_spaces(current->str) == 1))
 		{
