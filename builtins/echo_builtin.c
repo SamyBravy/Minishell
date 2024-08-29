@@ -43,7 +43,8 @@ int	echo_builtin(char **argv)
 	i = 1 + number_of_flags(argv);
 	while (argv[i])
 	{
-		ft_printf("%s", argv[i]);
+		if (argv[i][0] != '\x1E')
+			ft_printf("%s", argv[i]);
 		if (argv[i + 1])
 			ft_printf(" ");
 		i++;
