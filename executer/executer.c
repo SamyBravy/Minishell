@@ -125,8 +125,7 @@ void	*executer(t_input **input, t_list **env, int *exit_status)
 		open_block_files(*input, &cmd);
 		if (!i && only_one_cmd(*input) && which_builtin(*input) != INTERNAL)
 		{
-			if (cmd.fd_out > 2)
-				dup2(cmd.fd_out, STDOUT_FILENO);
+			dup2(cmd.fd_out, STDOUT_FILENO);
 			*exit_status = exec_builtin(input, &cmd, &stdio_pipes_fds, env);
 		}
 		else if (i++ || true)
