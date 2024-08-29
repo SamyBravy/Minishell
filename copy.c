@@ -170,10 +170,12 @@ t_input	*new_node(t_type type, char *str)
 
 	new_node = (t_input *)malloc(sizeof(t_input));
 	new_node->type = type;
+	//printf("%s\n", str);
 	if (str)
 		new_node->str = ft_strndup(str, INT_MAX);
 	else
 		new_node->str = NULL;
+	//printf("%s\n", new_node->str);
 	new_node->fd = -1;
 	new_node->next = NULL;
 	return (new_node);
@@ -320,14 +322,13 @@ void	normal_char(token_variables *vars)
 			vars->copy_str++;
 	}
 	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
-	// printf("%s\n", vars->token);
+	//printf("%s\n", vars->token);
 }
 
 void	save_cmd(token_variables *vars)
 {
 	if (vars->cmd_str)
 	{
-		// printf("QUIII???\n");
 		vars->temp_cmd_str = calloc(ft_strlen(vars->cmd_str)
 				+ ft_strlen(vars->token) + 2, 1);
 		ft_strlcpy(vars->temp_cmd_str, vars->cmd_str, INT_MAX);
@@ -340,6 +341,7 @@ void	save_cmd(token_variables *vars)
 	{
 		// printf("STO PER CREARE CMDSTR\n");
 		vars->cmd_str = ft_strndup(vars->token, INT_MAX);
+		//printf("%s\n", vars->cmd_str);
 	}
 }
 
@@ -402,6 +404,7 @@ t_input	*tokenize(char *str)
 	}
 	if (vars->cmd_str)
 	{
+		//printf("%s\n", vars->cmd_str);
 		add_node(&head, new_node(CMD, vars->cmd_str));
 		free(vars->cmd_str);
 	}
@@ -479,6 +482,11 @@ void	skip_spaces(const char *var_value, t_size_t_clean *vars)
 void	spaces_check(const char *var_value, t_input *current,
 		t_size_t_clean *vars, char *cleaned_value)
 {
+	int	j;
+
+	j = 0;
+	while(spaces(var_value[vars->i]) == 1)
+		vars->i++;
 	while (vars->i < vars->len)
 	{
 		if (spaces(var_value[vars->i]) == 1)
@@ -491,6 +499,11 @@ void	spaces_check(const char *var_value, t_input *current,
 		else
 		{
 			cleaned_value[vars->cleaned_len++] = var_value[vars->i++];
+			j = vars->i;
+			while(var_value[j] && spaces(var_value[j]) == 1)
+				j++;
+			if (var_value[j] == '\0')
+				break ;
 		}
 	}
 }
@@ -750,16 +763,18 @@ int	is_inside_quotes(const char *str, int index)
 
 	in_double_quotes = -1;
 	in_single_quotes = -1;
-	for (i = 0; i < index; i++)
+	i = 0;
+	while (i < index)
 	{
-		if (str[i] == '\"')
+		if (str[i] == '\"' && in_single_quotes == -1)
 		{
 			in_double_quotes = -1 * in_double_quotes;
 		}
-		else if (str[i] == '\'')
+		else if (str[i] == '\'' && in_double_quotes == -1)
 		{
 			in_single_quotes = -1 * in_single_quotes;
 		}
+		i++;
 	}
 	if (in_double_quotes == 1)
 		return (1);
@@ -786,7 +801,10 @@ char	*quotes_to_special(char *input)
 			|| (input[i] == '\'' && i + 1 < length && input[i + 1] == '\''))
 		{
 			if (is_inside_quotes(input, i) != 0)
+			{
 				result[ri++] = input[i++];
+				continue ;
+			}
 			j = i;
 			while ((input[j] == '\"' && j + 1 < length && input[j + 1] == '\"')
 				|| (input[j] == '\'' && j + 1 < length && input[j + 1] == '\''))
@@ -1152,10 +1170,10 @@ int	main(int argc, char **argv, char **env)
 		free(tmp_str);
 		vars.input = quotes_to_special(vars.input);
 		vars.tokens = tokenize(vars.input);
+		//print_tokens(vars.tokens);
 		expand_tokens(&vars, lst_env);
 		remove_empty_nodes(&vars.tokens);
-		// print_tokens(vars.tokens);
-		// free_tokens_and_input(&vars);
+		//free_tokens_and_input(&vars);
 		free(vars.input);
 		executer(&vars.tokens, &lst_env, &exit_status);
 	}
