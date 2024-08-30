@@ -56,3 +56,21 @@ cat >./minishell_tester/test_files/invalid_permission <missing
 echo $?
 norminette copy.c
 exit
+echo ciao
+$?
+exit
+echo ciao |''
+echo ciao '' ''|cat -e
+echo ciao '' '' '' '' | cat -e
+exit
+echo ciao '' '' '' '' | cat -e
+echo ciao'' | cat -e
+exit
+echo ciao '' '' '' '' | cat -e
+exit
+echo ciao '' '' '' '' | cat -e
+echo ciao '' '' '' ''| cat -e
+echo ciao '' '' '' ''|''
+clear
+cd $HOME/l
+norminette

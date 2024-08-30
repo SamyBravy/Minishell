@@ -12,7 +12,7 @@
 
 NAME = minishell
 MY_LIB = ./my_lib
-SRC = 	copy.c syntax_error.c env_utils.c handle_signals.c \
+SRC = 	add_node.c balanced.c control_chars.c env_utils.c expand_main.c expansion_help.c expansion_help2.c file_samu1.c file_samu2.c heredoc_and_quotes.c history.c main2.c more_pipes_and_quotes.c remove_empty.c remove_spaces.c main.c syntax_error.c handle_signals.c tokenize.c \
 		executer/executer.c executer/clean.c \
 		executer/executer_utils.c executer/ft_heredocs.c executer/execute_command.c \
 		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c builtins/env_builtin.c \

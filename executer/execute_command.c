@@ -112,7 +112,7 @@ void	exec_cmd(t_input **input, t_cmd *cmd, t_list **env)
 
 	if (which_builtin(*input) != INTERNAL)
 		clean_and_exit(input, env, exec_builtin(input, cmd, NULL, env), 1);
-	if (cmd->fd_in < 0)
+	if (cmd->fd_in < 0 || cmd->fd_out < 0)
 		clean_and_exit(input, env, 1, 1);
 	if (parse_internal_cmd(get_block_cmd(*input), cmd, *env) == -1)
 		clean_and_exit(input, env, 127, 1);
