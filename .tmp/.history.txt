@@ -541,3 +541,11 @@ echo $?
 echo $?
 echo $?
 exit
+echo "$USER "
+exit
+echo "$USER "
+echo "$USER$USER"
+echo $USER$USER
+echo "$USER$USER "
+echo "$US"ER$USER
+exit
