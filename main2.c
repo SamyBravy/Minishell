@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:03 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:40:11 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:44:33 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	tokenize_and_ex(t_main_vars *vars, int *exit_status, t_list **lst_env)
 	executer(&vars->tokens, lst_env, exit_status);
 }
 
-int	read_and_signal(t_main_vars *vars, int *exit_status)
+static int	read_and_signal(t_main_vars *vars, int *exit_status)
 {
 	g_signal = 0;
 	signal(SIGINT, handel_sig_def);
@@ -53,7 +53,7 @@ int	read_and_signal(t_main_vars *vars, int *exit_status)
 	return (0);
 }
 
-int	syntax_and_quotes(t_main_vars *vars, int *exit_status, char *quotes)
+static int	syntax_and_quotes(t_main_vars *vars, int *exit_status, char *quotes)
 {
 	if (check_syntax_errors(vars->input) != 0)
 	{
@@ -81,7 +81,7 @@ int	syntax_and_quotes(t_main_vars *vars, int *exit_status, char *quotes)
 	return (0);
 }
 
-int	balanced_pipes_help(t_main_vars *vars, int *exit_status)
+static int	balanced_pipes_help(t_main_vars *vars, int *exit_status)
 {
 	if (!ask_more_for_pipes(vars))
 	{

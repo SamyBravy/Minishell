@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   add_node.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:24:28 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:24:41 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:43:41 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_input	*new_node(t_type type, char *str)
 	return (new_node);
 }
 
-void	find_lst_cmd(t_input *temp, t_input **last_cmd)
+static void	find_lst_cmd(t_input *temp, t_input **last_cmd)
 {
 	t_input	*save;
 
@@ -45,7 +45,7 @@ void	find_lst_cmd(t_input *temp, t_input **last_cmd)
 	temp = save;
 }
 
-void	concatenate_str(t_input *new_node, t_input *temp, t_input *last_cmd,
+static void	concatenate_str(t_input *new_node, t_input *temp, t_input *last_cmd,
 		char *temp_str)
 {
 	if (*(last_cmd->str) == '$')

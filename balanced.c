@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   llll.c                                             :+:      :+:    :+:   */
+/*   balanced.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:28:07 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:28:18 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:43:01 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,14 @@ int	is_pipe_balanced(char *str)
 	return (1);
 }
 
-void	skip_spaces(char *var_value, t_size_t_clean *vars)
+static void	skip_spaces(char *var_value, t_size_t_clean *vars)
 {
 	while (vars->i < vars->len && spaces(var_value[vars->i]) == 1)
 		vars->i++;
 }
 
-void	spaces_check(char *var_value, t_input *current, t_size_t_clean *vars,
+static void	spaces_check(char *var_value, t_input *current,
+		t_size_t_clean *vars,
 		char *cleaned_value)
 {
 	int	j;

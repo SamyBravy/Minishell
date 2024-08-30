@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   file_samu1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:23:05 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:22:31 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:49:06 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	dollar_check(t_vars_samu *vars, char *str)
+static void	dollar_check(t_vars_samu *vars, char *str)
 {
 	while (vars->var_start + vars->var_len < vars->len && (str[vars->var_start
 				+ vars->var_len] != '>' && str[vars->var_start
@@ -32,11 +32,7 @@ void	dollar_check(t_vars_samu *vars, char *str)
 	if (vars->var_len > 0)
 	{
 		vars->var_name = ft_strndup(str + vars->var_start, vars->var_len);
-		vars->var_value = ft_getenv(vars->var_name, vars->env);
-		free(vars->var_name);
-		if (vars->var_value)
-			vars->result_len += strlen(vars->var_value);
-		vars->i += vars->var_len;
+		dollar_check_help_samu(vars);
 	}
 	else
 		vars->result_len++;
@@ -65,7 +61,7 @@ size_t	calculate_length_samu(char *str, t_list *env)
 	return (vars.result_len);
 }
 
-void	copy_value(t_vars_samu *vars, char *result)
+static void	copy_value(t_vars_samu *vars, char *result)
 {
 	size_t	value_len;
 	size_t	i;

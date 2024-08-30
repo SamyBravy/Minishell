@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   more_pipes_and_quotes.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:36:10 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:36:33 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:42:34 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool	more_quotes_help(t_main_vars *vars, char quotes)
+static bool	more_quotes_help(t_main_vars *vars, char quotes)
 {
 	update_history(vars);
 	free(vars->input);

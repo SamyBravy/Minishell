@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_and_quotes.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:34:09 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:18:19 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:42:22 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_inside_quotes(const char *str, int index)
+static int	is_inside_quotes(const char *str, int index)
 {
 	int	i;
 	int	in_double_quotes;
@@ -36,25 +36,40 @@ int	is_inside_quotes(const char *str, int index)
 	return (0);
 }
 
-void	change_quotes(t_quotes_special_vars *vars, char *input)
+static void	chenge_quotes_help(t_quotes_special_vars *vars, char *input)
+{
+	if ((vars->i > 0 && (spaces(input[vars->i - 1]) == 1
+				|| input[vars->i - 1] == '>' || input[vars->i - 1] == '<'
+				|| input[vars->i - 1] == '|')) && (vars->j < vars->length
+			&& (spaces(input[vars->j]) == 1 || input[vars->j] == '>'
+				|| input[vars->j] == '<' || input[vars->j] == '|')))
+		vars->result[vars->ri++] = '\x1E';
+	else if ((vars->i == 0 && (spaces(input[vars->j]) == 1
+				|| input[vars->j] == '>' || input[vars->j] == '<'
+				|| input[vars->j] == '|')) || (vars->i == 0 && vars->j
+			== vars->length) || (vars->j == vars->length
+			&& (spaces(input[vars->i - 1]) == 1 || input[vars->i - 1] == '>'
+				|| input[vars->i - 1] == '<' || input[vars->i - 1] == '|')))
+		vars->result[vars->ri++] = '\x1E';
+}
+
+static void	change_quotes(t_quotes_special_vars *vars, char *input)
 {
 	vars->j = vars->i;
 	while ((input[vars->j] == '\"' && vars->j + 1 < vars->length
 			&& input[vars->j + 1] == '\"') || (input[vars->j] == '\'' && vars->j
 			+ 1 < vars->length && input[vars->j + 1] == '\''))
 		vars->j += 2;
-	if ((vars->i > 0 && spaces(input[vars->i - 1]) == 0 && input[vars->i - 1] != '>' && input[vars->i - 1] != '<' && input[vars->i - 1] != '|')
-		|| ((vars->j < vars->length && spaces(input[vars->j]) == 0) && input[vars->j] != '>' && input[vars->j] != '<' && input[vars->j] != '|'))
+	if ((vars->i > 0 && spaces(input[vars->i - 1]) == 0
+			&& input[vars->i - 1] != '>' && input[vars->i - 1] != '<'
+			&& input[vars->i - 1] != '|') || ((vars->j < vars->length
+				&& spaces(input[vars->j]) == 0)
+			&& input[vars->j] != '>' && input[vars->j] != '<'
+			&& input[vars->j] != '|'))
 		vars->i = vars->j;
 	else
 	{
-		if ((vars->i > 0 && (spaces(input[vars->i - 1]) == 1 || input[vars->i - 1] == '>' || input[vars->i - 1] == '<' || input[vars->i - 1] == '|'))
-			&& (vars->j < vars->length && (spaces(input[vars->j]) == 1 || input[vars->j] == '>' || input[vars->j] == '<' || input[vars->j] == '|')))
-			vars->result[vars->ri++] = '\x1E';
-		else if ((vars->i == 0 && (spaces(input[vars->j]) == 1 || input[vars->j] == '>' || input[vars->j] == '<' || input[vars->j] == '|')) || (vars->i == 0
-				&& vars->j == vars->length) || (vars->j == vars->length
-				&& (spaces(input[vars->i - 1]) == 1 || input[vars->i - 1] == '>' || input[vars->i - 1] == '<' || input[vars->i - 1] == '|')))
-			vars->result[vars->ri++] = '\x1E';
+		chenge_quotes_help(vars, input);
 		vars->i = vars->j;
 	}
 }

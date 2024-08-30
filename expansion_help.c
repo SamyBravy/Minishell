@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_help.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:29:20 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:21:22 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:44:06 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	find_value_var(t_expansion_vars_b *vars, t_input *current)
+static void	find_value_var(t_expansion_vars_b *vars, t_input *current)
 {
 	vars->var_name = ft_strndup(current->str + vars->var_start, vars->var_len);
 	vars->var_value = ft_getenv(vars->var_name, vars->env);
@@ -52,7 +52,7 @@ void	expansion_help(t_expansion_vars_b *vars)
 				&& vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '$'
 				&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != ' ' 
+					+ vars->var_len] != ' '
 				&& vars->current_copy->str[vars->var_start
 					+ vars->var_len] != '/')))
 	{

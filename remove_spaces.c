@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   remove_spaces.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:37:31 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:59:19 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:43:22 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,6 @@ void	expand_tokens(t_main_vars *vars, t_list *lst_env)
 		}
 		vars->current = vars->current->next;
 	}
-}
-
-void	free_tokens_and_input(t_main_vars *vars)
-{
-	while (vars->tokens)
-	{
-		vars->free_tmp = vars->tokens;
-		vars->tokens = vars->tokens->next;
-		if (vars->free_tmp->str)
-			free(vars->free_tmp->str);
-		free(vars->free_tmp);
-	}
-	free(vars->input);
 }
 
 int	just_spaces(const char *str)

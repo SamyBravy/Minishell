@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_samu2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:23:42 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:24:06 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:43:34 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	check_dollar(t_vars_samu *vars, char *str, char *result)
 		result[vars->result_len++] = str[vars->i];
 }
 
-t_vars_samu	*init_expand_samu(const char *str)
+static t_vars_samu	*init_expand_samu(const char *str)
 {
 	t_vars_samu	*vars;
 

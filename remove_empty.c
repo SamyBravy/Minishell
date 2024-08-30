@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   remove_empty.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:39:13 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:59:19 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:44:23 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	remove_empty_nodes_help(t_input **current, t_input **prev)
+static void	remove_empty_nodes_help(t_input **current, t_input **prev)
 {
 	*prev = *current;
 	*current = (*current)->next;

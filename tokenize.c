@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:26:52 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:27:02 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:42:42 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	save_cmd(t_token_variables *vars)
+static void	save_cmd(t_token_variables *vars)
 {
 	char	*help;
 
@@ -32,7 +32,7 @@ void	save_cmd(t_token_variables *vars)
 		vars->cmd_str = ft_strndup(vars->token, INT_MAX);
 }
 
-void	save_special(t_input **head, t_token_variables *vars)
+static void	save_special(t_input **head, t_token_variables *vars)
 {
 	if (vars->cmd_str)
 	{
@@ -44,7 +44,7 @@ void	save_special(t_input **head, t_token_variables *vars)
 	vars->current_type = CMD;
 }
 
-void	save_not_pipe(t_input **head, t_token_variables *vars)
+static void	save_not_pipe(t_input **head, t_token_variables *vars)
 {
 	if (*vars->copy_str == '"' || *vars->copy_str == '\'')
 		quotes(vars);
@@ -57,7 +57,7 @@ void	save_not_pipe(t_input **head, t_token_variables *vars)
 	free(vars->token);
 }
 
-t_token_variables	*prepare_var(char *str)
+static t_token_variables	*prepare_var(char *str)
 {
 	t_token_variables	*vars;
 

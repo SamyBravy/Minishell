@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_help2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:31:33 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:31:43 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:43:16 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	check_char(t_expansion_vars_b *vars, t_input *current)
 		vars->result_len++;
 }
 
-t_expansion_vars_b	*init_expansion(t_input *current)
+static t_expansion_vars_b	*init_expansion(t_input *current)
 {
 	t_expansion_vars_b	*vars;
 
@@ -58,7 +58,7 @@ size_t	calculate_expanded_length(t_input *current, t_list *env)
 	return (result_len);
 }
 
-void	append_value(t_expand_vars *vars, char *result)
+static void	append_value(t_expand_vars *vars, char *result)
 {
 	vars->value_len = ft_strlen(vars->expanded_value);
 	vars->j = 0;

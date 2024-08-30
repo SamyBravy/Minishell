@@ -3,16 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:35:30 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:39:41 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:49:22 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	save_history(int fd, const char *entry)
+void	dollar_check_help_samu(t_vars_samu *vars)
+{
+	vars->var_value = ft_getenv(vars->var_name, vars->env);
+	free(vars->var_name);
+	if (vars->var_value)
+		vars->result_len += strlen(vars->var_value);
+	vars->i += vars->var_len;
+}
+
+static void	save_history(int fd, const char *entry)
 {
 	write(fd, entry, ft_strlen(entry));
 	write(fd, "\n", 1);

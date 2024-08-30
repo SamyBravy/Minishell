@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_main.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:33:17 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:22:05 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/30 15:43:27 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	variable_expansion_help(t_expand_vars *vars)
+static void	variable_expansion_help(t_expand_vars *vars)
 {
 	while (vars->var_start + vars->var_len < vars->len
 		&& ((vars->current_copy->str[vars->var_start + vars->var_len] != '>'
@@ -50,7 +50,7 @@ void	variable_expansion(t_expand_vars *vars, t_input *current, char *result)
 		result[vars->result_index++] = current->str[vars->i];
 }
 
-void	check_character(t_expand_vars *vars, t_input *current, char *result)
+static void	check_character(t_expand_vars *vars, t_input *current, char *result)
 {
 	if (current->str[vars->i] == '\'' && vars->in_double_quotes == -1)
 		vars->in_single_quotes *= -1;
@@ -63,7 +63,7 @@ void	check_character(t_expand_vars *vars, t_input *current, char *result)
 		result[vars->result_index++] = current->str[vars->i];
 }
 
-t_expand_vars	*init_t_expand_vars(t_input *current, t_list *env)
+static t_expand_vars	*init_t_expand_vars(t_input *current, t_list *env)
 {
 	t_expand_vars	*vars;
 
