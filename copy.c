@@ -8,20 +8,18 @@
 #include <string.h>
 #include <unistd.h>
 
-char	*ft_strndup(const char *s, size_t n)
+char	*ft_strndup(char *s, size_t n)
 {
 	char	*src;
 	char	*copy;
 	size_t	i;
 
-	src = (char *)s;
+	src = s;
 	i = 0;
 	if (n < ft_strlen(s))
 		copy = malloc(sizeof(char) * (n + 1));
 	else
 		copy = malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!copy)
-		return (NULL);
 	while (src[i] && i < n)
 	{
 		copy[i] = src[i];
@@ -31,7 +29,7 @@ char	*ft_strndup(const char *s, size_t n)
 	return (copy);
 }
 
-size_t	calculate_length_samu(const char *str, t_list *env)
+size_t	calculate_length_samu(char *str, t_list *env)
 {
 	t_vars_samu	vars;
 
@@ -46,12 +44,17 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 			vars.var_start = vars.i + 1;
 			vars.var_len = 0;
 			while (vars.var_start + vars.var_len < vars.len
-				&& (str[vars.var_start + vars.var_len] != '>' && str[vars.var_start + vars.var_len] != '<' && str[vars.var_start + vars.var_len] != '|'  && str[vars.var_start + vars.var_len] != '"' && str[vars.var_start + vars.var_len] != '\'' && str[vars.var_start + vars.var_len] != '\n' && str[vars.var_start+ vars.var_len] != ' '))
+				&& (str[vars.var_start + vars.var_len] != '>'
+					&& str[vars.var_start + vars.var_len] != '<'
+					&& str[vars.var_start + vars.var_len] != '|'
+					&& str[vars.var_start + vars.var_len] != '"'
+					&& str[vars.var_start + vars.var_len] != '\''
+					&& str[vars.var_start + vars.var_len] != '\n'
+					&& str[vars.var_start + vars.var_len] != ' '))
 			{
 				vars.var_len++;
 				if (str[vars.var_start] == '?')
 					break ;
-				
 			}
 			if (vars.var_len > 0)
 			{
@@ -59,20 +62,14 @@ size_t	calculate_length_samu(const char *str, t_list *env)
 				vars.var_value = ft_getenv(vars.var_name, vars.env);
 				free(vars.var_name);
 				if (vars.var_value)
-				{
 					vars.result_len += strlen(vars.var_value);
-				}
 				vars.i += vars.var_len;
 			}
 			else
-			{
 				vars.result_len++;
-			}
 		}
 		else
-		{
 			vars.result_len++;
-		}
 		vars.i++;
 	}
 	return (vars.result_len);
@@ -89,7 +86,7 @@ void	copy_value(t_vars_samu *vars, char *result)
 		result[vars->result_len++] = vars->var_value[i++];
 }
 
-void	expand(t_vars_samu *vars, const char *str, char *result)
+void	expand(t_vars_samu *vars, char *str, char *result)
 {
 	vars->var_name = ft_strndup(str + vars->var_start, vars->var_len);
 	vars->var_value = ft_getenv(vars->var_name, vars->env);
@@ -98,14 +95,20 @@ void	expand(t_vars_samu *vars, const char *str, char *result)
 		copy_value(vars, result);
 }
 
-void	check_dollar(t_vars_samu *vars, const char *str, char *result)
+void	check_dollar(t_vars_samu *vars, char *str, char *result)
 {
 	if (str[vars->i] == '$')
 	{
 		vars->var_start = vars->i + 1;
 		vars->var_len = 0;
 		while (vars->var_start + vars->var_len < vars->len
-			&& (str[vars->var_start + vars->var_len] != '>' && str[vars->var_start + vars->var_len] != '<' && str[vars->var_start + vars->var_len] != '|'   && str[vars->var_start + vars->var_len] != '"' && str[vars->var_start + vars->var_len] != '\'' && str[vars->var_start + vars->var_len] != '\n' && str[vars->var_start+ vars->var_len] != ' '))
+			&& (str[vars->var_start + vars->var_len] != '>'
+				&& str[vars->var_start + vars->var_len] != '<'
+				&& str[vars->var_start + vars->var_len] != '|'
+				&& str[vars->var_start + vars->var_len] != '"'
+				&& str[vars->var_start + vars->var_len] != '\''
+				&& str[vars->var_start + vars->var_len] != '\n'
+				&& str[vars->var_start + vars->var_len] != ' '))
 		{
 			vars->var_len++;
 			if (str[vars->var_start] == '?')
@@ -117,14 +120,10 @@ void	check_dollar(t_vars_samu *vars, const char *str, char *result)
 			vars->i += vars->var_len;
 		}
 		else
-		{
 			result[vars->result_len++] = str[vars->i];
-		}
 	}
 	else
-	{
 		result[vars->result_len++] = str[vars->i];
-	}
 }
 
 t_vars_samu	*init_expand_samu(const char *str)
@@ -138,7 +137,7 @@ t_vars_samu	*init_expand_samu(const char *str)
 	return (vars);
 }
 
-char	*expand_samu(const char *str, t_list *env)
+char	*expand_samu(char *str, t_list *env)
 {
 	t_vars_samu	*vars;
 	size_t		expanded_length;
@@ -164,12 +163,10 @@ t_input	*new_node(t_type type, char *str)
 
 	new_node = (t_input *)malloc(sizeof(t_input));
 	new_node->type = type;
-	//printf("%s\n", str);
 	if (str)
 		new_node->str = ft_strndup(str, INT_MAX);
 	else
 		new_node->str = NULL;
-	//printf("%s\n", new_node->str);
 	new_node->fd = -1;
 	new_node->next = NULL;
 	return (new_node);
@@ -179,7 +176,6 @@ void	find_lst_cmd(t_input *temp, t_input **last_cmd)
 {
 	t_input	*save;
 
-	// printf("GG\n");
 	save = temp;
 	while ((temp))
 	{
@@ -190,12 +186,7 @@ void	find_lst_cmd(t_input *temp, t_input **last_cmd)
 		if (!(temp)->next)
 			break ;
 		(temp) = (temp)->next;
-		// printf("GG\n");
 	}
-	/*if (*last_cmd)
-		printf("LAST CMD: %s\n", (*last_cmd)->str);
-	else
-		printf("NOOO LASTCMD\n");*/
 	temp = save;
 }
 
@@ -227,7 +218,6 @@ void	add_node(t_input **head, t_input *new_node)
 	temp_str = NULL;
 	temp = *head;
 	last_cmd = NULL;
-	// printf("IN ADD NODE\n");
 	if (!(*head))
 	{
 		*head = new_node;
@@ -277,10 +267,8 @@ void	special_char(t_input **head, token_variables *vars)
 	vars->current_type = identify_type(vars->temp);
 	if (vars->current_type == PIPE)
 	{
-		// printf("IF PIPE\n");
 		if (vars->cmd_str)
 		{
-			// printf("STO PER AGGIUNGERE FIRST CMD\n");
 			add_node(head, new_node(CMD, vars->cmd_str));
 			free(vars->cmd_str);
 			vars->cmd_str = NULL;
@@ -296,7 +284,6 @@ void	quotes(token_variables *vars)
 	while (*vars->copy_str && *vars->copy_str != vars->c_for_quotes)
 		vars->copy_str++;
 	vars->copy_str++;
-	//printf("%c\n", *vars->copy_str);
 	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
 }
 void	normal_char(token_variables *vars)
@@ -306,7 +293,6 @@ void	normal_char(token_variables *vars)
 		&& *vars->copy_str != '>' && *vars->copy_str != '<'
 		&& *vars->copy_str != '|')
 	{
-		//printf("%c\n", *vars->copy_str);
 		if (*vars->copy_str == '"' || *vars->copy_str == '\'')
 		{
 			vars->c_for_quotes = *vars->copy_str;
@@ -318,7 +304,6 @@ void	normal_char(token_variables *vars)
 			vars->copy_str++;
 	}
 	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
-	//printf("%s\n", vars->token);
 }
 
 void	save_cmd(token_variables *vars)
@@ -327,7 +312,6 @@ void	save_cmd(token_variables *vars)
 
 	if (vars->cmd_str)
 	{
-		//printf("%s\n", vars->copy_str - ft_strlen(vars->token));
 		help = vars->copy_str - ft_strlen(vars->token) - 1;
 		vars->temp_cmd_str = calloc(ft_strlen(vars->cmd_str)
 				+ ft_strlen(vars->token) + 2, 1);
@@ -339,11 +323,7 @@ void	save_cmd(token_variables *vars)
 		vars->cmd_str = vars->temp_cmd_str;
 	}
 	else
-	{
-		// printf("STO PER CREARE CMDSTR\n");
 		vars->cmd_str = ft_strndup(vars->token, INT_MAX);
-		//printf("%s\n", vars->cmd_str);
-	}
 }
 
 void	save_special(t_input **head, token_variables *vars)
@@ -402,11 +382,9 @@ t_input	*tokenize(char *str)
 			special_char(&head, vars);
 		else
 			save_not_pipe(&head, vars);
-		// printf("%s\n", vars->cmd_str);
 	}
 	if (vars->cmd_str)
 	{
-		//printf("%s\n", vars->cmd_str);
 		add_node(&head, new_node(CMD, vars->cmd_str));
 		free(vars->cmd_str);
 	}
@@ -454,10 +432,11 @@ int	is_quote_balanced(const char *str, char *quotes)
 	return (-1);
 }
 
-int	is_pipe_balanced(const char *str)
+int	is_pipe_balanced(char *str)
 {
-	const char	*ptr = str;
+	char	*ptr;
 
+	ptr = str;
 	while (*ptr)
 	{
 		if (*ptr == '|')
@@ -473,21 +452,19 @@ int	is_pipe_balanced(const char *str)
 	return (1);
 }
 
-void	skip_spaces(const char *var_value, t_size_t_clean *vars)
+void	skip_spaces(char *var_value, t_size_t_clean *vars)
 {
 	while (vars->i < vars->len && spaces(var_value[vars->i]) == 1)
-	{
 		vars->i++;
-	}
 }
 
-void	spaces_check(const char *var_value, t_input *current,
-		t_size_t_clean *vars, char *cleaned_value)
+void	spaces_check(char *var_value, t_input *current, t_size_t_clean *vars,
+		char *cleaned_value)
 {
 	int	j;
 
 	j = 0;
-	while(spaces(var_value[vars->i]) == 1)
+	while (spaces(var_value[vars->i]) == 1)
 		vars->i++;
 	while (vars->i < vars->len)
 	{
@@ -502,7 +479,7 @@ void	spaces_check(const char *var_value, t_input *current,
 		{
 			cleaned_value[vars->cleaned_len++] = var_value[vars->i++];
 			j = vars->i;
-			while(var_value[j] && spaces(var_value[j]) == 1)
+			while (var_value[j] && spaces(var_value[j]) == 1)
 				j++;
 			if (var_value[j] == '\0')
 				break ;
@@ -510,7 +487,7 @@ void	spaces_check(const char *var_value, t_input *current,
 	}
 }
 
-char	*clean_variable_value(const char *var_value, t_input *current)
+char	*clean_variable_value(char *var_value, t_input *current)
 {
 	t_size_t_clean	vars;
 	char			*cleaned_value;
@@ -522,14 +499,10 @@ char	*clean_variable_value(const char *var_value, t_input *current)
 	vars.cleaned_len = 0;
 	vars.i = 0;
 	while (vars.i < vars.len && spaces(var_value[vars.i]) == 1)
-	{
 		vars.i++;
-	}
 	spaces_check(var_value, current, &vars, cleaned_value);
 	if (vars.cleaned_len > 0 && cleaned_value[vars.cleaned_len - 1] == ' ')
-	{
 		vars.cleaned_len--;
-	}
 	cleaned_value[vars.cleaned_len] = '\0';
 	return (cleaned_value);
 }
@@ -537,16 +510,12 @@ char	*clean_variable_value(const char *var_value, t_input *current)
 void	find_value_var(t_expansion_vars_b *vars, t_input *current)
 {
 	vars->var_name = ft_strndup(current->str + vars->var_start, vars->var_len);
-	if (!vars->var_name)
-		return ;
 	vars->var_value = ft_getenv(vars->var_name, vars->env);
 	free(vars->var_name);
 	if (vars->var_value)
 	{
 		if (vars->in_double_quotes == 1)
-		{
 			vars->result_len += ft_strlen(vars->var_value);
-		}
 		else
 		{
 			vars->cleaned_value = clean_variable_value(vars->var_value,
@@ -566,18 +535,22 @@ void	expansion(t_expansion_vars_b *vars, t_input *current)
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
-		&& ((vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '>' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '<' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '|'  && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '"' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '\'' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '\x1d')))
-			{
-			vars->var_len++;
-			if (vars->current_copy->str[vars->var_start] == '?')
-				break ;
-			}
+		&& ((vars->current_copy->str[vars->var_start + vars->var_len] != '>'
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '<'
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '|'
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '"'
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '\''
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '\x1d')))
+	{
+		vars->var_len++;
+		if (vars->current_copy->str[vars->var_start] == '?')
+			break ;
+	}
 	if (vars->var_len > 0)
 		find_value_var(vars, current);
 	else
@@ -602,9 +575,11 @@ void	single_quotes(t_expansion_vars_b *vars)
 
 void	check_char(t_expansion_vars_b *vars, t_input *current)
 {
-	if (vars->current_copy->str[vars->i] == '\''  && vars->in_double_quotes == -1)
+	if (vars->current_copy->str[vars->i] == '\'' && vars->in_double_quotes ==
+		-1)
 		single_quotes(vars);
-	else if (vars->current_copy->str[vars->i] == '"' && vars->in_single_quotes == -1)
+	else if (vars->current_copy->str[vars->i] == '"'
+		&& vars->in_single_quotes == -1)
 		double_quotes(vars);
 	else if (vars->current_copy->str[vars->i] == '$'
 		&& vars->in_single_quotes == -1 && vars->current_copy->type != HEREDOC)
@@ -618,8 +593,6 @@ t_expansion_vars_b	*init_expansion(t_input *current)
 	t_expansion_vars_b	*vars;
 
 	vars = malloc(sizeof(t_expansion_vars_b));
-	if (!vars)
-		return (NULL);
 	vars->current_copy = current;
 	vars->len = ft_strlen(current->str);
 	vars->result_len = 0;
@@ -635,8 +608,6 @@ size_t	calculate_expanded_length(t_input *current, t_list *env)
 	size_t				result_len;
 
 	vars = init_expansion(current);
-	if (!vars)
-		return (0);
 	vars->env = env;
 	while (vars->i < vars->len)
 	{
@@ -653,30 +624,22 @@ void	append_value(expand_vars *vars, char *result)
 	vars->value_len = ft_strlen(vars->expanded_value);
 	vars->j = 0;
 	while (vars->j < vars->value_len)
-	{
 		result[vars->result_index++] = vars->expanded_value[vars->j++];
-	}
 }
 void	expand_variable(expand_vars *vars, t_input *current, char *result)
 {
 	vars->var_name = ft_strndup(current->str + vars->var_start, vars->var_len);
 	vars->var_value = ft_getenv(vars->var_name, vars->env);
-	//printf("%s\n", vars->var_name);
 	if (current->type != CMD && vars->var_value == NULL)
 		current->fd = -42;
 	free(vars->var_name);
 	if (vars->var_value)
 	{
 		if (vars->in_double_quotes == 1)
-		{
 			vars->expanded_value = ft_strdup(vars->var_value);
-			//printf("%s\n", vars->expanded_value);
-		}
 		else
-		{
 			vars->expanded_value = clean_variable_value(vars->var_value,
 					current);
-		}
 		if (vars->expanded_value)
 		{
 			append_value(vars, result);
@@ -691,32 +654,33 @@ void	variable_expansion(expand_vars *vars, t_input *current, char *result)
 	vars->var_start = vars->i + 1;
 	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
-		&& ((vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '>' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '<' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '|'  && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '"' && vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '\''&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '\x1d')))
-				{
-					vars->var_len++;
-					if (vars->current_copy->str[vars->var_start] == '?')
-						break ;
-				}
-	//printf("%li\n", vars->var_len);
+		&& ((vars->current_copy->str[vars->var_start + vars->var_len] != '>'
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '<'
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '|'
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '"'
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '\''
+				&& vars->current_copy->str[vars->var_start
+				+ vars->var_len] != '\x1d')))
+	{
+		vars->var_len++;
+		if (vars->current_copy->str[vars->var_start] == '?')
+			break ;
+	}
 	if (vars->var_len > 0)
 		expand_variable(vars, current, result);
 	else
-	{
 		result[vars->result_index++] = current->str[vars->i];
-	}
 }
 
 void	check_character(expand_vars *vars, t_input *current, char *result)
 {
 	if (current->str[vars->i] == '\'' && vars->in_double_quotes == -1)
 		vars->in_single_quotes *= -1;
-	else if (current->str[vars->i] == '"'  && vars->in_single_quotes == -1)
+	else if (current->str[vars->i] == '"' && vars->in_single_quotes == -1)
 		vars->in_double_quotes *= -1;
 	else if (current->str[vars->i] == '$' && vars->in_single_quotes != 1
 		&& current->type != HEREDOC)
@@ -746,14 +710,7 @@ char	*expand_variables(t_input *current, t_list *env)
 	char		*result;
 
 	vars = init_expand_vars(current, env);
-	if (!vars)
-		return (NULL);
 	result = malloc(vars->result_len + 1);
-	if (!result)
-	{
-		free(vars);
-		return (NULL);
-	}
 	vars->result_index = 0;
 	while (vars->i < vars->len)
 	{
@@ -777,13 +734,9 @@ int	is_inside_quotes(const char *str, int index)
 	while (i < index)
 	{
 		if (str[i] == '\"' && in_single_quotes == -1)
-		{
 			in_double_quotes = -1 * in_double_quotes;
-		}
 		else if (str[i] == '\'' && in_double_quotes == -1)
-		{
 			in_single_quotes = -1 * in_single_quotes;
-		}
 		i++;
 	}
 	if (in_double_quotes == 1)
@@ -911,7 +864,7 @@ bool	ask_more_for_quotes(t_main_vars *vars, char quotes)
 		update_history(vars);
 		free(vars->input);
 		vars->input = NULL;
-		ft_putstr_fd("minicecco: unexpected EOF while looking for matching `" ,
+		ft_putstr_fd("minicecco: unexpected EOF while looking for matching `",
 			STDERR_FILENO);
 		ft_putchar_fd(quotes, STDERR_FILENO);
 		ft_putstr_fd("'\nminicecco: syntax error: unexpected end of file\n",
@@ -946,7 +899,8 @@ int	ask_more_for_pipes(t_main_vars *vars)
 		update_history(vars);
 		free(vars->input);
 		vars->input = NULL;
-		ft_putstr_fd("minicecco: syntax error: unexpected end of file\n", STDERR_FILENO);
+		ft_putstr_fd("minicecco: syntax error: unexpected end of file\n",
+			STDERR_FILENO);
 		return (0);
 	}
 	vars->new_input = malloc(ft_strlen(vars->input)
@@ -1015,18 +969,18 @@ int	only_spaces(const char *str)
 	return (1);
 }
 
-char	*remove_spaces(char* str)
+char	*remove_spaces(char *str)
 {
-    char	*start;
+	char	*start;
 	char	*str_no_spaces;
 
 	start = str;
-    while (*start == '\x1d')
-        start++;
-    str_no_spaces = calloc(ft_strlen(start) + 1, sizeof(char));
-    ft_strlcpy(str_no_spaces, start, INT_MAX);
-    free(str);
-    return (str_no_spaces);
+	while (*start == '\x1d')
+		start++;
+	str_no_spaces = calloc(ft_strlen(start) + 1, sizeof(char));
+	ft_strlcpy(str_no_spaces, start, INT_MAX);
+	free(str);
+	return (str_no_spaces);
 }
 
 void	remove_empty_nodes(t_input **head)
@@ -1131,7 +1085,7 @@ int	main(int argc, char **argv, char **env)
 			continue ;
 		while (is_pipe_balanced(vars.input) == -1)
 		{
-			if(!ask_more_for_pipes(&vars))
+			if (!ask_more_for_pipes(&vars))
 			{
 				if (g_signal == SIGINT)
 				{
@@ -1180,10 +1134,10 @@ int	main(int argc, char **argv, char **env)
 		free(tmp_str);
 		vars.input = quotes_to_special(vars.input);
 		vars.tokens = tokenize(vars.input);
-		//print_tokens(vars.tokens);
+		// print_tokens(vars.tokens);
 		expand_tokens(&vars, lst_env);
 		remove_empty_nodes(&vars.tokens);
-		//free_tokens_and_input(&vars);
+		// free_tokens_and_input(&vars);
 		free(vars.input);
 		executer(&vars.tokens, &lst_env, &exit_status);
 	}

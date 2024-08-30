@@ -201,6 +201,6 @@ void		lst_remove_key(t_list **env, char *key);
 int			check_syntax_errors(char *token);
 t_type		identify_type(char *token);
 
-char	    *expand_samu(const char *str, t_list *env);
+char	    *expand_samu(char *str, t_list *env);
 
 #endif
