@@ -1,12 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   copy.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/30 13:47:54 by fgrisost          #+#    #+#             */
+/*   Updated: 2024/08/30 13:55:40 by fgrisost         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-#include <ctype.h>
-#include <fcntl.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 char	*ft_strndup(char *s, size_t n)
 {
@@ -29,6 +33,35 @@ char	*ft_strndup(char *s, size_t n)
 	return (copy);
 }
 
+void	dollar_check(t_vars_samu *vars, char *str)
+{
+	while (vars->var_start + vars->var_len < vars->len && (str[vars->var_start
+				+ vars->var_len] != '>' && str[vars->var_start
+				+ vars->var_len] != '<' && str[vars->var_start
+				+ vars->var_len] != '|' && str[vars->var_start
+				+ vars->var_len] != '"' && str[vars->var_start
+				+ vars->var_len] != '\'' && str[vars->var_start
+				+ vars->var_len] != '\n' && str[vars->var_start
+				+ vars->var_len] != ' ' && str[vars->var_start
+				+ vars->var_len] != '$'))
+	{
+		vars->var_len++;
+		if (str[vars->var_start] == '?')
+			break ;
+	}
+	if (vars->var_len > 0)
+	{
+		vars->var_name = ft_strndup(str + vars->var_start, vars->var_len);
+		vars->var_value = ft_getenv(vars->var_name, vars->env);
+		free(vars->var_name);
+		if (vars->var_value)
+			vars->result_len += strlen(vars->var_value);
+		vars->i += vars->var_len;
+	}
+	else
+		vars->result_len++;
+}
+
 size_t	calculate_length_samu(char *str, t_list *env)
 {
 	t_vars_samu	vars;
@@ -43,30 +76,7 @@ size_t	calculate_length_samu(char *str, t_list *env)
 		{
 			vars.var_start = vars.i + 1;
 			vars.var_len = 0;
-			while (vars.var_start + vars.var_len < vars.len
-				&& (str[vars.var_start + vars.var_len] != '>'
-					&& str[vars.var_start + vars.var_len] != '<'
-					&& str[vars.var_start + vars.var_len] != '|'
-					&& str[vars.var_start + vars.var_len] != '"'
-					&& str[vars.var_start + vars.var_len] != '\''
-					&& str[vars.var_start + vars.var_len] != '\n'
-					&& str[vars.var_start + vars.var_len] != ' ' && str[vars.var_start + vars.var_len] != '$'))
-			{
-				vars.var_len++;
-				if (str[vars.var_start] == '?')
-					break ;
-			}
-			if (vars.var_len > 0)
-			{
-				vars.var_name = ft_strndup(str + vars.var_start, vars.var_len);
-				vars.var_value = ft_getenv(vars.var_name, vars.env);
-				free(vars.var_name);
-				if (vars.var_value)
-					vars.result_len += strlen(vars.var_value);
-				vars.i += vars.var_len;
-			}
-			else
-				vars.result_len++;
+			dollar_check(&vars, str);
 		}
 		else
 			vars.result_len++;
@@ -95,32 +105,38 @@ void	expand(t_vars_samu *vars, char *str, char *result)
 		copy_value(vars, result);
 }
 
+void	check_dollar_help(t_vars_samu *vars, char *str, char *result)
+{
+	while (vars->var_start + vars->var_len < vars->len && (str[vars->var_start
+				+ vars->var_len] != '>' && str[vars->var_start
+				+ vars->var_len] != '<' && str[vars->var_start
+				+ vars->var_len] != '|' && str[vars->var_start
+				+ vars->var_len] != '"' && str[vars->var_start
+				+ vars->var_len] != '\'' && str[vars->var_start
+				+ vars->var_len] != '\n' && str[vars->var_start
+				+ vars->var_len] != ' ' && str[vars->var_start
+				+ vars->var_len] != '$'))
+	{
+		vars->var_len++;
+		if (str[vars->var_start] == '?')
+			break ;
+	}
+	if (vars->var_len > 0)
+	{
+		expand(vars, str, result);
+		vars->i += vars->var_len;
+	}
+	else
+		result[vars->result_len++] = str[vars->i];
+}
+
 void	check_dollar(t_vars_samu *vars, char *str, char *result)
 {
 	if (str[vars->i] == '$')
 	{
 		vars->var_start = vars->i + 1;
 		vars->var_len = 0;
-		while (vars->var_start + vars->var_len < vars->len
-			&& (str[vars->var_start + vars->var_len] != '>'
-				&& str[vars->var_start + vars->var_len] != '<'
-				&& str[vars->var_start + vars->var_len] != '|'
-				&& str[vars->var_start + vars->var_len] != '"'
-				&& str[vars->var_start + vars->var_len] != '\''
-				&& str[vars->var_start + vars->var_len] != '\n'
-				&& str[vars->var_start + vars->var_len] != ' '&& str[vars->var_start + vars->var_len] != '$'))
-		{
-			vars->var_len++;
-			if (str[vars->var_start] == '?')
-				break ;
-		}
-		if (vars->var_len > 0)
-		{
-			expand(vars, str, result);
-			vars->i += vars->var_len;
-		}
-		else
-			result[vars->result_len++] = str[vars->i];
+		check_dollar_help(vars, str, result);
 	}
 	else
 		result[vars->result_len++] = str[vars->i];
@@ -255,7 +271,8 @@ int	spaces(char c)
 		return (1);
 	return (0);
 }
-void	special_char(t_input **head, token_variables *vars)
+
+void	special_char(t_input **head, t_token_variables *vars)
 {
 	vars->i = 0;
 	while (vars->i++ <= 2)
@@ -277,7 +294,7 @@ void	special_char(t_input **head, token_variables *vars)
 	}
 }
 
-void	quotes(token_variables *vars)
+void	quotes(t_token_variables *vars)
 {
 	vars->c_for_quotes = *vars->copy_str;
 	vars->start = vars->copy_str++;
@@ -286,7 +303,8 @@ void	quotes(token_variables *vars)
 	vars->copy_str++;
 	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
 }
-void	normal_char(token_variables *vars)
+
+void	normal_char(t_token_variables *vars)
 {
 	vars->start = vars->copy_str;
 	while (*vars->copy_str && spaces(*vars->copy_str) == 0
@@ -306,7 +324,7 @@ void	normal_char(token_variables *vars)
 	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
 }
 
-void	save_cmd(token_variables *vars)
+void	save_cmd(t_token_variables *vars)
 {
 	char	*help;
 
@@ -326,7 +344,7 @@ void	save_cmd(token_variables *vars)
 		vars->cmd_str = ft_strndup(vars->token, INT_MAX);
 }
 
-void	save_special(t_input **head, token_variables *vars)
+void	save_special(t_input **head, t_token_variables *vars)
 {
 	if (vars->cmd_str)
 	{
@@ -338,7 +356,7 @@ void	save_special(t_input **head, token_variables *vars)
 	vars->current_type = CMD;
 }
 
-void	save_not_pipe(t_input **head, token_variables *vars)
+void	save_not_pipe(t_input **head, t_token_variables *vars)
 {
 	if (*vars->copy_str == '"' || *vars->copy_str == '\'')
 		quotes(vars);
@@ -351,11 +369,11 @@ void	save_not_pipe(t_input **head, token_variables *vars)
 	free(vars->token);
 }
 
-token_variables	*prepare_var(char *str)
+t_token_variables	*prepare_var(char *str)
 {
-	token_variables	*vars;
+	t_token_variables	*vars;
 
-	vars = malloc(sizeof(token_variables));
+	vars = malloc(sizeof(t_token_variables));
 	vars->token = NULL;
 	vars->current_type = CMD;
 	vars->cmd_str = NULL;
@@ -366,8 +384,8 @@ token_variables	*prepare_var(char *str)
 
 t_input	*tokenize(char *str)
 {
-	t_input			*head;
-	token_variables	*vars;
+	t_input				*head;
+	t_token_variables	*vars;
 
 	head = NULL;
 	vars = prepare_var(str);
@@ -423,10 +441,7 @@ int	is_quote_balanced(const char *str, char *quotes)
 		}
 		str++;
 	}
-	if (in_double_quote == 1)
-		*quotes = '"';
-	if (in_single_quote == 1)
-		*quotes = '\'';
+	*quotes = '"' * (in_double_quote == 1) + '\'' * in_single_quote == 1;
 	if (in_double_quote == -1 && in_single_quote == -1)
 		return (1);
 	return (-1);
@@ -530,29 +545,36 @@ void	find_value_var(t_expansion_vars_b *vars, t_input *current)
 	vars->i += vars->var_len;
 }
 
-void	expansion(t_expansion_vars_b *vars, t_input *current)
+void	expansion_help(t_expansion_vars_b *vars)
 {
-	vars->var_start = vars->i + 1;
-	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
 		&& ((vars->current_copy->str[vars->var_start + vars->var_len] != '>'
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '<'
+					+ vars->var_len] != '<'
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '|'
+					+ vars->var_len] != '|'
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '"'
+					+ vars->var_len] != '"'
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '\''
+					+ vars->var_len] != '\''
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '\x1d' && vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '$' && vars->current_copy->str[vars->var_start
-				+ vars->var_len] != ' ')))
+					+ vars->var_len] != '\x1d'
+				&& vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '$'
+				&& vars->current_copy->str[vars->var_start
+					+ vars->var_len] != ' ')))
 	{
 		vars->var_len++;
 		if (vars->current_copy->str[vars->var_start] == '?')
 			break ;
 	}
+}
+
+void	expansion(t_expansion_vars_b *vars, t_input *current)
+{
+	vars->var_start = vars->i + 1;
+	vars->var_len = 0;
+	expansion_help(vars);
 	if (vars->var_len > 0)
 		find_value_var(vars, current);
 	else
@@ -577,8 +599,8 @@ void	single_quotes(t_expansion_vars_b *vars)
 
 void	check_char(t_expansion_vars_b *vars, t_input *current)
 {
-	if (vars->current_copy->str[vars->i] == '\'' && vars->in_double_quotes ==
-		-1)
+	if (vars->current_copy->str[vars->i] == '\'' && vars->in_double_quotes
+		== -1)
 		single_quotes(vars);
 	else if (vars->current_copy->str[vars->i] == '"'
 		&& vars->in_single_quotes == -1)
@@ -621,14 +643,15 @@ size_t	calculate_expanded_length(t_input *current, t_list *env)
 	return (result_len);
 }
 
-void	append_value(expand_vars *vars, char *result)
+void	append_value(t_expand_vars *vars, char *result)
 {
 	vars->value_len = ft_strlen(vars->expanded_value);
 	vars->j = 0;
 	while (vars->j < vars->value_len)
 		result[vars->result_index++] = vars->expanded_value[vars->j++];
 }
-void	expand_variable(expand_vars *vars, t_input *current, char *result)
+
+void	expand_variable(t_expand_vars *vars, t_input *current, char *result)
 {
 	vars->var_name = ft_strndup(current->str + vars->var_start, vars->var_len);
 	vars->var_value = ft_getenv(vars->var_name, vars->env);
@@ -651,36 +674,43 @@ void	expand_variable(expand_vars *vars, t_input *current, char *result)
 	vars->i += vars->var_len;
 }
 
-void	variable_expansion(expand_vars *vars, t_input *current, char *result)
+void	variable_expansion_help(t_expand_vars *vars)
 {
-	vars->var_start = vars->i + 1;
-	vars->var_len = 0;
 	while (vars->var_start + vars->var_len < vars->len
 		&& ((vars->current_copy->str[vars->var_start + vars->var_len] != '>'
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '<'
+					+ vars->var_len] != '<'
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '|'
+					+ vars->var_len] != '|'
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '"'
+					+ vars->var_len] != '"'
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '\''
+					+ vars->var_len] != '\''
 				&& vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '\x1d' && vars->current_copy->str[vars->var_start
-				+ vars->var_len] != '$' && vars->current_copy->str[vars->var_start
-				+ vars->var_len] != ' ')))
+					+ vars->var_len] != '\x1d'
+				&& vars->current_copy->str[vars->var_start
+					+ vars->var_len] != '$'
+				&& vars->current_copy->str[vars->var_start
+					+ vars->var_len] != ' ')))
 	{
 		vars->var_len++;
 		if (vars->current_copy->str[vars->var_start] == '?')
 			break ;
 	}
+}
+
+void	variable_expansion(t_expand_vars *vars, t_input *current, char *result)
+{
+	vars->var_start = vars->i + 1;
+	vars->var_len = 0;
+	variable_expansion_help(vars);
 	if (vars->var_len > 0)
 		expand_variable(vars, current, result);
 	else
 		result[vars->result_index++] = current->str[vars->i];
 }
 
-void	check_character(expand_vars *vars, t_input *current, char *result)
+void	check_character(t_expand_vars *vars, t_input *current, char *result)
 {
 	if (current->str[vars->i] == '\'' && vars->in_double_quotes == -1)
 		vars->in_single_quotes *= -1;
@@ -693,11 +723,11 @@ void	check_character(expand_vars *vars, t_input *current, char *result)
 		result[vars->result_index++] = current->str[vars->i];
 }
 
-expand_vars	*init_expand_vars(t_input *current, t_list *env)
+t_expand_vars	*init_t_expand_vars(t_input *current, t_list *env)
 {
-	expand_vars	*vars;
+	t_expand_vars	*vars;
 
-	vars = malloc(sizeof(expand_vars));
+	vars = malloc(sizeof(t_expand_vars));
 	vars->current_copy = current;
 	vars->env = env;
 	vars->result_len = calculate_expanded_length(current, env);
@@ -710,10 +740,10 @@ expand_vars	*init_expand_vars(t_input *current, t_list *env)
 
 char	*expand_variables(t_input *current, t_list *env)
 {
-	expand_vars	*vars;
-	char		*result;
+	t_expand_vars	*vars;
+	char			*result;
 
-	vars = init_expand_vars(current, env);
+	vars = init_t_expand_vars(current, env);
 	result = malloc(vars->result_len + 1);
 	vars->result_index = 0;
 	while (vars->i < vars->len)
@@ -750,56 +780,56 @@ int	is_inside_quotes(const char *str, int index)
 	return (0);
 }
 
+void	change_quotes(t_quotes_special_vars *vars, char *input)
+{
+	vars->j = vars->i;
+	while ((input[vars->j] == '\"' && vars->j + 1 < vars->length
+			&& input[vars->j + 1] == '\"') || (input[vars->j] == '\'' && vars->j
+			+ 1 < vars->length && input[vars->j + 1] == '\''))
+		vars->j += 2;
+	if ((vars->i > 0 && spaces(input[vars->i - 1] == 0))
+		|| ((vars->j < vars->length && spaces(input[vars->j]) == 0)))
+		vars->i = vars->j;
+	else
+	{
+		if ((vars->i > 0 && spaces(input[vars->i - 1]) == 1)
+			&& (vars->j < vars->length && spaces(input[vars->j]) == 1))
+			vars->result[vars->ri++] = '\x1E';
+		else if ((vars->i == 0 && spaces(input[vars->j]) == 1) || (vars->i == 0
+				&& vars->j == vars->length) || (vars->j == vars->length
+				&& spaces(input[vars->i - 1]) == 1))
+			vars->result[vars->ri++] = '\x1E';
+		vars->i = vars->j;
+	}
+}
+
 char	*quotes_to_special(char *input)
 {
-	int		length;
-	char	*result;
-	int		j;
-	int		ri;
-	int		i;
+	t_quotes_special_vars	vars;
 
-	ri = 0;
-	i = 0;
-	length = ft_strlen(input);
-	result = (char *)malloc(length + 1);
-	while (i < length)
+	vars.ri = 0;
+	vars.i = 0;
+	vars.length = ft_strlen(input);
+	vars.result = (char *)malloc(vars.length + 1);
+	while (vars.i < vars.length)
 	{
-		if ((input[i] == '\"' && i + 1 < length && input[i + 1] == '\"')
-			|| (input[i] == '\'' && i + 1 < length && input[i + 1] == '\''))
+		if ((input[vars.i] == '\"' && vars.i + 1 < vars.length && input[vars.i
+					+ 1] == '\"') || (input[vars.i] == '\'' && vars.i
+				+ 1 < vars.length && input[vars.i + 1] == '\''))
 		{
-			if (is_inside_quotes(input, i) != 0)
+			if (is_inside_quotes(input, vars.i) != 0)
 			{
-				result[ri++] = input[i++];
+				vars.result[vars.ri++] = input[vars.i++];
 				continue ;
 			}
-			j = i;
-			while ((input[j] == '\"' && j + 1 < length && input[j + 1] == '\"')
-				|| (input[j] == '\'' && j + 1 < length && input[j + 1] == '\''))
-				j += 2;
-			if ((i > 0 && spaces(input[i - 1] == 0)) || ((j < length
-						&& spaces(input[j]) == 0)))
-				i = j;
-			else
-			{
-				if ((i > 0 && spaces(input[i - 1]) == 1) && (j < length
-						&& spaces(input[j]) == 1))
-					result[ri++] = '\x1E';
-				else if ((i == 0 && spaces(input[j]) == 1) || (i == 0
-						&& j == length) || (j == length && spaces(input[i
-							- 1]) == 1))
-					result[ri++] = '\x1E';
-				i = j;
-			}
+			change_quotes(&vars, input);
 		}
 		else
-		{
-			result[ri++] = input[i];
-			i++;
-		}
+			vars.result[vars.ri++] = input[vars.i++];
 	}
-	result[ri] = '\0';
+	vars.result[vars.ri] = '\0';
 	free(input);
-	return (result);
+	return (vars.result);
 }
 
 void	save_history(int fd, const char *entry)
@@ -807,6 +837,7 @@ void	save_history(int fd, const char *entry)
 	write(fd, entry, ft_strlen(entry));
 	write(fd, "\n", 1);
 }
+
 void	heredoc_quotes(t_input *current)
 {
 	char	*tmp;
@@ -838,6 +869,12 @@ void	update_history(t_main_vars *vars)
 void	take_history(t_main_vars *vars)
 {
 	vars->history_fd = open(".tmp/.history.txt", O_RDONLY);
+	if (vars->history_fd == -1)
+	{
+		vars->history_fd = open(".tmp/.history.txt", O_CREAT | O_WRONLY, 0644);
+		close(vars->history_fd);
+		vars->history_fd = open(".tmp/.history.txt", O_RDONLY);
+	}
 	if (vars->history_fd != -1)
 	{
 		vars->line = get_next_line(vars->history_fd);
@@ -853,6 +890,19 @@ void	take_history(t_main_vars *vars)
 	}
 }
 
+bool	more_quotes_help(t_main_vars *vars, char quotes)
+{
+	update_history(vars);
+	free(vars->input);
+	vars->input = NULL;
+	ft_putstr_fd("minicecco: unexpected EOF while looking for matching `",
+		STDERR_FILENO);
+	ft_putchar_fd(quotes, STDERR_FILENO);
+	ft_putstr_fd("'\nminicecco: syntax error: unexpected end of file\n",
+		STDERR_FILENO);
+	return (false);
+}
+
 bool	ask_more_for_quotes(t_main_vars *vars, char quotes)
 {
 	vars->temp_input = readline("> ");
@@ -864,17 +914,7 @@ bool	ask_more_for_quotes(t_main_vars *vars, char quotes)
 		return (false);
 	}
 	if (!vars->temp_input)
-	{
-		update_history(vars);
-		free(vars->input);
-		vars->input = NULL;
-		ft_putstr_fd("minicecco: unexpected EOF while looking for matching `",
-			STDERR_FILENO);
-		ft_putchar_fd(quotes, STDERR_FILENO);
-		ft_putstr_fd("'\nminicecco: syntax error: unexpected end of file\n",
-			STDERR_FILENO);
-		return (false);
-	}
+		return (more_quotes_help(vars, quotes));
 	vars->new_input = malloc(ft_strlen(vars->input)
 			+ ft_strlen(vars->temp_input) + 2);
 	ft_strlcpy(vars->new_input, vars->input, INT_MAX);
@@ -884,6 +924,16 @@ bool	ask_more_for_quotes(t_main_vars *vars, char quotes)
 	vars->input = vars->new_input;
 	free(vars->temp_input);
 	return (true);
+}
+
+int	more_pipes_help(t_main_vars *vars)
+{
+	update_history(vars);
+	free(vars->input);
+	vars->input = NULL;
+	ft_putstr_fd("minicecco: syntax error: unexpected end of file\n",
+		STDERR_FILENO);
+	return (0);
 }
 
 int	ask_more_for_pipes(t_main_vars *vars)
@@ -899,14 +949,7 @@ int	ask_more_for_pipes(t_main_vars *vars)
 		return (0);
 	}
 	if (!vars->temp_input)
-	{
-		update_history(vars);
-		free(vars->input);
-		vars->input = NULL;
-		ft_putstr_fd("minicecco: syntax error: unexpected end of file\n",
-			STDERR_FILENO);
-		return (0);
-	}
+		return (more_pipes_help(vars));
 	vars->new_input = malloc(ft_strlen(vars->input)
 			+ ft_strlen(vars->temp_input) + 1);
 	ft_strlcpy(vars->new_input, vars->input, INT_MAX);
@@ -960,6 +1003,7 @@ void	free_tokens_and_input(t_main_vars *vars)
 	}
 	free(vars->input);
 }
+
 int	only_spaces(const char *str)
 {
 	if (str == NULL || *str == '\0')
@@ -987,6 +1031,12 @@ char	*remove_spaces(char *str)
 	return (str_no_spaces);
 }
 
+void	remove_empty_nodes_help(t_input **current, t_input **prev)
+{
+	*prev = *current;
+	*current = (*current)->next;
+}
+
 void	remove_empty_nodes(t_input **head)
 {
 	t_input	*current;
@@ -1012,10 +1062,152 @@ void	remove_empty_nodes(t_input **head)
 			free(temp);
 		}
 		else
+			remove_empty_nodes_help(&current, &prev);
+	}
+}
+
+void	tokenize_and_ex(t_main_vars *vars, int *exit_status, t_list **lst_env)
+{
+	vars->tmp2_str = ft_itoa(*exit_status);
+	vars->tmp_str = ft_strjoin("?=", vars->tmp2_str);
+	free(vars->tmp2_str);
+	ft_export(vars->tmp_str, lst_env, 1);
+	free(vars->tmp_str);
+	vars->input = quotes_to_special(vars->input);
+	vars->tokens = tokenize(vars->input);
+	expand_tokens(vars, *lst_env);
+	remove_empty_nodes(&vars->tokens);
+	free(vars->input);
+	executer(&vars->tokens, lst_env, exit_status);
+}
+
+int	read_and_signal(t_main_vars *vars, int *exit_status)
+{
+	g_signal = 0;
+	signal(SIGINT, handel_sig_def);
+	signal(SIGQUIT, handel_sig_def);
+	vars->input = readline("minicecco> ");
+	if (g_signal == SIGINT)
+	{
+		g_signal = 0;
+		*exit_status = 130;
+		free(vars->input);
+		return (1);
+	}
+	if (!vars->input)
+	{
+		ft_putstr_fd("exit\n", STDERR_FILENO);
+		return (2);
+	}
+	if (vars->input[0] == '\0')
+	{
+		free(vars->input);
+		return (1);
+	}
+	return (0);
+}
+
+int	syntax_and_quotes(t_main_vars *vars, int *exit_status, char *quotes)
+{
+	if (check_syntax_errors(vars->input) != 0)
+	{
+		update_history(vars);
+		*exit_status = 2;
+		free(vars->input);
+		return (1);
+	}
+	while (is_quote_balanced(vars->input, quotes) == -1)
+	{
+		if (!ask_more_for_quotes(vars, *quotes))
 		{
-			prev = current;
-			current = current->next;
+			if (g_signal == SIGINT)
+			{
+				g_signal = 0;
+				*exit_status = 130;
+			}
+			else
+				*exit_status = 2;
+			break ;
 		}
+	}
+	if (!vars->input)
+		return (1);
+	return (0);
+}
+
+int	balanced_pipes_help(t_main_vars *vars, int *exit_status)
+{
+	if (!ask_more_for_pipes(vars))
+	{
+		if (g_signal == SIGINT)
+		{
+			g_signal = 0;
+			*exit_status = 130;
+		}
+		else
+		{
+			ft_putstr_fd("exit\n", STDERR_FILENO);
+			*exit_status = 2;
+		}
+		return (2);
+	}
+	else if (!vars->input)
+	{
+		if (g_signal == SIGINT)
+			*exit_status = 130;
+		else
+			*exit_status = -42;
+		g_signal = 0;
+		return (2);
+	}
+	return (0);
+}
+
+int	update_history_and_syntax(t_main_vars *vars, int *exit_status,
+		t_list **lst_env)
+{
+	if (!vars->input && *exit_status == 2)
+		return (2);
+	else if (!vars->input && *exit_status == 130)
+		return (1);
+	else if (!vars->input)
+	{
+		*exit_status = 2;
+		return (2);
+	}
+	update_history(vars);
+	if (check_syntax_errors(vars->input) != 0)
+	{
+		*exit_status = 2;
+		free(vars->input);
+		return (1);
+	}
+	tokenize_and_ex(vars, exit_status, lst_env);
+	return (0);
+}
+
+void	main_loop(t_main_vars *vars, int *exit_status, t_list **lst_env,
+		char *quotes)
+{
+	while (1)
+	{
+		vars->ret = read_and_signal(vars, exit_status);
+		if (vars->ret == 1)
+			continue ;
+		else if (vars->ret == 2)
+			break ;
+		if (syntax_and_quotes(vars, exit_status, quotes))
+			continue ;
+		while (is_pipe_balanced(vars->input) == -1)
+		{
+			if (balanced_pipes_help(vars, exit_status) == 2)
+				break ;
+		}
+		vars->ret = update_history_and_syntax(vars, exit_status, lst_env);
+		if (vars->ret == 1)
+			continue ;
+		else if (vars->ret == 2)
+			break ;
 	}
 }
 
@@ -1024,10 +1216,9 @@ int	main(int argc, char **argv, char **env)
 	t_main_vars	vars;
 	t_list		*lst_env;
 	int			exit_status;
-	char		*tmp_str;
-	char		*tmp2_str;
 	char		quotes;
 
+	g_signal = 0;
 	exit_status = 0;
 	(void)argc;
 	(void)argv;
@@ -1035,118 +1226,15 @@ int	main(int argc, char **argv, char **env)
 	lst_env = ft_matrix_to_lst(env);
 	if (ft_getenv("OLDPWD", lst_env) == NULL)
 		ft_export("OLDPWD", &lst_env, 0);
-	int tmp = dup(STDIN_FILENO); // per avere tutto perfettamente pulito
-	dup2(tmp, STDIN_FILENO);     // per avere tutto perfettamente pulito
-	close(tmp);                  // per avere tutto perfettamente pulito
-	tmp = dup(STDOUT_FILENO);    // per avere tutto perfettamente pulito
-	dup2(tmp, STDOUT_FILENO);    // per avere tutto perfettamente pulito
-	close(tmp);                  // per avere tutto perfettamente pulito
-	while (1)
-	{
-		g_signal = 0;
-		signal(SIGINT, handel_sig_def);
-		signal(SIGQUIT, handel_sig_def);
-		vars.input = readline("minicecco> ");
-		if (g_signal == SIGINT)
-		{
-			g_signal = 0;
-			exit_status = 130;
-			free(vars.input);
-			continue ;
-		}
-		if (!vars.input)
-		{
-			ft_putstr_fd("exit\n", STDERR_FILENO);
-			break ;
-		}
-		if (vars.input[0] == '\0')
-		{
-			free(vars.input);
-			continue ;
-		}
-		if (check_syntax_errors(vars.input) != 0)
-		{
-			update_history(&vars);
-			exit_status = 2;
-			free(vars.input);
-			continue ;
-		}
-		while (is_quote_balanced(vars.input, &quotes) == -1)
-		{
-			if (!ask_more_for_quotes(&vars, quotes))
-			{
-				if (g_signal == SIGINT)
-				{
-					g_signal = 0;
-					exit_status = 130;
-				}
-				else
-					exit_status = 2;
-				break ;
-			}
-		}
-		if (!vars.input)
-			continue ;
-		while (is_pipe_balanced(vars.input) == -1)
-		{
-			if (!ask_more_for_pipes(&vars))
-			{
-				if (g_signal == SIGINT)
-				{
-					g_signal = 0;
-					exit_status = 130;
-				}
-				else
-				{
-					ft_putstr_fd("exit\n", STDERR_FILENO);
-					exit_status = 2;
-				}
-				break ;
-			}
-			else if (!vars.input)
-			{
-				if (g_signal == SIGINT)
-				{
-					g_signal = 0;
-					exit_status = 130;
-				}
-				else
-					exit_status = -42;
-				break ;
-			}
-		}
-		if (!vars.input && exit_status == 2)
-			break ;
-		else if (!vars.input && exit_status == 130)
-			continue ;
-		else if (!vars.input)
-		{
-			exit_status = 2;
-			continue ;
-		}
-		update_history(&vars);
-		if (check_syntax_errors(vars.input) != 0)
-		{
-			exit_status = 2;
-			free(vars.input);
-			continue ;
-		}
-		tmp2_str = ft_itoa(exit_status);
-		tmp_str = ft_strjoin("?=", tmp2_str);
-		free(tmp2_str);
-		ft_export(tmp_str, &lst_env, 1);
-		free(tmp_str);
-		vars.input = quotes_to_special(vars.input);
-		vars.tokens = tokenize(vars.input);
-		// print_tokens(vars.tokens);
-		expand_tokens(&vars, lst_env);
-		remove_empty_nodes(&vars.tokens);
-		// free_tokens_and_input(&vars);
-		free(vars.input);
-		executer(&vars.tokens, &lst_env, &exit_status);
-	}
-	close(STDIN_FILENO);  // per avere tutto perfettamente pulito
-	close(STDOUT_FILENO); // per avere tutto perfettamente pulito
+	vars.tmp = dup(STDIN_FILENO);
+	dup2(vars.tmp, STDIN_FILENO);
+	close(vars.tmp);
+	vars.tmp = dup(STDOUT_FILENO);
+	dup2(vars.tmp, STDOUT_FILENO);
+	close(vars.tmp);
+	main_loop(&vars, &exit_status, &lst_env, &quotes);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
 	ft_lstclear(&lst_env, free);
 	return (exit_status);
 }

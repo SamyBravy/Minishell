@@ -81,7 +81,7 @@ typedef struct s_token_variables
     char    *start;
 	char	*copy_str;
     int     flag;
-} token_variables;
+} t_token_variables;
 
 typedef struct s_expand_vars
 {
@@ -100,9 +100,9 @@ typedef struct s_expand_vars
     size_t i;
     size_t j;
 	t_list *env;
-} expand_vars;
+} t_expand_vars;
 
-typedef struct s_expansion_vars {
+typedef struct s_expansion_vars_b {
     t_input *current_copy;
     size_t len;
     size_t result_len;
@@ -134,7 +134,19 @@ typedef struct s_main_vars {
     int history_fd;
     char *line;
     t_input *free_tmp;
+    char		*tmp_str;
+	char		*tmp2_str;
+    int 		tmp;
+    int         ret;
 } t_main_vars;
+
+typedef struct s_quotes_special_vars {
+    int		length;
+	char	*result;
+	int		j;
+	int		ri;
+	int		i;
+} t_quotes_special_vars;
 
 typedef struct {
     size_t i;
