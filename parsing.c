@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 17:44:16 by marvin            #+#    #+#             */
-/*   Updated: 2024/08/28 22:28:14 by samy_bravy       ###   ########.fr       */
+/*   Updated: 2024/08/30 10:58:44 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	syntax_error(char *error_token)
 {
-	ft_putstr_fd("minishell: syntax error near unexpected token `",
+	ft_putstr_fd("minicecco: syntax error near unexpected token `",
 		STDERR_FILENO);
 	ft_putstr_fd(error_token, STDERR_FILENO);
 	ft_putstr_fd("'\n", STDERR_FILENO);
