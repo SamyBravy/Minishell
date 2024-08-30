@@ -549,3 +549,10 @@ echo $USER$USER
 echo "$USER$USER "
 echo "$US"ER$USER
 exit
+echo ciao
+"echo ciao"
+"echo""""" """""" "ciao"
+"echo""""" """""" "ciao" | cat -e
+$?
+ok
+exit
