@@ -55,3 +55,4 @@ cat <"./minishell_tester/test_files/infile"
 cat >./minishell_tester/test_files/invalid_permission <missing
 echo $?
 norminette copy.c
+exit

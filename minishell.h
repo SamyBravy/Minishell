@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/06 15:20:23 by sdell-er          #+#    #+#             */
-/*   Updated: 2024/08/10 19:28:59 by sdell-er         ###   ########.fr       */
+/*   Created: 2024/08/30 14:10:43 by fgrisost          #+#    #+#             */
+/*   Updated: 2024/08/30 14:10:43 by fgrisost         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,77 +71,77 @@ typedef struct s_cmd
 
 typedef struct s_token_variables
 {
-    char    *token;
-    t_type  current_type;
-    char    *cmd_str;
-    char    *temp_cmd_str;
-    char    temp[3];
-    int     i;
-    char    c_for_quotes;
-    char    *start;
+	char	*token;
+	t_type	current_type;
+	char	*cmd_str;
+	char	*temp_cmd_str;
+	char	temp[3];
+	int  i;
+	char	c_for_quotes;
+	char	*start;
 	char	*copy_str;
-    int     flag;
+	int  flag;
 } t_token_variables;
 
 typedef struct s_expand_vars
 {
-    t_input *current_copy;
-    size_t result_len;
-    size_t result_index;
-    size_t len;
-    int in_single_quotes;
-    int in_double_quotes;
-    size_t var_start;
-    size_t var_len;
-    char *var_name;
-    char *var_value;
-    char *expanded_value;
-    size_t value_len;
-    size_t i;
-    size_t j;
+	t_input *current_copy;
+	size_t result_len;
+	size_t result_index;
+	size_t len;
+	int in_single_quotes;
+	int in_double_quotes;
+	size_t var_start;
+	size_t var_len;
+	char *var_name;
+	char *var_value;
+	char *expanded_value;
+	size_t value_len;
+	size_t i;
+	size_t j;
 	t_list *env;
 } t_expand_vars;
 
 typedef struct s_expansion_vars_b {
-    t_input *current_copy;
-    size_t len;
-    size_t result_len;
-    int in_single_quotes;
-    int in_double_quotes;
-    size_t i;
-    size_t var_start;
-    size_t var_len;
-    char *var_name;
-    char *var_value;
-    char *cleaned_value;
+	t_input *current_copy;
+	size_t len;
+	size_t result_len;
+	int in_single_quotes;
+	int in_double_quotes;
+	size_t i;
+	size_t var_start;
+	size_t var_len;
+	char *var_name;
+	char *var_value;
+	char *cleaned_value;
 	t_list *env;
 } t_expansion_vars_b;
 
 typedef struct s_clean
 {
-    size_t len;
-    size_t cleaned_len;
-    size_t i;
+	size_t len;
+	size_t cleaned_len;
+	size_t i;
 } t_size_t_clean;
 
 typedef struct s_main_vars {
-    char *input;
-    char *temp_input;
-    t_input *tokens;
-    char *expanded_str;
-    char *new_input;
-    t_input *current;
-    int history_fd;
-    char *line;
-    t_input *free_tmp;
-    char		*tmp_str;
+	char *input;
+	char *temp_input;
+	t_input *tokens;
+	char *expanded_str;
+	char *new_input;
+	t_input *current;
+	int history_fd;
+	char *line;
+	t_input *free_tmp;
+	char		*tmp_str;
 	char		*tmp2_str;
-    int 		tmp;
-    int         ret;
+	int 		tmp;
+	int   ret;
 } t_main_vars;
 
 typedef struct s_quotes_special_vars {
-    int		length;
+	int		length;
 	char	*result;
 	int		j;
 	int		ri;
@@ -149,14 +149,14 @@ typedef struct s_quotes_special_vars {
 } t_quotes_special_vars;
 
 typedef struct {
-    size_t i;
-    size_t len;
-    size_t var_start;
-    size_t var_len;
-    size_t result_len;
-    char *var_name;
-    const char *var_value;
-    t_list *env;
+	size_t i;
+	size_t len;
+	size_t var_start;
+	size_t var_len;
+	size_t result_len;
+	char *var_name;
+	const char *var_value;
+	t_list *env;
 } t_vars_samu;
 
 extern int	g_signal;
@@ -213,6 +213,6 @@ void		lst_remove_key(t_list **env, char *key);
 int			check_syntax_errors(char *token);
 t_type		identify_type(char *token);
 
-char	    *expand_samu(char *str, t_list *env);
+char		*expand_samu(char *str, t_list *env);
 
 #endif
