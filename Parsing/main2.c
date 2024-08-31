@@ -6,7 +6,7 @@
 /*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:03 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/31 10:57:10 by samy_bravy       ###   ########.fr       */
+/*   Updated: 2024/08/31 11:37:17 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,15 @@ void	tokenize_and_ex(t_main_vars *vars, int *exit_status, t_list **lst_env)
 
 static int	read_and_signal(t_main_vars *vars, int *exit_status)
 {
+	char	cwd[PATH_MAX];
+
 	g_signal = 0;
 	signal(SIGINT, handel_sig_def);
 	signal(SIGQUIT, handel_sig_def);
-	vars->input = readline(PROMPT);
+	ft_putstr(PROMPT);
+	getcwd(cwd, sizeof(cwd));
+	printf("\033[0;32m%s\033[0m", cwd);
+	vars->input = readline("\033[0;30m> \033[0m");
 	if (g_signal == SIGINT)
 	{
 		g_signal = 0;
@@ -41,15 +46,9 @@ static int	read_and_signal(t_main_vars *vars, int *exit_status)
 		return (1);
 	}
 	if (!vars->input)
-	{
-		ft_putstr_fd("exit\n", STDERR_FILENO);
-		return (2);
-	}
+		return (ft_putstr_fd("exit\n", STDERR_FILENO), 2);
 	if (vars->input[0] == '\0')
-	{
-		free(vars->input);
-		return (1);
-	}
+		return (free(vars->input), 1);
 	return (0);
 }
 
