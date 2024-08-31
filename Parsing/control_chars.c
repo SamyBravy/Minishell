@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   control_chars.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:25:24 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:43:51 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:06:08 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	spaces(char c)
 {

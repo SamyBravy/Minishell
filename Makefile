@@ -12,11 +12,15 @@
 
 NAME = minishell
 MY_LIB = ./my_lib
-SRC = 	add_node.c balanced.c control_chars.c env_utils.c expand_main.c expansion_help.c expansion_help2.c file_samu1.c file_samu2.c heredoc_and_quotes.c history.c main2.c more_pipes_and_quotes.c remove_empty.c remove_spaces.c main.c syntax_error.c handle_signals.c tokenize.c \
-		executer/executer.c executer/clean.c \
-		executer/executer_utils.c executer/ft_heredocs.c executer/execute_command.c \
-		builtins/exit_builtin.c builtins/echo_builtin.c builtins/pwd_builtin.c builtins/env_builtin.c \
-		builtins/unset_builtin.c builtins/export_builtin.c builtins/cd_builtin.c
+SRC = 	main.c \
+		General/env_utils.c General/handle_signals.c \
+		Parsing/add_node.c Parsing/balanced.c Parsing/control_chars.c Parsing/expand_main.c Parsing/expansion_help.c \
+		Parsing/expansion_help2.c Parsing/file_samu1.c Parsing/file_samu2.c Parsing/heredoc_and_quotes.c Parsing/history.c \
+		Parsing/main2.c Parsing/more_pipes_and_quotes.c Parsing/remove_empty.c Parsing/remove_spaces.c \
+		Parsing/syntax_error.c Parsing/tokenize.c \
+		Executer/executer.c Executer/clean.c Executer/executer_utils.c Executer/ft_heredocs.c Executer/execute_command.c \
+		Builtins/exit_builtin.c Builtins/echo_builtin.c Builtins/pwd_builtin.c Builtins/env_builtin.c \
+		Builtins/unset_builtin.c Builtins/export_builtin.c Builtins/cd_builtin.c
 FLAGS = -g -Wall -Wextra -Werror -lreadline
 CC = cc
 
@@ -33,6 +37,7 @@ clean:
 fclean:
 	@make fclean -C $(MY_LIB) 2>&1 | grep -v 'Entering directory' | grep -v 'Leaving directory'
 	@rm -f $(NAME)
+	@rm -f .history
 	@echo "\e[0;91m[$(NAME)] deleted!\e[0m"
 
 val: all

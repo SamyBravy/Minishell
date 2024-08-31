@@ -29,6 +29,14 @@
 # include "my_lib/ft_printf/ft_printf.h"
 # include "my_lib/get_next_line/get_next_line_bonus.h"
 
+# define PROMPT "\033[0;32mminicecco\033[0m\033[0;30m> \033[0m"
+# define PROMPT_PIPE "\033[0;31m|\033[0m\033[0;30m> \033[0m"
+# define PROMPT_SINGLE_QUOTE "\033[0;33m'\033[0m\033[0;30m> \033[0m"
+# define PROMPT_DOUBLE_QUOTE "\033[0;38;5;214m\"\033[0m\033[0;30m> \033[0m"
+
+extern int	g_signal;
+
+/* Executer */
 typedef enum e_builtin
 {
 	INTERNAL,
@@ -69,6 +77,7 @@ typedef struct s_cmd
 	int		fd_out;
 }	t_cmd;
 
+/* Parsing */
 typedef struct s_token_variables
 {
 	char	*token;
@@ -163,9 +172,7 @@ typedef struct s_vars_samu
 	t_list			*env;
 }	t_vars_samu;
 
-extern int	g_signal;
-
-/* executer */
+/* Executer */
 void		*executer(t_input **input, t_list **env, int *exit_status);
 
 void		create_heredocs(t_input *input, t_list *env);
@@ -186,10 +193,7 @@ char		*get_block_cmd(t_input *input);
 int			get_flags(t_type type);
 int			only_one_cmd(t_input *input);
 
-void		handel_sig_def(int sig);
-void		handle_sig_execve(int sig);
-
-/* builtins */
+/* Builtins */
 int			exit_builtin(char **argv, t_input **input, t_list **env,
 				t_int_list **stdio_pipes_fds);
 
@@ -206,17 +210,19 @@ void		export_append(char *str, char *key, t_list **env);
 
 int			cd_builtin(char **argv, t_list **env);
 
-/* env_utils */
+/* General */
 char		*ft_getenv(char *key, t_list *env);
 char		*get_key(char *str);
 int			ft_export(char *str, t_list **env, int check);
 int			is_valid_identifier(char *str, int check);
 void		lst_remove_key(t_list **env, char *key);
 
-/* parsing */
+void		handel_sig_def(int sig);
+void		handle_sig_execve(int sig);
+
+/* Parsing */
 int			check_syntax_errors(char *token);
 t_type		identify_type(char *token);
-
 char		*expand_samu(char *str, t_list *env);
 t_input		*new_node(t_type type, char *str);
 void		add_node(t_input **head, t_input *new_node);
@@ -251,7 +257,7 @@ int			update_history_and_syntax(t_main_vars *vars, int *exit_status,
 void		take_history(t_main_vars *vars);
 void		update_history(t_main_vars *vars);
 void		main_loop(t_main_vars *vars, int *exit_status,
-				t_list **lst_env, char *quotes);
+				t_list **lst_env);
 void		tokenize_and_ex(t_main_vars *vars, int *exit_status,
 				t_list **lst_env);
 bool		ask_more_for_quotes(t_main_vars *vars, char quotes);

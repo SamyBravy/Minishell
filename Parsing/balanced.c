@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   balanced.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:28:07 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:43:01 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:33:11 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	is_quote_balanced(const char *str, char *quotes)
 {
@@ -33,7 +33,7 @@ int	is_quote_balanced(const char *str, char *quotes)
 		}
 		str++;
 	}
-	*quotes = '"' * (in_double_quote == 1) + '\'' * in_single_quote == 1;
+	*quotes = '"' * (in_double_quote == 1) + '\'' * (in_single_quote == 1);
 	if (in_double_quote == -1 && in_single_quote == -1)
 		return (1);
 	return (-1);

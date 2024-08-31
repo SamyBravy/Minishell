@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   remove_spaces.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:37:31 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:43:22 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:06:08 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	expand_tokens(t_main_vars *vars, t_list *lst_env)
 {

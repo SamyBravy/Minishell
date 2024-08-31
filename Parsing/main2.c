@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:03 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:44:33 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:57:10 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	tokenize_and_ex(t_main_vars *vars, int *exit_status, t_list **lst_env)
 {
@@ -32,7 +32,7 @@ static int	read_and_signal(t_main_vars *vars, int *exit_status)
 	g_signal = 0;
 	signal(SIGINT, handel_sig_def);
 	signal(SIGQUIT, handel_sig_def);
-	vars->input = readline("minicecco> ");
+	vars->input = readline(PROMPT);
 	if (g_signal == SIGINT)
 	{
 		g_signal = 0;
@@ -53,8 +53,10 @@ static int	read_and_signal(t_main_vars *vars, int *exit_status)
 	return (0);
 }
 
-static int	syntax_and_quotes(t_main_vars *vars, int *exit_status, char *quotes)
+static int	syntax_and_quotes(t_main_vars *vars, int *exit_status)
 {
+	char	quotes;
+
 	if (check_syntax_errors(vars->input) != 0)
 	{
 		update_history(vars);
@@ -62,9 +64,9 @@ static int	syntax_and_quotes(t_main_vars *vars, int *exit_status, char *quotes)
 		free(vars->input);
 		return (1);
 	}
-	while (is_quote_balanced(vars->input, quotes) == -1)
+	while (is_quote_balanced(vars->input, &quotes) == -1)
 	{
-		if (!ask_more_for_quotes(vars, *quotes))
+		if (!ask_more_for_quotes(vars, quotes))
 		{
 			if (g_signal == SIGINT)
 			{
@@ -76,9 +78,7 @@ static int	syntax_and_quotes(t_main_vars *vars, int *exit_status, char *quotes)
 			break ;
 		}
 	}
-	if (!vars->input)
-		return (1);
-	return (0);
+	return (!vars->input);
 }
 
 static int	balanced_pipes_help(t_main_vars *vars, int *exit_status)
@@ -109,8 +109,7 @@ static int	balanced_pipes_help(t_main_vars *vars, int *exit_status)
 	return (0);
 }
 
-void	main_loop(t_main_vars *vars, int *exit_status, t_list **lst_env,
-		char *quotes)
+void	main_loop(t_main_vars *vars, int *exit_status, t_list **lst_env)
 {
 	while (1)
 	{
@@ -119,7 +118,7 @@ void	main_loop(t_main_vars *vars, int *exit_status, t_list **lst_env,
 			continue ;
 		else if (vars->ret == 2)
 			break ;
-		if (syntax_and_quotes(vars, exit_status, quotes))
+		if (syntax_and_quotes(vars, exit_status))
 			continue ;
 		while (is_pipe_balanced(vars->input) == -1)
 		{

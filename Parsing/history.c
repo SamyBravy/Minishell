@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:35:30 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:49:22 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:12:52 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	dollar_check_help_samu(t_vars_samu *vars)
 {
@@ -31,7 +31,7 @@ void	update_history(t_main_vars *vars)
 {
 	if (*vars->input)
 	{
-		vars->history_fd = open(".tmp/.history.txt",
+		vars->history_fd = open(".history",
 				O_WRONLY | O_APPEND | O_EXCL, 0644);
 		add_history(vars->input);
 		if (vars->history_fd != -1)
@@ -44,12 +44,12 @@ void	update_history(t_main_vars *vars)
 
 void	take_history(t_main_vars *vars)
 {
-	vars->history_fd = open(".tmp/.history.txt", O_RDONLY);
+	vars->history_fd = open(".history", O_RDONLY);
 	if (vars->history_fd == -1)
 	{
-		vars->history_fd = open(".tmp/.history.txt", O_CREAT | O_WRONLY, 0644);
+		vars->history_fd = open(".history", O_CREAT | O_WRONLY, 0644);
 		close(vars->history_fd);
-		vars->history_fd = open(".tmp/.history.txt", O_RDONLY);
+		vars->history_fd = open(".history", O_RDONLY);
 	}
 	if (vars->history_fd != -1)
 	{

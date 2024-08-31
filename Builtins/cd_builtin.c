@@ -29,8 +29,7 @@ static int	change_directory(char *new_path, char *arg, t_list **env)
 	if (arg && !ft_strcmp(arg, "-"))
 		ft_printf("%s\n", ft_getenv("OLDPWD", *env));
 	tmp = ft_strjoin("OLDPWD=", cwd);
-	if (ft_getenv("OLDPWD", *env) != NULL)
-		ft_export(tmp, env, 0);
+	ft_export(tmp, env, 0);
 	free(tmp);
 	getcwd(cwd, sizeof(cwd));
 	tmp = ft_strjoin("PWD=", cwd);

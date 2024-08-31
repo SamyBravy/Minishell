@@ -19,7 +19,7 @@ static char	*unique_name(void)
 	char		*tmp;
 
 	tmp = ft_itoa(n);
-	str = ft_strjoin(".tmp/.", tmp);
+	str = ft_strjoin(".", tmp);
 	free(tmp);
 	n++;
 	return (str);
@@ -45,11 +45,13 @@ static void	read_heredoc(int fd, char *eof, t_list *env, int expand)
 		eof[0] = '\0';
 	while (1)
 	{
-		ft_putstr_fd("> ", STDOUT_FILENO);
-		line = get_next_line(STDIN_FILENO);
+		ft_putstr("\033[0;36m");
+		ft_putstr(eof);
+		ft_putstr("\033[0m");
+		line = readline("\033[0;30m> \033[0m");
 		if (g_signal == SIGINT || !line
 			|| (!ft_strncmp(line, eof, ft_strlen(eof))
-				&& line[ft_strlen(eof)] == '\n'))
+				&& line[ft_strlen(eof)] == '\0'))
 		{
 			if (line)
 				free(line);
@@ -62,7 +64,6 @@ here-document delimited by end-of-file (wanted `%s')\n", eof);
 		ft_putstr_fd(line, fd);
 		free(line);
 	}
-	get_next_line(-fd);
 }
 
 void	create_heredocs(t_input *input, t_list *env)

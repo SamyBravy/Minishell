@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   more_pipes_and_quotes.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:36:10 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:42:34 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:43:22 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 static bool	more_quotes_help(t_main_vars *vars, char quotes)
 {
@@ -20,14 +20,17 @@ static bool	more_quotes_help(t_main_vars *vars, char quotes)
 	ft_putstr_fd("minicecco: unexpected EOF while looking for matching `",
 		STDERR_FILENO);
 	ft_putchar_fd(quotes, STDERR_FILENO);
-	ft_putstr_fd("'\nminicecco: syntax error: unexpected end of file\n",
+	ft_putstr_fd("\'\nminicecco: syntax error: unexpected end of file\n",
 		STDERR_FILENO);
 	return (false);
 }
 
 bool	ask_more_for_quotes(t_main_vars *vars, char quotes)
 {
-	vars->temp_input = readline("> ");
+	if (quotes == '\'')
+		vars->temp_input = readline(PROMPT_SINGLE_QUOTE);
+	else if (quotes == '"')
+		vars->temp_input = readline(PROMPT_DOUBLE_QUOTE);
 	if (g_signal == SIGINT)
 	{
 		update_history(vars);
@@ -62,7 +65,7 @@ int	ask_more_for_pipes(t_main_vars *vars)
 {
 	char	quotes;
 
-	vars->temp_input = readline("> ");
+	vars->temp_input = readline(PROMPT_PIPE);
 	if (g_signal == SIGINT)
 	{
 		update_history(vars);

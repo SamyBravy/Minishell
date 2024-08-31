@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   file_samu1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:23:05 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:49:06 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:06:08 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 static void	dollar_check(t_vars_samu *vars, char *str)
 {

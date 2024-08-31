@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expansion_help2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:31:33 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 15:43:16 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:06:08 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	check_char(t_expansion_vars_b *vars, t_input *current)
 {

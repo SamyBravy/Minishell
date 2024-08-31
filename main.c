@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   copy.c                                             :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fgrisost <fgrisost@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 13:47:54 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/30 14:40:15 by fgrisost         ###   ########.fr       */
+/*   Updated: 2024/08/31 10:28:47 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	main(int argc, char **argv, char **env)
 	t_main_vars	vars;
 	t_list		*lst_env;
 	int			exit_status;
-	char		quotes;
 
 	g_signal = 0;
 	exit_status = 0;
@@ -33,7 +32,7 @@ int	main(int argc, char **argv, char **env)
 	vars.tmp = dup(STDOUT_FILENO);
 	dup2(vars.tmp, STDOUT_FILENO);
 	close(vars.tmp);
-	main_loop(&vars, &exit_status, &lst_env, &quotes);
+	main_loop(&vars, &exit_status, &lst_env);
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	ft_lstclear(&lst_env, free);
