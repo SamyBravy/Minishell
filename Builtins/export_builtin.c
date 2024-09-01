@@ -47,7 +47,9 @@ static void	print_export(t_list *env)
 	sort_keys(env);
 	while (env)
 	{
-		if (((char *)env->content)[0] == '?')
+		if (((char *)env->content)[0] == '?'
+			|| (((char *)env->content)[0] == '_'
+			&& ((char *)env->content)[1] == '='))
 		{
 			env = env->next;
 			continue ;
