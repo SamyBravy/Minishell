@@ -48,7 +48,7 @@ static void	read_heredoc(int fd, char *eof, t_list *env, int expand)
 		ft_putstr("\033[0;36m");
 		ft_putstr(eof);
 		ft_putstr("\033[0m");
-		line = readline("\033[0;30m> \033[0m");
+		line = readline("\033[0;35m> \033[0m");
 		if (g_signal == SIGINT || !line
 			|| (!ft_strncmp(line, eof, ft_strlen(eof))
 				&& line[ft_strlen(eof)] == '\0'))

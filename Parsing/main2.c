@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
+/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:03 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/31 11:37:17 by samy_bravy       ###   ########.fr       */
+/*   Updated: 2024/09/01 16:14:53 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,24 @@ void	tokenize_and_ex(t_main_vars *vars, int *exit_status, t_list **lst_env)
 static int	read_and_signal(t_main_vars *vars, int *exit_status)
 {
 	char	cwd[PATH_MAX];
+	char	*tmp;
+	char	*tmp2;
 
-	g_signal = 0;
 	signal(SIGINT, handel_sig_def);
 	signal(SIGQUIT, handel_sig_def);
 	ft_putstr(PROMPT);
 	getcwd(cwd, sizeof(cwd));
-	printf("\033[0;32m%s\033[0m", cwd);
-	vars->input = readline("\033[0;30m> \033[0m");
-	if (g_signal == SIGINT)
+	tmp = ft_strjoin("\033[0;32m", cwd);
+	tmp2 = ft_strjoin(tmp, "\033[0m");
+	free(tmp);
+	tmp = ft_strjoin(tmp2, "\033[0;35m> \033[0m");
+	free(tmp2);
+	vars->input = readline(tmp);
+	if (free(tmp), g_signal == SIGINT)
 	{
 		g_signal = 0;
 		*exit_status = 130;
-		free(vars->input);
-		return (1);
+		return (free(vars->input), 1);
 	}
 	if (!vars->input)
 		return (ft_putstr_fd("exit\n", STDERR_FILENO), 2);
@@ -112,6 +116,7 @@ void	main_loop(t_main_vars *vars, int *exit_status, t_list **lst_env)
 {
 	while (1)
 	{
+		g_signal = 0;
 		vars->ret = read_and_signal(vars, exit_status);
 		if (vars->ret == 1)
 			continue ;
