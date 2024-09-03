@@ -12,14 +12,17 @@
 
 #include "../minishell.h"
 
-static char	*unique_name(void)
+static char	*unique_name(char *eof)
 {
 	static int	n = 0;
 	char		*str;
 	char		*tmp;
 
 	tmp = ft_itoa(n);
-	str = ft_strjoin(".", tmp);
+	if (ft_strlen(eof) == 0 || ft_strlen(eof) > PATH_MAX - 12)
+		str = ft_strjoin(".", tmp);
+	else
+		str = ft_strjoin3(".", eof, tmp);
 	free(tmp);
 	n++;
 	return (str);
@@ -81,7 +84,7 @@ void	create_heredocs(t_input *input, t_list *env)
 				expand = 0;
 			while (input->fd < 0)
 			{
-				input->str = unique_name();
+				input->str = unique_name(eof);
 				input->fd = open(input->str, O_CREAT | O_EXCL | O_WRONLY, 0644);
 				if (input->fd == -1)
 					free(input->str);
