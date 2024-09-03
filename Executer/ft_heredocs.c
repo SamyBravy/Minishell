@@ -40,15 +40,15 @@ static void	expand_line(char **line, t_list *env, int expand)
 static void	read_heredoc(int fd, char *eof, t_list *env, int expand)
 {
 	char	*line;
+	char	*tmp;
 
 	if (eof[0] == '\x1E')
 		eof[0] = '\0';
 	while (1)
 	{
-		ft_putstr("\033[0;36m");
-		ft_putstr(eof);
-		ft_putstr("\033[0m");
-		line = readline("> ");
+		tmp = ft_strjoin3("\033[0;36m", eof, "\033[0m> ");
+		line = readline(tmp);
+		free(tmp);
 		if (g_signal == SIGINT || !line
 			|| (!ft_strncmp(line, eof, ft_strlen(eof))
 				&& line[ft_strlen(eof)] == '\0'))
@@ -61,7 +61,7 @@ here-document delimited by end-of-file (wanted `%s')\n", eof);
 			break ;
 		}
 		expand_line(&line, env, expand);
-		ft_putstr_fd(line, fd);
+		ft_putendl_fd(line, fd);
 		free(line);
 	}
 }

@@ -100,6 +100,7 @@ t_list		*ft_lstclone(t_list *lst);
 t_int_list	*ft_new_intlst(int value);
 
 char		**ft_lst_to_matrix(t_list *lst);
+char		*ft_strjoin3(char *s1, char *s2, char *s3);
 
 void		ft_free_mat(char **mat);
 void		ft_lstadd_back_int(t_int_list **lst, int content);
