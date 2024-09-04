@@ -29,7 +29,7 @@
 # include "my_lib/ft_printf/ft_printf.h"
 # include "my_lib/get_next_line/get_next_line_bonus.h"
 
-# define PROMPT "\033[0;95mminicecco\033[0m:"
+# define PROMPT "\033[0;95mminicecco\033[0mz:"
 # define PROMPT_PIPE "\033[0;31m|\033[0m> "
 # define PROMPT_SINGLE_QUOTE "\033[0;33m'\033[0m> "
 # define PROMPT_DOUBLE_QUOTE "\033[0;38;5;214m\"\033[0m> "

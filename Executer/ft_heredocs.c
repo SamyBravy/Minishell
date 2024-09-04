@@ -19,7 +19,7 @@ static char	*unique_name(char *eof)
 	char		*tmp;
 
 	tmp = ft_itoa(n);
-	if (ft_strlen(eof) == 0 || ft_strlen(eof) > PATH_MAX - 12)
+	if (ft_strlen(eof) == 0 || ft_strlen(eof) > 1000)
 		str = ft_strjoin(".", tmp);
 	else
 		str = ft_strjoin3(".", eof, tmp);
