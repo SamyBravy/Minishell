@@ -79,9 +79,7 @@ void	create_heredocs(t_input *input, t_list *env)
 		if (input->type == HEREDOC)
 		{
 			eof = input->str;
-			expand = 1;
-			if (input->fd == -420)
-				expand = 0;
+			expand = input->fd != -420;
 			while (input->fd < 0)
 			{
 				input->str = unique_name(eof);
@@ -92,6 +90,8 @@ void	create_heredocs(t_input *input, t_list *env)
 			read_heredoc(input->fd, eof, env, expand);
 			free(eof);
 			close(input->fd);
+			if (g_signal == SIGINT)
+				break ;
 		}
 		input = input->next;
 	}
