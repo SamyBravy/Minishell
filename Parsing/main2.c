@@ -6,7 +6,7 @@
 /*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:03 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/09/04 12:43:41 by sdell-er         ###   ########.fr       */
+/*   Updated: 2024/09/06 11:54:02 by sdell-er         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ static int	read_and_signal(t_main_vars *vars, int *exit_status)
 	signal(SIGINT, handel_sig_def);
 	signal(SIGQUIT, handel_sig_def);
 	getcwd(cwd, sizeof(cwd));
-	tmp = ft_strjoin("\033[0;32m", cwd);
-	tmp2 = ft_strjoin(tmp, "\033[0m> ");
+	tmp = ft_strjoin("\001\033[0;32m\002", cwd);
+	tmp2 = ft_strjoin(tmp, "\001\033[0m\002> ");
 	free(tmp);
 	tmp = ft_strjoin(PROMPT, tmp2);
 	free(tmp2);

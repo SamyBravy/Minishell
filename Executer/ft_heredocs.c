@@ -49,7 +49,7 @@ static void	read_heredoc(int fd, char *eof, t_list *env, int expand)
 		eof[0] = '\0';
 	while (1)
 	{
-		tmp = ft_strjoin3("\033[0;36m", eof, "\033[0m> ");
+		tmp = ft_strjoin3("\001\033[0;36m\002", eof, "\001\033[0m\002> ");
 		line = readline(tmp);
 		free(tmp);
 		if (g_signal == SIGINT || !line
