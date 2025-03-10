@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	handel_sig_def(int sig)
+void	handle_sig_def(int sig)
 {
 	if (sig == SIGINT)
 	{

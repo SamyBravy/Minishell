@@ -217,7 +217,7 @@ int			ft_export(char *str, t_list **env, int check);
 int			is_valid_identifier(char *str, int check);
 void		lst_remove_key(t_list **env, char *key);
 
-void		handel_sig_def(int sig);
+void		handle_sig_def(int sig);
 void		handle_sig_execve(int sig);
 
 /* Parsing */
