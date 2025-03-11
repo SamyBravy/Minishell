@@ -106,7 +106,7 @@ static int	create_pipe_and_fork(t_input **input, t_cmd *cmd, t_list **env,
 	}
 	close(STDIN_FILENO);
 	dup2(pipefd[0], STDIN_FILENO);
-	return (close(pipefd[1]), pid);
+	return (!which_builtin(*input) && close(pipefd[0]), close(pipefd[1]), pid);
 }
 
 void	*executer(t_input **input, t_list **env, int *exit_status)
