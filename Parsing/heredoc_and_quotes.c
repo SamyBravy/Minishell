@@ -36,71 +36,72 @@ static int	is_inside_quotes(const char *str, int index)
 	return (0);
 }
 
-static void	chenge_quotes_help(t_quotes_special_vars *vars, char *input)
+static void	chenge_quotes_help(t_parse_utils *utils, char *input)
 {
-	if ((vars->i > 0 && (spaces(input[vars->i - 1]) == 1
-				|| input[vars->i - 1] == '>' || input[vars->i - 1] == '<'
-				|| input[vars->i - 1] == '|')) && (vars->j < vars->length
-			&& (spaces(input[vars->j]) == 1 || input[vars->j] == '>'
-				|| input[vars->j] == '<' || input[vars->j] == '|')))
-		vars->result[vars->ri++] = '\x1E';
-	else if ((vars->i == 0 && (spaces(input[vars->j]) == 1
-				|| input[vars->j] == '>' || input[vars->j] == '<'
-				|| input[vars->j] == '|')) || (vars->i == 0 && vars->j
-			== vars->length) || (vars->j == vars->length
-			&& (spaces(input[vars->i - 1]) == 1 || input[vars->i - 1] == '>'
-				|| input[vars->i - 1] == '<' || input[vars->i - 1] == '|')))
-		vars->result[vars->ri++] = '\x1E';
+	if ((utils->i > 0 && (spaces(input[utils->i - 1]) == 1
+				|| input[utils->i - 1] == '>' || input[utils->i - 1] == '<'
+				|| input[utils->i - 1] == '|')) && (utils->j < utils->len
+			&& (spaces(input[utils->j]) == 1 || input[utils->j] == '>'
+				|| input[utils->j] == '<' || input[utils->j] == '|')))
+		utils->result[utils->ri++] = '\x1E';
+	else if ((utils->i == 0 && (spaces(input[utils->j]) == 1
+				|| input[utils->j] == '>' || input[utils->j] == '<'
+				|| input[utils->j] == '|')) || (utils->i == 0 && utils->j
+			== utils->len) || (utils->j == utils->len
+			&& (spaces(input[utils->i - 1]) == 1 || input[utils->i - 1] == '>'
+				|| input[utils->i - 1] == '<' || input[utils->i - 1] == '|')))
+		utils->result[utils->ri++] = '\x1E';
 }
 
-static void	change_quotes(t_quotes_special_vars *vars, char *input)
+static void	change_quotes(t_parse_utils *utils, char *input)
 {
-	vars->j = vars->i;
-	while ((input[vars->j] == '\"' && vars->j + 1 < vars->length
-			&& input[vars->j + 1] == '\"') || (input[vars->j] == '\'' && vars->j
-			+ 1 < vars->length && input[vars->j + 1] == '\''))
-		vars->j += 2;
-	if ((vars->i > 0 && spaces(input[vars->i - 1]) == 0
-			&& input[vars->i - 1] != '>' && input[vars->i - 1] != '<'
-			&& input[vars->i - 1] != '|') || ((vars->j < vars->length
-				&& spaces(input[vars->j]) == 0)
-			&& input[vars->j] != '>' && input[vars->j] != '<'
-			&& input[vars->j] != '|'))
-		vars->i = vars->j;
+	utils->j = utils->i;
+	while ((input[utils->j] == '\"' && utils->j + 1 < utils->len
+			&& input[utils->j + 1] == '\"')
+		|| (input[utils->j] == '\'' && utils->j + 1 < utils->len
+			&& input[utils->j + 1] == '\''))
+		utils->j += 2;
+	if ((utils->i > 0 && spaces(input[utils->i - 1]) == 0
+			&& input[utils->i - 1] != '>' && input[utils->i - 1] != '<'
+			&& input[utils->i - 1] != '|') || ((utils->j < utils->len
+				&& spaces(input[utils->j]) == 0)
+			&& input[utils->j] != '>' && input[utils->j] != '<'
+			&& input[utils->j] != '|'))
+		utils->i = utils->j;
 	else
 	{
-		chenge_quotes_help(vars, input);
-		vars->i = vars->j;
+		chenge_quotes_help(utils, input);
+		utils->i = utils->j;
 	}
 }
 
 char	*quotes_to_special(char *input)
 {
-	t_quotes_special_vars	vars;
+	t_parse_utils	utils;
 
-	vars.ri = 0;
-	vars.i = 0;
-	vars.length = ft_strlen(input);
-	vars.result = (char *)malloc(vars.length + 1);
-	while (vars.i < vars.length)
+	utils.ri = 0;
+	utils.i = 0;
+	utils.len = ft_strlen(input);
+	utils.result = (char *)malloc(utils.len + 1);
+	while (utils.i < utils.len)
 	{
-		if ((input[vars.i] == '\"' && vars.i + 1 < vars.length && input[vars.i
-					+ 1] == '\"') || (input[vars.i] == '\'' && vars.i
-				+ 1 < vars.length && input[vars.i + 1] == '\''))
+		if ((input[utils.i] == '\"' && utils.i + 1 < utils.len && input[utils.i
+					+ 1] == '\"') || (input[utils.i] == '\'' && utils.i
+				+ 1 < utils.len && input[utils.i + 1] == '\''))
 		{
-			if (is_inside_quotes(input, vars.i) != 0)
+			if (is_inside_quotes(input, utils.i) != 0)
 			{
-				vars.result[vars.ri++] = input[vars.i++];
+				utils.result[utils.ri++] = input[utils.i++];
 				continue ;
 			}
-			change_quotes(&vars, input);
+			change_quotes(&utils, input);
 		}
 		else
-			vars.result[vars.ri++] = input[vars.i++];
+			utils.result[utils.ri++] = input[utils.i++];
 	}
-	vars.result[vars.ri] = '\0';
+	utils.result[utils.ri] = '\0';
 	free(input);
-	return (vars.result);
+	return (utils.result);
 }
 
 void	heredoc_quotes(t_input *current)

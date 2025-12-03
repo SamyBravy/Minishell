@@ -12,15 +12,6 @@
 
 #include "../minishell.h"
 
-void	dollar_check_help_samu(t_vars_samu *vars)
-{
-	vars->var_value = ft_getenv(vars->var_name, vars->env);
-	free(vars->var_name);
-	if (vars->var_value)
-		vars->result_len += strlen(vars->var_value);
-	vars->i += vars->var_len;
-}
-
 static void	save_history(int fd, const char *entry)
 {
 	write(fd, entry, ft_strlen(entry));
@@ -85,6 +76,6 @@ int	update_history_and_syntax(t_main_vars *vars, int *exit_status,
 		free(vars->input);
 		return (1);
 	}
-	tokenize_and_ex(vars, exit_status, lst_env);
+	tokenize_and_execute(vars, exit_status, lst_env);
 	return (0);
 }

@@ -19,54 +19,54 @@ int	spaces(char c)
 	return (0);
 }
 
-void	special_char(t_input **head, t_token_variables *vars)
+void	special_char(t_input **head, t_token_ctx *ctx)
 {
-	vars->i = 0;
-	while (vars->i++ <= 2)
-		vars->temp[vars->i - 1] = 0;
-	vars->temp[0] = *vars->copy_str++;
-	if ((*vars->copy_str == '>' || *vars->copy_str == '<')
-		&& vars->temp[0] == *vars->copy_str)
-		vars->temp[1] = *vars->copy_str++;
-	vars->current_type = identify_type(vars->temp);
-	if (vars->current_type == PIPE)
+	ctx->i = 0;
+	while (ctx->i++ <= 2)
+		ctx->temp[ctx->i - 1] = 0;
+	ctx->temp[0] = *ctx->copy_str++;
+	if ((*ctx->copy_str == '>' || *ctx->copy_str == '<')
+		&& ctx->temp[0] == *ctx->copy_str)
+		ctx->temp[1] = *ctx->copy_str++;
+	ctx->current_type = identify_type(ctx->temp);
+	if (ctx->current_type == PIPE)
 	{
-		if (vars->cmd_str)
+		if (ctx->cmd_str)
 		{
-			add_node(head, new_node(CMD, vars->cmd_str));
-			free(vars->cmd_str);
-			vars->cmd_str = NULL;
+			add_node(head, new_node(CMD, ctx->cmd_str));
+			free(ctx->cmd_str);
+			ctx->cmd_str = NULL;
 		}
-		add_node(head, new_node(vars->current_type, NULL));
+		add_node(head, new_node(ctx->current_type, NULL));
 	}
 }
 
-void	quotes(t_token_variables *vars)
+void	quotes(t_token_ctx *ctx)
 {
-	vars->c_for_quotes = *vars->copy_str;
-	vars->start = vars->copy_str++;
-	while (*vars->copy_str && *vars->copy_str != vars->c_for_quotes)
-		vars->copy_str++;
-	vars->copy_str++;
-	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
+	ctx->c_for_quotes = *ctx->copy_str;
+	ctx->start = ctx->copy_str++;
+	while (*ctx->copy_str && *ctx->copy_str != ctx->c_for_quotes)
+		ctx->copy_str++;
+	ctx->copy_str++;
+	ctx->token = ft_strndup(ctx->start, ctx->copy_str - ctx->start);
 }
 
-void	normal_char(t_token_variables *vars)
+void	normal_char(t_token_ctx *ctx)
 {
-	vars->start = vars->copy_str;
-	while (*vars->copy_str && spaces(*vars->copy_str) == 0
-		&& *vars->copy_str != '>' && *vars->copy_str != '<'
-		&& *vars->copy_str != '|')
+	ctx->start = ctx->copy_str;
+	while (*ctx->copy_str && spaces(*ctx->copy_str) == 0
+		&& *ctx->copy_str != '>' && *ctx->copy_str != '<'
+		&& *ctx->copy_str != '|')
 	{
-		if (*vars->copy_str == '"' || *vars->copy_str == '\'')
+		if (*ctx->copy_str == '"' || *ctx->copy_str == '\'')
 		{
-			vars->c_for_quotes = *vars->copy_str;
-			vars->copy_str++;
-			while (*vars->copy_str && *vars->copy_str != vars->c_for_quotes)
-				vars->copy_str++;
+			ctx->c_for_quotes = *ctx->copy_str;
+			ctx->copy_str++;
+			while (*ctx->copy_str && *ctx->copy_str != ctx->c_for_quotes)
+				ctx->copy_str++;
 		}
-		if (*vars->copy_str)
-			vars->copy_str++;
+		if (*ctx->copy_str)
+			ctx->copy_str++;
 	}
-	vars->token = ft_strndup(vars->start, vars->copy_str - vars->start);
+	ctx->token = ft_strndup(ctx->start, ctx->copy_str - ctx->start);
 }

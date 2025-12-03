@@ -78,7 +78,7 @@ typedef struct s_cmd
 }	t_cmd;
 
 /* Parsing */
-typedef struct s_token_variables
+typedef struct s_token_ctx
 {
 	char	*token;
 	t_type	current_type;
@@ -90,49 +90,7 @@ typedef struct s_token_variables
 	char	*start;
 	char	*copy_str;
 	int		flag;
-}	t_token_variables;
-
-typedef struct s_expand_vars
-{
-	t_input	*current_copy;
-	size_t	result_len;
-	size_t	result_index;
-	size_t	len;
-	int		in_single_quotes;
-	int		in_double_quotes;
-	size_t	var_start;
-	size_t	var_len;
-	char	*var_name;
-	char	*var_value;
-	char	*expanded_value;
-	size_t	value_len;
-	size_t	i;
-	size_t	j;
-	t_list	*env;
-}	t_expand_vars;
-
-typedef struct s_expansion_vars_b
-{
-	t_input	*current_copy;
-	size_t	len;
-	size_t	result_len;
-	int		in_single_quotes;
-	int		in_double_quotes;
-	size_t	i;
-	size_t	var_start;
-	size_t	var_len;
-	char	*var_name;
-	char	*var_value;
-	char	*cleaned_value;
-	t_list	*env;
-}	t_expansion_vars_b;
-
-typedef struct s_clean
-{
-	size_t	len;
-	size_t	cleaned_len;
-	size_t	i;
-}	t_size_t_clean;
+}	t_token_ctx;
 
 typedef struct s_main_vars
 {
@@ -151,26 +109,36 @@ typedef struct s_main_vars
 	int		ret;
 }	t_main_vars;
 
-typedef struct s_quotes_special_vars
+typedef struct s_parse_utils
 {
-	int		length;
+	size_t	len;
+	size_t	cleaned_len;
+	size_t	i;
+	size_t	j;
+	size_t	ri;
 	char	*result;
-	int		j;
-	int		ri;
-	int		i;
-}	t_quotes_special_vars;
+}	t_parse_utils;
 
-typedef struct s_vars_samu
+typedef struct s_expand_ctx
 {
-	size_t			i;
-	size_t			len;
-	size_t			var_start;
-	size_t			var_len;
-	size_t			result_len;
-	char			*var_name;
-	const char		*var_value;
-	t_list			*env;
-}	t_vars_samu;
+	t_input	*current;
+	t_list	*env;
+	char	*str;
+	char	*result;
+	char	*var_name;
+	char	*var_value;
+	char	*expanded_value;
+	size_t	i;
+	size_t	j;
+	size_t	len;
+	size_t	result_len;
+	size_t	result_index;
+	size_t	var_start;
+	size_t	var_len;
+	size_t	value_len;
+	int		in_single_quotes;
+	int		in_double_quotes;
+}	t_expand_ctx;
 
 /* Executer */
 void		*executer(t_input **input, t_list **env, int *exit_status);
@@ -223,52 +191,51 @@ void		handle_sig_execve(int sig);
 /* Parsing */
 int			check_syntax_errors(char *token);
 t_type		identify_type(char *token);
-char		*expand_samu(char *str, t_list *env);
+
 t_input		*new_node(t_type type, char *str);
 void		add_node(t_input **head, t_input *new_node);
 t_type		identify_type(char *token);
 char		*clean_variable_value(char *var_value, t_input *current);
 int			is_pipe_balanced(char *str);
 int			is_quote_balanced(const char *str, char *quotes);
-void		normal_char(t_token_variables *vars);
-void		quotes(t_token_variables *vars);
-void		special_char(t_input **head, t_token_variables *vars);
+void		normal_char(t_token_ctx *ctx);
+void		quotes(t_token_ctx *ctx);
+void		special_char(t_input **head, t_token_ctx *ctx);
 int			spaces(char c);
 char		*expand_variables(t_input *current, t_list *env);
-void		variable_expansion(t_expand_vars *vars, t_input *current,
-				char *result);
-void		double_quotes(t_expansion_vars_b *vars);
-void		expansion(t_expansion_vars_b *vars, t_input *current);
-void		expansion_help(t_expansion_vars_b *vars);
-void		check_char(t_expansion_vars_b *vars, t_input *current);
+
+void		process_variable_expansion(t_expand_ctx *ctx);
+void		perform_expansion_str(t_expand_ctx *ctx);
+size_t		calculate_expand_len(char *str, t_list *env);
 size_t		calculate_expanded_length(t_input *current, t_list *env);
-void		expand_variable(t_expand_vars *vars, t_input *current,
-				char *result);
-void		check_dollar_help(t_vars_samu *vars, char *str, char *result);
-void		expand(t_vars_samu *vars, char *str, char *result);
-size_t		calculate_length_samu(char *str, t_list *env);
 char		*ft_strndup(char *s, size_t n);
-void		check_dollar(t_vars_samu *vars, char *str, char *result);
-char		*expand_samu(char *str, t_list *env);
+void		check_dollar_wrapper(t_expand_ctx *ctx);
+char		*expand_str(char *str, t_list *env);
 void		heredoc_quotes(t_input *current);
 char		*quotes_to_special(char *input);
 int			update_history_and_syntax(t_main_vars *vars, int *exit_status,
 				t_list **lst_env);
 void		take_history(t_main_vars *vars);
 void		update_history(t_main_vars *vars);
-void		main_loop(t_main_vars *vars, int *exit_status,
+void		shell_loop(t_main_vars *vars, int *exit_status,
 				t_list **lst_env);
-void		tokenize_and_ex(t_main_vars *vars, int *exit_status,
+void		tokenize_and_execute(t_main_vars *vars, int *exit_status,
 				t_list **lst_env);
 bool		ask_more_for_quotes(t_main_vars *vars, char quotes);
 int			more_pipes_help(t_main_vars *vars);
 int			ask_more_for_pipes(t_main_vars *vars);
 void		remove_empty_nodes(t_input **head);
-void		dollar_check_help_samu(t_vars_samu *vars);
+void		process_variable_str(t_expand_ctx *ctx);
 void		expand_tokens(t_main_vars *vars, t_list *lst_env);
 int			just_spaces(const char *str);
 char		*remove_spaces(char *str);
 t_input		*tokenize(char *str);
-void		single_quotes(t_expansion_vars_b *vars);
+void		handle_single_quotes(t_expand_ctx *ctx);
+void		handle_double_quotes(t_expand_ctx *ctx);
+void		handle_variable_expansion(t_expand_ctx *ctx);
+void		expand_variable_value(t_expand_ctx *ctx);
+int			is_terminator(char c);
+void		init_expand_ctx(t_expand_ctx *ctx, t_input *current, t_list *env);
+void		check_var_len(t_expand_ctx *ctx);
 
 #endif

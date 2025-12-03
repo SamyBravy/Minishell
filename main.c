@@ -32,7 +32,7 @@ int	main(int argc, char **argv, char **env)
 	vars.tmp = dup(STDOUT_FILENO);
 	dup2(vars.tmp, STDOUT_FILENO);
 	close(vars.tmp);
-	main_loop(&vars, &exit_status, &lst_env);
+	shell_loop(&vars, &exit_status, &lst_env);
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	ft_lstclear(&lst_env, free);

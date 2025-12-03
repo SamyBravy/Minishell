@@ -1,1 +1,26 @@
-/.vscode/
+# Object files
+*.o
+*.obj
+
+# Libraries
+*.a
+*.lib
+
+# Executables
+minishell
+*.out
+*.exe
+
+# Debugging
+*.dSYM/
+
+# System files
+.DS_Store
+.nfs*
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~

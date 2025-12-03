@@ -6,92 +6,52 @@
 /*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:33:17 by fgrisost          #+#    #+#             */
-/*   Updated: 2024/08/31 10:06:08 by samy_bravy       ###   ########.fr       */
+/*   Updated: 2025/12/03 00:45:00 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static void	variable_expansion_help(t_expand_vars *vars)
+void	process_expansion(t_expand_ctx *ctx)
 {
-	while (vars->var_start + vars->var_len < vars->len
-		&& ((vars->current_copy->str[vars->var_start + vars->var_len] != '>'
-				&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '<'
-				&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '|'
-				&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '"'
-				&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '\''
-				&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '\x1d'
-				&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '$'
-				&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != ' '
-				&& vars->current_copy->str[vars->var_start
-					+ vars->var_len] != '/')))
-	{
-		vars->var_len++;
-		if (vars->current_copy->str[vars->var_start] == '?')
-			break ;
-	}
-}
-
-void	variable_expansion(t_expand_vars *vars, t_input *current, char *result)
-{
-	vars->var_start = vars->i + 1;
-	vars->var_len = 0;
-	variable_expansion_help(vars);
-	if (vars->var_len > 0)
-		expand_variable(vars, current, result);
+	ctx->var_start = ctx->i + 1;
+	ctx->var_len = 0;
+	check_var_len(ctx);
+	if (ctx->var_len > 0)
+		expand_variable_value(ctx);
 	else
-		result[vars->result_index++] = current->str[vars->i];
+		ctx->result[ctx->result_index++] = ctx->str[ctx->i];
 }
 
-static void	check_character(t_expand_vars *vars, t_input *current, char *result)
+static void	process_char_expand(t_expand_ctx *ctx)
 {
-	if (current->str[vars->i] == '\'' && vars->in_double_quotes == -1)
-		vars->in_single_quotes *= -1;
-	else if (current->str[vars->i] == '"' && vars->in_single_quotes == -1)
-		vars->in_double_quotes *= -1;
-	else if (current->str[vars->i] == '$' && vars->in_single_quotes != 1
-		&& current->type != HEREDOC)
-		variable_expansion(vars, current, result);
+	if (ctx->str[ctx->i] == '\'' && ctx->in_double_quotes == -1)
+		ctx->in_single_quotes *= -1;
+	else if (ctx->str[ctx->i] == '"' && ctx->in_single_quotes == -1)
+		ctx->in_double_quotes *= -1;
+	else if (ctx->str[ctx->i] == '$' && ctx->in_single_quotes != 1
+		&& ctx->current->type != HEREDOC)
+		process_expansion(ctx);
 	else
-		result[vars->result_index++] = current->str[vars->i];
-}
-
-static t_expand_vars	*init_t_expand_vars(t_input *current, t_list *env)
-{
-	t_expand_vars	*vars;
-
-	vars = malloc(sizeof(t_expand_vars));
-	vars->current_copy = current;
-	vars->env = env;
-	vars->result_len = calculate_expanded_length(current, env);
-	vars->len = ft_strlen(current->str);
-	vars->in_single_quotes = -1;
-	vars->in_double_quotes = -1;
-	vars->i = 0;
-	return (vars);
+		ctx->result[ctx->result_index++] = ctx->str[ctx->i];
 }
 
 char	*expand_variables(t_input *current, t_list *env)
 {
-	t_expand_vars	*vars;
+	t_expand_ctx	ctx;
 	char			*result;
 
-	vars = init_t_expand_vars(current, env);
-	result = malloc(vars->result_len + 1);
-	vars->result_index = 0;
-	while (vars->i < vars->len)
+	init_expand_ctx(&ctx, current, env);
+	ctx.result_len = calculate_expanded_length(current, env);
+	result = malloc(ctx.result_len + 1);
+	if (!result)
+		return (NULL);
+	ctx.result = result;
+	while (ctx.i < ctx.len)
 	{
-		check_character(vars, current, result);
-		vars->i++;
+		process_char_expand(&ctx);
+		ctx.i++;
 	}
-	result[vars->result_index] = '\0';
-	free(vars);
+	result[ctx.result_index] = '\0';
 	return (result);
 }

@@ -1,35 +1,71 @@
+# Minishell: As beautiful as a shell
 
-# **minishell**
+[![Standard](https://img.shields.io/badge/Standard-C99-blue.svg)](https://en.wikipedia.org/wiki/C99)
+[![OS](https://img.shields.io/badge/OS-Linux-yellow.svg)]()
+[![Architecture](https://img.shields.io/badge/Architecture-Process%20Management-green.svg)]()
 
-## **Project overview**
-The **minishell** project is an essential part of the **42 curriculum**.
-It tasks students with creating a simple shell, similar to bash.
-This project aims to improve understanding of processes, file descriptors, and the intricacies of shell programming in C.
+## Abstract
 
-#### **Objective**
-- **Create a Shell**: Implement a functional shell that can execute commands, handle pipes, redirections, and more.
-- **Builtin Commands**: Implement built-in commands such as `echo`, `cd`, `pwd`, `export`, `unset`, `env`, and `exit`.
-- **Signal Handling**: Ensure proper handling of signals like `ctrl-C`, `ctrl-D`, and `ctrl-\`.
-- **History Management**: Maintain a working command history.
-- **Bonus Features**: Implement logical operators `&&` and `||`, wildcard expansion using `*`, and support for parentheses for command grouping.
+**Minishell** is a simplified bash implementation written in C. It is designed to demonstrate mastery of process creation, synchronization, file descriptor management, and signal handling.
 
-#### **Key features**
-- **Prompt Display**: The shell displays a prompt when waiting for a new command.
-- **Command Execution**: The shell searches for and launches the right executable based on the `PATH` variable or using a relative or absolute path.
-- **Quotes Handling**: Properly handle single (`'`) and double (`"`) quotes, preventing interpretation of metacharacters within the quoted sequence.
-- **Redirections**: Support for input (`<`), output (`>`), append (`>>`), and heredoc (`<<`) redirections.
-- **Pipes**: Implement the pipe (`|`) functionality to connect commands.
-- **Environment Variables**: Handle environment variables and special variables like `$?` and `$$` (which returns the PID).
+The project involves building a shell that can interpret and execute commands, handle pipes and redirections, and manage environment variables, mimicking the behavior of the popular bash shell.
 
-#### **Compiling the Project**
-The **minishell** project includes a Makefile for easy compilation. Simply run:
-```
-make
-```
-This will generate the `minishell` executable.
+## Installation
 
-#### **Running the Project**
-To start the shell, run:
-```
+### Prerequisites
+*   GCC or Clang compiler
+*   `make`
+*   `readline` library
+
+### Compilation
+The project utilizes a `Makefile` to manage the build process.
+
+| Command | Action |
+|:---:|---|
+| `make` | Compiles the **minishell** executable. |
+| `make clean` | Removes object files. |
+| `make fclean` | Removes object files and the executable. |
+| `make re` | Recompiles the project from scratch. |
+
+## Usage
+
+### 1. Start the Shell
+Run the executable to start the shell session.
+
+```bash
 ./minishell
 ```
+
+### 2. Execute Commands
+You can run commands just like in a standard bash shell.
+
+```bash
+minicecco:/home/s/Minishell> ls -la
+minicecco:/home/s/Minishell> grep "int" main.c | wc -l
+minicecco:/home/s/Minishell> echo "Hello 42" > hello.txt
+```
+
+## Features & Implementation
+
+### Technical Architecture
+*   **Parsing:** Tokenizes input, handles quotes (`'` and `"`), and expands environment variables.
+*   **Execution:** Uses `fork()`, `execve()`, and `waitpid()` to execute commands.
+*   **Pipes:** Implements inter-process communication using `pipe()` and `dup2()`.
+*   **Signals:** Handles `Ctrl-C`, `Ctrl-D`, and `Ctrl-\` to mimic bash behavior.
+
+### Built-in Commands
+The shell includes its own implementation of the following built-ins:
+*   `echo` (with `-n`)
+*   `cd` (relative and absolute paths)
+*   `pwd`
+*   `export`
+*   `unset`
+*   `env`
+*   `exit`
+
+### Redirections
+Supports standard input/output redirections:
+*   `<` : Input redirection
+*   `>` : Output redirection
+*   `<<` : Here-document
+*   `>>` : Append output

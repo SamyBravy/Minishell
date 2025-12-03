@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main2.c                                            :+:      :+:    :+:   */
+/*   shell_loop.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sdell-er <sdell-er@student.42.fr>          +#+  +:+       +#+        */
+/*   By: samy_bravy <samy_bravy@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/30 14:40:03 by fgrisost          #+#    #+#             */
-/*   Updated: 2025/03/10 18:12:51 by sdell-er         ###   ########.fr       */
+/*   Updated: 2025/12/03 00:35:00 by samy_bravy       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	tokenize_and_ex(t_main_vars *vars, int *exit_status, t_list **lst_env)
+void	tokenize_and_execute(t_main_vars *vars, int *exit_status,
+		t_list **lst_env)
 {
 	vars->tmp2_str = ft_itoa(*exit_status);
 	vars->tmp_str = ft_strjoin("?=", vars->tmp2_str);
@@ -27,7 +28,7 @@ void	tokenize_and_ex(t_main_vars *vars, int *exit_status, t_list **lst_env)
 	executer(&vars->tokens, lst_env, exit_status);
 }
 
-static int	read_and_signal(t_main_vars *vars, int *exit_status)
+static int	read_input(t_main_vars *vars, int *exit_status)
 {
 	char	cwd[PATH_MAX];
 	char	*tmp;
@@ -55,7 +56,7 @@ static int	read_and_signal(t_main_vars *vars, int *exit_status)
 	return (0);
 }
 
-static int	syntax_and_quotes(t_main_vars *vars, int *exit_status)
+static int	check_syntax_and_quotes(t_main_vars *vars, int *exit_status)
 {
 	char	quotes;
 
@@ -83,7 +84,7 @@ static int	syntax_and_quotes(t_main_vars *vars, int *exit_status)
 	return (!vars->input);
 }
 
-static int	balanced_pipes_help(t_main_vars *vars, int *exit_status)
+static int	handle_balanced_pipes(t_main_vars *vars, int *exit_status)
 {
 	if (!ask_more_for_pipes(vars))
 	{
@@ -111,21 +112,21 @@ static int	balanced_pipes_help(t_main_vars *vars, int *exit_status)
 	return (0);
 }
 
-void	main_loop(t_main_vars *vars, int *exit_status, t_list **lst_env)
+void	shell_loop(t_main_vars *vars, int *exit_status, t_list **lst_env)
 {
 	while (1)
 	{
 		g_signal = 0;
-		vars->ret = read_and_signal(vars, exit_status);
+		vars->ret = read_input(vars, exit_status);
 		if (vars->ret == 1)
 			continue ;
 		else if (vars->ret == 2)
 			break ;
-		if (syntax_and_quotes(vars, exit_status))
+		if (check_syntax_and_quotes(vars, exit_status))
 			continue ;
 		while (is_pipe_balanced(vars->input) == -1)
 		{
-			if (balanced_pipes_help(vars, exit_status) == 2)
+			if (handle_balanced_pipes(vars, exit_status) == 2)
 				break ;
 		}
 		vars->ret = update_history_and_syntax(vars, exit_status, lst_env);

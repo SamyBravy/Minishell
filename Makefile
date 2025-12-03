@@ -14,9 +14,10 @@ NAME = minishell
 MY_LIB = ./my_lib
 SRC = 	main.c \
 		General/env_utils.c General/handle_signals.c \
-		Parsing/add_node.c Parsing/balanced.c Parsing/control_chars.c Parsing/expand_main.c Parsing/expansion_help.c \
-		Parsing/expansion_help2.c Parsing/file_samu1.c Parsing/file_samu2.c Parsing/heredoc_and_quotes.c Parsing/history.c \
-		Parsing/main2.c Parsing/more_pipes_and_quotes.c Parsing/remove_empty.c Parsing/remove_spaces.c \
+		Parsing/add_node.c Parsing/balanced.c Parsing/control_chars.c \
+		Parsing/expand_calculate.c Parsing/expand_utils.c Parsing/expand_wrapper.c Parsing/heredoc_and_quotes.c Parsing/history.c \
+		Parsing/shell_loop.c Parsing/more_pipes_and_quotes.c Parsing/remove_empty.c Parsing/remove_spaces.c \
+		Parsing/expand_common.c Parsing/expand_handlers.c Parsing/expand_main.c \
 		Parsing/syntax_error.c Parsing/tokenize.c \
 		Executer/executer.c Executer/clean.c Executer/executer_utils.c Executer/ft_heredocs.c Executer/execute_command.c \
 		Builtins/exit_builtin.c Builtins/echo_builtin.c Builtins/pwd_builtin.c Builtins/env_builtin.c \

@@ -59,34 +59,34 @@ int	is_pipe_balanced(char *str)
 	return (1);
 }
 
-static void	skip_spaces(char *var_value, t_size_t_clean *vars)
+static void	skip_spaces(char *var_value, t_parse_utils *utils)
 {
-	while (vars->i < vars->len && spaces(var_value[vars->i]) == 1)
-		vars->i++;
+	while (utils->i < utils->len && spaces(var_value[utils->i]) == 1)
+		utils->i++;
 }
 
 static void	spaces_check(char *var_value, t_input *current,
-		t_size_t_clean *vars,
+		t_parse_utils *utils,
 		char *cleaned_value)
 {
 	int	j;
 
 	j = 0;
-	while (spaces(var_value[vars->i]) == 1)
-		vars->i++;
-	while (vars->i < vars->len)
+	while (spaces(var_value[utils->i]) == 1)
+		utils->i++;
+	while (utils->i < utils->len)
 	{
-		if (spaces(var_value[vars->i]) == 1)
+		if (spaces(var_value[utils->i]) == 1)
 		{
 			if (current->type != CMD)
 				current->fd = -42;
-			cleaned_value[vars->cleaned_len++] = '\x1D';
-			skip_spaces(var_value, vars);
+			cleaned_value[utils->cleaned_len++] = '\x1D';
+			skip_spaces(var_value, utils);
 		}
 		else
 		{
-			cleaned_value[vars->cleaned_len++] = var_value[vars->i++];
-			j = vars->i;
+			cleaned_value[utils->cleaned_len++] = var_value[utils->i++];
+			j = utils->i;
 			while (var_value[j] && spaces(var_value[j]) == 1)
 				j++;
 			if (var_value[j] == '\0')
@@ -97,20 +97,20 @@ static void	spaces_check(char *var_value, t_input *current,
 
 char	*clean_variable_value(char *var_value, t_input *current)
 {
-	t_size_t_clean	vars;
+	t_parse_utils	utils;
 	char			*cleaned_value;
 
-	vars.len = ft_strlen(var_value);
-	cleaned_value = malloc(vars.len + 1);
+	utils.len = ft_strlen(var_value);
+	cleaned_value = malloc(utils.len + 1);
 	if (!cleaned_value)
 		return (NULL);
-	vars.cleaned_len = 0;
-	vars.i = 0;
-	while (vars.i < vars.len && spaces(var_value[vars.i]) == 1)
-		vars.i++;
-	spaces_check(var_value, current, &vars, cleaned_value);
-	if (vars.cleaned_len > 0 && cleaned_value[vars.cleaned_len - 1] == ' ')
-		vars.cleaned_len--;
-	cleaned_value[vars.cleaned_len] = '\0';
+	utils.cleaned_len = 0;
+	utils.i = 0;
+	while (utils.i < utils.len && spaces(var_value[utils.i]) == 1)
+		utils.i++;
+	spaces_check(var_value, current, &utils, cleaned_value);
+	if (utils.cleaned_len > 0 && cleaned_value[utils.cleaned_len - 1] == ' ')
+		utils.cleaned_len--;
+	cleaned_value[utils.cleaned_len] = '\0';
 	return (cleaned_value);
 }

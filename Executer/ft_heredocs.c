@@ -34,7 +34,7 @@ static void	expand_line(char **line, t_list *env, int expand)
 
 	if (expand)
 	{
-		tmp = expand_samu(*line, env);
+		tmp = expand_str(*line, env);
 		free(*line);
 		*line = tmp;
 	}

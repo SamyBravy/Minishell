@@ -12,88 +12,88 @@
 
 #include "../minishell.h"
 
-static void	save_cmd(t_token_variables *vars)
+static void	save_cmd(t_token_ctx *ctx)
 {
 	char	*help;
 
-	if (vars->cmd_str)
+	if (ctx->cmd_str)
 	{
-		help = vars->copy_str - ft_strlen(vars->token) - 1;
-		vars->temp_cmd_str = calloc(ft_strlen(vars->cmd_str)
-				+ ft_strlen(vars->token) + 2, 1);
-		ft_strlcpy(vars->temp_cmd_str, vars->cmd_str, INT_MAX);
+		help = ctx->copy_str - ft_strlen(ctx->token) - 1;
+		ctx->temp_cmd_str = calloc(ft_strlen(ctx->cmd_str)
+				+ ft_strlen(ctx->token) + 2, 1);
+		ft_strlcpy(ctx->temp_cmd_str, ctx->cmd_str, INT_MAX);
 		if (spaces(*help) == 1)
-			ft_strlcat(vars->temp_cmd_str, "\x1D", INT_MAX);
-		ft_strlcat(vars->temp_cmd_str, vars->token, INT_MAX);
-		free(vars->cmd_str);
-		vars->cmd_str = vars->temp_cmd_str;
+			ft_strlcat(ctx->temp_cmd_str, "\x1D", INT_MAX);
+		ft_strlcat(ctx->temp_cmd_str, ctx->token, INT_MAX);
+		free(ctx->cmd_str);
+		ctx->cmd_str = ctx->temp_cmd_str;
 	}
 	else
-		vars->cmd_str = ft_strndup(vars->token, INT_MAX);
+		ctx->cmd_str = ft_strndup(ctx->token, INT_MAX);
 }
 
-static void	save_special(t_input **head, t_token_variables *vars)
+static void	save_special(t_input **head, t_token_ctx *ctx)
 {
-	if (vars->cmd_str)
+	if (ctx->cmd_str)
 	{
-		add_node(head, new_node(CMD, vars->cmd_str));
-		free(vars->cmd_str);
-		vars->cmd_str = NULL;
+		add_node(head, new_node(CMD, ctx->cmd_str));
+		free(ctx->cmd_str);
+		ctx->cmd_str = NULL;
 	}
-	add_node(head, new_node(vars->current_type, vars->token));
-	vars->current_type = CMD;
+	add_node(head, new_node(ctx->current_type, ctx->token));
+	ctx->current_type = CMD;
 }
 
-static void	save_not_pipe(t_input **head, t_token_variables *vars)
+static void	save_not_pipe(t_input **head, t_token_ctx *ctx)
 {
-	if (*vars->copy_str == '"' || *vars->copy_str == '\'')
-		quotes(vars);
+	if (*ctx->copy_str == '"' || *ctx->copy_str == '\'')
+		quotes(ctx);
 	else
-		normal_char(vars);
-	if (vars->current_type == CMD || vars->current_type == PIPE)
-		save_cmd(vars);
+		normal_char(ctx);
+	if (ctx->current_type == CMD || ctx->current_type == PIPE)
+		save_cmd(ctx);
 	else
-		save_special(head, vars);
-	free(vars->token);
+		save_special(head, ctx);
+	free(ctx->token);
 }
 
-static t_token_variables	*prepare_var(char *str)
+static t_token_ctx	*prepare_var(char *str)
 {
-	t_token_variables	*vars;
+	t_token_ctx	*ctx;
 
-	vars = malloc(sizeof(t_token_variables));
-	vars->token = NULL;
-	vars->current_type = CMD;
-	vars->cmd_str = NULL;
-	vars->copy_str = str;
-	vars->flag = 0;
-	return (vars);
+	ctx = malloc(sizeof(t_token_ctx));
+	ctx->token = NULL;
+	ctx->current_type = CMD;
+	ctx->cmd_str = NULL;
+	ctx->copy_str = str;
+	ctx->flag = 0;
+	return (ctx);
 }
 
 t_input	*tokenize(char *str)
 {
 	t_input				*head;
-	t_token_variables	*vars;
+	t_token_ctx			*ctx;
 
 	head = NULL;
-	vars = prepare_var(str);
-	while (*vars->copy_str)
+	ctx = prepare_var(str);
+	while (*ctx->copy_str)
 	{
-		while (spaces(*vars->copy_str) == 1)
-			vars->copy_str++;
-		if (*vars->copy_str == '\0')
+		while (spaces(*ctx->copy_str) == 1)
+			ctx->copy_str++;
+		if (*ctx->copy_str == '\0')
 			break ;
-		if (*vars->copy_str == '>' || *vars->copy_str == '<'
-			|| *vars->copy_str == '|')
-			special_char(&head, vars);
+		if (*ctx->copy_str == '>' || *ctx->copy_str == '<'
+			|| *ctx->copy_str == '|')
+			special_char(&head, ctx);
 		else
-			save_not_pipe(&head, vars);
+			save_not_pipe(&head, ctx);
 	}
-	if (vars->cmd_str)
+	if (ctx->cmd_str)
 	{
-		add_node(&head, new_node(CMD, vars->cmd_str));
-		free(vars->cmd_str);
+		add_node(&head, new_node(CMD, ctx->cmd_str));
+		free(ctx->cmd_str);
 	}
-	free(vars);
+	free(ctx);
 	return (head);
 }
