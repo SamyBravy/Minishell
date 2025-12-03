@@ -4,7 +4,7 @@
 [![OS](https://img.shields.io/badge/OS-Linux-yellow.svg)]()
 [![Architecture](https://img.shields.io/badge/Architecture-Process%20Management-green.svg)]()
 
-## Abstract
+## Overview
 
 **Minishell** is a simplified bash implementation written in C. It is designed to demonstrate mastery of process creation, synchronization, file descriptor management, and signal handling.
 
