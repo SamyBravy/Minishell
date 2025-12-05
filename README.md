@@ -17,6 +17,11 @@ The project involves building a shell that can interpret and execute commands, h
 *   `make`
 *   `readline` library
 
+```bash
+# Install readline on Linux (Ubuntu/Debian)
+sudo apt-get install libreadline-dev
+```
+
 ### Compilation
 The project utilizes a `Makefile` to manage the build process.
 
